@@ -21,6 +21,7 @@ export const UserTransformer = {
       e.id,
       e.email,
       e.role,
+      e.password,
       e.phoneNumber,
       e.createdAt,
       e.updatedAt,

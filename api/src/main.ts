@@ -1,8 +1,20 @@
+// apps/.../main.ts
+import { Logger } from '@nestjs/common';
+import { setupGlobalSwagger } from './common/swagger/global-swagger';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+
+  setupGlobalSwagger(app);
+
+  const PORT = Number(process.env.PORT ?? 3000);
+  await app.listen(PORT);
+
+  Logger.log(
+    `🚀 Swagger is live at http://localhost:3000/api/docs`,
+    'Bootstrap',
+  );
 }
 bootstrap();

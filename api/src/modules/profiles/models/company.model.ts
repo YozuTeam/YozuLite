@@ -1,6 +1,6 @@
 export class CompanyProfileModel {
   constructor(
-    public readonly id: number,
+    public readonly id: string,
     public readonly userId: string,
     public companyName: string,
     public description: string | null,

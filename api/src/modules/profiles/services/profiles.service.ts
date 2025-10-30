@@ -3,7 +3,7 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../infra/database/database.service';
+import { PrismaService } from '@/infra/database/database.service';
 import {
   CreateStudentProfileDto,
   UpdateStudentProfileDto,
@@ -29,7 +29,7 @@ import { CompanyTransformer } from '../transformers/company.transformer';
 
 @Injectable()
 export class ProfilesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   private studentRecordToEntity(p: PrismaStudent): StudentProfileEntity {
     return new StudentProfileEntity(
@@ -64,15 +64,16 @@ export class ProfilesService {
 
   async createStudent(
     dto: CreateStudentProfileDto,
+    userId: string,
   ): Promise<StudentProfileModel> {
     const exists = await this.prisma.studentProfile.findUnique({
-      where: { userId: dto.userId },
+      where: { userId },
       select: { id: true },
     });
     if (exists) throw new ConflictException('Student profile already exists');
 
     const data = StudentTransformer.toPrismaCreate({
-      userId: dto.userId,
+      userId: userId,
       firstName: dto.firstName,
       lastName: dto.lastName,
       bio: dto.bio ?? null,
@@ -85,10 +86,10 @@ export class ProfilesService {
   }
 
   async updateStudent(
-    id: number,
+    userId: string,
     dto: UpdateStudentProfileDto,
   ): Promise<StudentProfileModel> {
-    await this.ensureStudentExists(id);
+    await this.ensureStudentExists(userId);
     const data = StudentTransformer.toPrismaUpdate({
       firstName: dto.firstName,
       lastName: dto.lastName,
@@ -97,14 +98,16 @@ export class ProfilesService {
       skills: dto.skills,
     });
     const updated = await this.prisma.studentProfile.update({
-      where: { id },
+      where: { userId },
       data,
     });
     return this.toStudentModel(updated);
   }
 
-  async getStudent(id: number): Promise<StudentProfileModel> {
-    const s = await this.prisma.studentProfile.findUnique({ where: { id } });
+  async getStudent(userId: string): Promise<StudentProfileModel> {
+    const s = await this.prisma.studentProfile.findUnique({
+      where: { userId },
+    });
     if (!s) throw new NotFoundException('Student profile not found');
     return this.toStudentModel(s);
   }
@@ -116,33 +119,32 @@ export class ProfilesService {
     return list.map((p) => this.toStudentModel(p));
   }
 
-  async deleteStudent(id: number): Promise<{ success: true }> {
-    await this.ensureStudentExists(id);
-    await this.prisma.studentProfile.delete({ where: { id } });
+  async deleteStudent(userId: string): Promise<{ success: true }> {
+    await this.ensureStudentExists(userId);
+    await this.prisma.studentProfile.delete({ where: { userId } });
     return { success: true };
   }
 
-  private async ensureStudentExists(id: number) {
+  private async ensureStudentExists(userId: string) {
     const ok = await this.prisma.studentProfile.findUnique({
-      where: { id },
+      where: { userId },
       select: { id: true },
     });
     if (!ok) throw new NotFoundException('Student profile not found');
   }
 
-  // ===================== COMPANY =====================
-
   async createCompany(
     dto: CreateCompanyProfileDto,
+    userId: string,
   ): Promise<CompanyProfileModel> {
     const exists = await this.prisma.companyProfile.findUnique({
-      where: { userId: dto.userId },
+      where: { userId },
       select: { id: true },
     });
     if (exists) throw new ConflictException('Company profile already exists');
 
     const data = CompanyTransformer.toPrismaCreate({
-      userId: dto.userId,
+      userId: userId,
       companyName: dto.companyName,
       description: dto.description ?? null,
       industry: dto.industry ?? null,
@@ -154,10 +156,10 @@ export class ProfilesService {
   }
 
   async updateCompany(
-    id: number,
+    userId: string,
     dto: UpdateCompanyProfileDto,
   ): Promise<CompanyProfileModel> {
-    await this.ensureCompanyExists(id);
+    await this.ensureCompanyExists(userId);
     const data = CompanyTransformer.toPrismaUpdate({
       companyName: dto.companyName,
       description: dto.description ?? null,
@@ -165,13 +167,13 @@ export class ProfilesService {
       techStack: dto.techStack,
     });
     const updated = await this.prisma.companyProfile.update({
-      where: { id },
+      where: { userId },
       data,
     });
     return this.toCompanyModel(updated);
   }
 
-  async getCompany(id: number): Promise<CompanyProfileModel> {
+  async getCompany(id: string): Promise<CompanyProfileModel> {
     const c = await this.prisma.companyProfile.findUnique({ where: { id } });
     if (!c) throw new NotFoundException('Company profile not found');
     return this.toCompanyModel(c);
@@ -184,15 +186,15 @@ export class ProfilesService {
     return list.map((p) => this.toCompanyModel(p));
   }
 
-  async deleteCompany(id: number): Promise<{ success: true }> {
-    await this.ensureCompanyExists(id);
-    await this.prisma.companyProfile.delete({ where: { id } });
+  async deleteCompany(userId: string): Promise<{ success: true }> {
+    await this.ensureCompanyExists(userId);
+    await this.prisma.companyProfile.delete({ where: { userId } });
     return { success: true };
   }
 
-  private async ensureCompanyExists(id: number) {
+  private async ensureCompanyExists(userId: string) {
     const ok = await this.prisma.companyProfile.findUnique({
-      where: { id },
+      where: { userId },
       select: { id: true },
     });
     if (!ok) throw new NotFoundException('Company profile not found');

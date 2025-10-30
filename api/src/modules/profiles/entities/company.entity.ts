@@ -1,5 +1,5 @@
 export class CompanyProfileEntity {
-  id: number;
+  id: string;
   userId: string;
   companyName: string;
   description: string | null;
@@ -7,7 +7,7 @@ export class CompanyProfileEntity {
   techStack: string[];
 
   constructor(
-    id: number,
+    id: string,
     userId: string,
     companyName: string,
     description?: string | null,

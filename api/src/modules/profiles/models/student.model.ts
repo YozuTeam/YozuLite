@@ -1,6 +1,6 @@
 export class StudentProfileModel {
   constructor(
-    public readonly id: number,
+    public readonly id: string,
     public readonly userId: string,
     public firstName: string,
     public lastName: string,

@@ -1,7 +1,6 @@
 import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class CreateStudentProfileDto {
-  @IsString() userId!: string;
   @IsString() firstName!: string;
   @IsString() lastName!: string;
   @IsOptional() @IsString() bio?: string | null;

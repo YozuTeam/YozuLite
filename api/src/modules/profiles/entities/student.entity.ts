@@ -1,5 +1,5 @@
 export class StudentProfileEntity {
-  id!: number;
+  id!: string;
   userId!: string;
   firstName!: string;
   lastName!: string;
@@ -7,7 +7,7 @@ export class StudentProfileEntity {
   school?: string | null;
   skills!: string[];
   constructor(
-    id: number,
+    id: string,
     userId: string,
     firstName: string,
     lastName: string,
