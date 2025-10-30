@@ -3,7 +3,6 @@
   "workspaces": [
     "yozu-lite",
     "api",
-    "libs/*"
   ],
   "dependencies": {
     "@prisma/client": "^6.18.0",
