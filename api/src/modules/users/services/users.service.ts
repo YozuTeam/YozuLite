@@ -18,6 +18,7 @@ import { RegisterDto } from '../dto/register.dto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { LoginDto } from '../dto/login.dto';
 import { AuthJwtPayload } from '@/common/auth/auth.types';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -25,11 +26,11 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private readonly tokenService: TokenService,
   ) {}
-  private toEntityFromPrisma(p: any): UserEntity {
+  private toEntityFromPrisma(p: User): UserEntity {
     return UserTransformer.fromPrisma(p);
   }
 
-  private toModelFromPrisma(p: any): UserModel {
+  private toModelFromPrisma(p: User): UserModel {
     return UserTransformer.toModel(this.toEntityFromPrisma(p));
   }
 

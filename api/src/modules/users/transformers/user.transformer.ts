@@ -1,4 +1,4 @@
-import { Prisma, User as PrismaUser } from '@generated/prisma';
+import { Prisma, User as PrismaUser } from '@prisma/client';
 import { UserEntity } from '../entities/user.entity';
 import { UserModel } from '../models/user.model';
 import { Role } from '@/common/enums/role.enums';

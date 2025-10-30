@@ -16,7 +16,7 @@ import {
 import {
   StudentProfile as PrismaStudent,
   CompanyProfile as PrismaCompany,
-} from '@generated/prisma';
+} from '@prisma/client';
 
 import { StudentProfileEntity } from '../entities/student.entity';
 import { CompanyProfileEntity } from '../entities/company.entity';
@@ -29,7 +29,7 @@ import { CompanyTransformer } from '../transformers/company.transformer';
 
 @Injectable()
 export class ProfilesService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   private studentRecordToEntity(p: PrismaStudent): StudentProfileEntity {
     return new StudentProfileEntity(

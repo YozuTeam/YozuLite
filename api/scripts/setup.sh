@@ -1,43 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ===== Colors =====
-NC="\033[0m"
-B="\033[1m"
-G="\033[32m"
-Y="\033[33m"
-R="\033[31m"
-C="\033[36m"
+# ===== Couleurs =====
+NC="\033[0m"; B="\033[1m"; G="\033[32m"; Y="\033[33m"; R="\033[31m"; C="\033[36m"
 
-# ===== Config (adapt if needed) =====
+# ===== Config =====
 APP_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SEED_SCRIPT_REL="scripts/seed.ts"
 POSTGRES_CONTAINER="yozu-postgres"
 POSTGRES_USER="yozu_user"
 POSTGRES_DB="yozu_db"
-DOCKER_COMPOSE_CMD="docker compose" # fallback handled below
+DOCKER_COMPOSE_CMD="docker compose"
 
 cd "$APP_ROOT"
 
 echo -e "${C}${B}▶ Setup started${NC}"
 
-# ---- Check commands
+# ---- Vérifs binaires
 need() { command -v "$1" >/dev/null 2>&1 || { echo -e "${R}Missing: $1${NC}"; exit 1; }; }
-
 need docker
 need npm
 need npx
 
+# docker compose v2 fallback
 if ! docker compose version >/dev/null 2>&1; then
   if command -v docker-compose >/dev/null 2>&1; then
     DOCKER_COMPOSE_CMD="docker-compose"
   else
-    echo -e "${R}Neither 'docker compose' nor 'docker-compose' is available.${NC}"
+    echo -e "${R}Neither 'docker compose' nor 'docker-compose' found.${NC}"
     exit 1
   fi
 fi
 
-# ---- Install deps
 if [[ -f package-lock.json ]]; then
   echo -e "${G}npm ci${NC}"
   npm ci
@@ -46,12 +40,12 @@ else
   npm install
 fi
 
-# ---- Docker up
+# ---- Démarrer Docker
 echo -e "${G}${B}Starting Docker services...${NC}"
 $DOCKER_COMPOSE_CMD up -d
 
-# ---- Wait for postgres healthy
-echo -e "${G}Waiting for Postgres ($POSTGRES_CONTAINER) to be healthy...${NC}"
+# ---- Attendre Postgres healthy
+echo -e "${G}Waiting for Postgres (${POSTGRES_CONTAINER}) to be healthy...${NC}"
 MAX_WAIT=120
 SLEEP=3
 ELAPSED=0
@@ -79,11 +73,12 @@ if npx --yes prisma --version >/dev/null 2>&1; then
   echo -e "${G}npx prisma generate${NC}"
   npx prisma generate
 
-  # apply migrations if any (no prompts)
-  echo -e "${G}npx prisma migrate deploy${NC}"
+  echo -e "${G}${B}Running migrations (deploy)...${NC}"
+  # applique les migrations existantes sans prompt
   npx prisma migrate deploy
 else
-  echo -e "${Y}Prisma CLI not found. Skipping generate/migrate.${NC}"
+  echo -e "${R}Prisma CLI not found. Please add it (devDependency) to run migrations.${NC}"
+  exit 1
 fi
 
 # ---- Seed
