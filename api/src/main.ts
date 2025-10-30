@@ -9,7 +9,7 @@ async function bootstrap() {
 
   setupGlobalSwagger(app);
 
-  const PORT = Number(process.env.PORT ?? 3000);
+  const PORT = Number(process.env.PORT ?? 8080);
   await app.listen(PORT);
 
   Logger.log(
