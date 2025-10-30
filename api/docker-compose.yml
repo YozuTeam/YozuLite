@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: yozu-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: yozu_db
+      POSTGRES_USER: yozu_user
+      POSTGRES_PASSWORD: yozu_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/dev/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yozu_user -d yozu_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+volumes:
+  postgres_data:

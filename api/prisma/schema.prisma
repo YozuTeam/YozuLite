@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  email          String          @unique
+  password       String
+  phoneNumber    String          @unique
+  role           String          @default("STUDENT")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  studentProfile StudentProfile?
+  companyProfile CompanyProfile?
+
+  @@index([email])
+  @@index([phoneNumber])
+}
+
+model StudentProfile {
+  id             Int     @id @default(autoincrement())
+  userId         String  @unique
+  firstName      String
+  lastName       String
+  bio            String?
+  school         String?
+  skills         String[]    
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([lastName, firstName])
+}
+
+model CompanyProfile {
+  id             Int     @id @default(autoincrement())
+  userId         String  @unique
+  companyName    String
+  description    String?
+  industry       String?
+  techStack      String[]     
+  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([companyName])
+}
