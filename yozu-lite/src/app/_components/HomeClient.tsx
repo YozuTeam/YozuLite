@@ -29,7 +29,7 @@ export default function HomeClient() {
         <CardContent className="p-10">
           <div className="text-center mb-8">
             <Typography variant="h4" className="font-semibold tracking-tight">
-              YOZU Lite
+              YOZU Lite gros rat
             </Typography>
             <Typography
               variant="body2"
