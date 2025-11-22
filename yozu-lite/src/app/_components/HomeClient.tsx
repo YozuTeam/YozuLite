@@ -1,73 +1,49 @@
 "use client";
 
-import {
-  Button,
-  TextField,
-  Card,
-  CardContent,
-  Typography,
-  Stack,
-  Divider,
-} from "@mui/material";
+import Button from "@/design/atoms/Button";
+import { TextField } from "@mui/material";
+import { useEffect, useState } from "react";
 
-export default function HomeClient() {
+// interface Users {
+//   id: number;
+//   name: string;
+//   username: string;
+//   email: string;}
+
+export default function HomeClient(/* { users }: { users: Users[] } */) {
+  const [compteur, setCompteur] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCompteur((c) => c + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  // console.log(users);
+
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white p-6">
-      <Card
-        className="
-		  w-1/2
-          sm:w-3/4
-          md:w-1/2
-          lg:w-2/5
-          xl:w-1/3
-          rounded-3xl
-          shadow-xl
-          ring-1 ring-black/5
-          backdrop-blur-sm
-        "
-      >
-        <CardContent className="p-10">
-          <div className="text-center mb-8">
-            <Typography variant="h4" className="font-semibold tracking-tight">
-              YOZU Lite gros rat
-            </Typography>
-            <Typography
-              variant="body2"
-              className="text-gray-500 mt-2 leading-relaxed"
-            >
-              Projet Next.js propre & vide. <br /> Tu peux commencer à ajouter tes features.
-            </Typography>
-          </div>
-
-          <Divider className="mb-8" />
-
-          <Stack spacing={3}>
-            <TextField label="Votre nom" size="small" fullWidth />
-
-            <Button
-              variant="contained"
-              fullWidth
-              disableElevation
-              className="!rounded-xl !py-2.5 !normal-case"
-            >
-              Tester MUI
-            </Button>
-
-            <Button
-              variant="outlined"
-              fullWidth
-              className="!rounded-xl !py-2.5 !normal-case"
-            >
-              Bouton Tailwind + MUI
-            </Button>
-
-            <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 text-sm text-gray-600 shadow-sm">
-              Ce bloc est stylé avec{" "}
-              <span className="font-medium">Tailwind</span>.
-            </div>
-          </Stack>
-        </CardContent>
-      </Card>
-    </main>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column',
+      alignItems: 'center', 
+      gap: '20px',
+      padding: '50px'
+    }}>
+      <TextField 
+        label="Home Client Component" 
+        variant="outlined" 
+        style= { {color: 'black'} }
+      />
+      
+      <Button className="test" onClick={() => setCompteur(c => c + 100)}>
+        Like Button : {compteur}
+      </Button>
+       {/* {users.map(user => (
+        <div key={user.id}>
+          {user.name} ({user.username}) - {user.email}
+        </div>
+      ))} */}
+      {/* <div>Utilisateurs chargés : {users.length}</div> */}
+    </div>
   );
 }
