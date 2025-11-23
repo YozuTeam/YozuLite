@@ -4,46 +4,35 @@ import Button from "@/design/atoms/Button";
 import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
-// interface Users {
-//   id: number;
-//   name: string;
-//   username: string;
-//   email: string;}
-
-export default function HomeClient(/* { users }: { users: Users[] } */) {
+export default function HomeClient() {
   const [compteur, setCompteur] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCompteur((c) => c + 1);
+      setCompteur((c) => c + 100);
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-  // console.log(users);
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column',
-      alignItems: 'center', 
-      gap: '20px',
-      padding: '50px'
-    }}>
-      <TextField 
-        label="Home Client Component" 
-        variant="outlined" 
-        style= { {color: 'black'} }
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "20px",
+        padding: "50px",
+      }}
+    >
+      <TextField
+        label="Home Client Component"
+        variant="outlined"
+        style={{ color: "black" }}
       />
-      
-      <Button className="test" onClick={() => setCompteur(c => c + 100)}>
+
+      <Button className="test" onClick={() => setCompteur((c) => c + 100)}>
         Like Button : {compteur}
       </Button>
-       {/* {users.map(user => (
-        <div key={user.id}>
-          {user.name} ({user.username}) - {user.email}
-        </div>
-      ))} */}
-      {/* <div>Utilisateurs chargés : {users.length}</div> */}
     </div>
   );
 }
