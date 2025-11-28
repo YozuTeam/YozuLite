@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/design/atoms/Button";
-import { TextField } from "@mui/material";
+import { TextField, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 
 // interface Users {
@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 
 export default function HomeClient(/* { users }: { users: Users[] } */) {
   const [compteur, setCompteur] = useState(0);
+  const theme = useTheme();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,19 +23,20 @@ export default function HomeClient(/* { users }: { users: Users[] } */) {
   // console.log(users);
 
   return (
-    <div style={{ 
-      display: 'flex', 
+    <div style={{
+      display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center', 
+      alignItems: 'center',
       gap: '20px',
       padding: '50px'
+      color: theme.colors.button
     }}>
-      <TextField 
-        label="Home Client Component" 
-        variant="outlined" 
+      <TextField
+        label="Home Client Component"
+        variant="outlined"
         style= { {color: 'black'} }
       />
-      
+
       <Button className="test" onClick={() => setCompteur(c => c + 100)}>
         Like Button : {compteur}
       </Button>
