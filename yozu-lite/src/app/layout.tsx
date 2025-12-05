@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AppThemeProvider from "./_providers/theme";
-import ClientOnly from "./_providers/client-only";
+import AppThemeProvider from "./_providers/AppThemeProvider";
+import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "YOZU Lite",
   description: "Front clean & stable",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr">
       <body>
-        <ClientOnly>
-          <AppThemeProvider>{children}</AppThemeProvider>
-        </ClientOnly>
+        <AppThemeProvider>
+          {children}
+        </AppThemeProvider>
       </body>
     </html>
   );
