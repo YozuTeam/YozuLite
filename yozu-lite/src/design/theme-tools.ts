@@ -1,28 +1,28 @@
 export const tokens = {
-    // 🎨 Palette LIGHT
+
     light: {
-        background: "#ffffff",
-        surface: "#f5f5f5",
+        background: "#ffffff", // blanc
+        surface: "#f5f5f5", // gris clair
         primary: "#6366f1", // Indigo-500
-        text: "#000000",
+        text: "#000000", // noir
     },
 
-    // 🌙 Palette DARK
+
     dark: {
         background: "#020617", // Bleu nuit très foncé
-        surface: "#020617",
-        primary: "#6366f1",
-        text: "#e5e7eb",
+        surface: "#020617", // Bleu nuit très foncé
+        primary: "#6366f1", // Indigo-500
+        text: "#e5e7eb", // gris clair
     },
 
-    // 🧱 Radius globaux
+
     radius: {
         small: 6,
         medium: 12,
         large: 20,
     },
 
-    // ✍️ Typo globale
+
     typography: {
         fontFamily: "Poppins",
     },

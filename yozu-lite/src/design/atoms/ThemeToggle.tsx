@@ -1,7 +1,7 @@
 "use client";
 
 import IconButton from "@mui/material/IconButton";
-import { useColorMode } from "@/app/_providers/AppThemeProvider";
+import { useColorMode } from "@/app/_providers/ColorModeContext";
 
 export function ThemeToggle() {
     const { mode, toggleMode } = useColorMode();

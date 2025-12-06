@@ -4,6 +4,7 @@ import { Button } from "@/design/atoms/Button";
 import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/design/atoms/ThemeToggle";
+import { Box, Stack } from "@mui/material";
 
 
 // interface Users {
@@ -24,36 +25,32 @@ export default function HomeClient(/* { users }: { users: Users[] } */) {
   // console.log(users);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '20px',
-      padding: '50px'
-    }}>
-      <div style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "flex-end"
-      }}>
+    <Stack
+      alignItems="center"
+      spacing={2.5} // équivalent du gap 20px environ
+      sx={{ py: 6 }} // padding vertical
+    >
+      {/* Zone “header” avec le ThemeToggle aligné à droite */}
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
         <ThemeToggle />
-      </div>
+      </Box>
 
+      {/* Contenu principal */}
       <TextField
         label="Home Client Component"
         variant="outlined"
-        style={{ color: 'black' }}
       />
 
-      <Button className="test" onClick={() => setCompteur(c => c + 100)}>
+      <Button onClick={() => setCompteur((c) => c + 100)}>
         Like Button : {compteur}
       </Button>
-      {/* {users.map(user => (
-        <div key={user.id}>
-          {user.name} ({user.username}) - {user.email}
-        </div>
-      ))} */}
-      {/* <div>Utilisateurs chargés : {users.length}</div> */}
-    </div>
+    </Stack>
   );
+
 }

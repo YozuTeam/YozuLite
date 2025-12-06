@@ -1,38 +1,10 @@
 "use client";
 
-import {
-    ReactNode,
-    createContext,
-    useContext,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { tokens } from "@/design/tokens";
-
-// 1️⃣ Types
-type ColorMode = "light" | "dark";
-
-type ColorModeContextValue = {
-    mode: ColorMode;
-    toggleMode: () => void;
-};
-
-// 2️⃣ Contexte pour exposer le mode & la fonction de toggle
-export const ColorModeContext = createContext<ColorModeContextValue | undefined>(
-    undefined
-);
-
-// Petit hook pratique (pour ne pas répéter useContext partout)
-export function useColorMode() {
-    const ctx = useContext(ColorModeContext);
-    if (!ctx) {
-        throw new Error("useColorMode must be used within AppThemeProvider");
-    }
-    return ctx;
-}
+import { tokens } from "@/design/theme-tools";
+import { ColorMode, ColorModeContext } from "./ColorModeContext";
 
 // 3️⃣ Provider principal de l'app
 export default function AppThemeProvider({ children }: { children: ReactNode }) {

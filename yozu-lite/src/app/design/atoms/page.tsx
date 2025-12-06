@@ -1,53 +1,66 @@
-import type { ReactNode } from "react";
+import { Container, Stack, Box, Typography, Divider } from "@mui/material";
 import { Button } from "@/design/atoms/Button";
 import { ThemeToggle } from "@/design/atoms/ThemeToggle";
+import type { ReactNode } from "react";
+
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
     return (
-        <section className="space-y-3">
-            <h2 className="text-lg font-semibold">{title}</h2>
+        <Stack spacing={2}>
+            <Typography variant="h6" fontWeight="600">
+                {title}
+            </Typography>
             {children}
-        </section>
+            <Divider />
+        </Stack>
     );
 }
 
 export default function AtomsPreviewPage() {
     return (
-        <main className="min-h-screen px-8 py-10 flex flex-col gap-8">
-            {/* Header de la page de preview */}
-            <header className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Design system – Atoms</h1>
-                <ThemeToggle />
-            </header>
+        <Container maxWidth="md">
+            <Stack spacing={6} sx={{ py: 6 }}>
+                {/* Header de la page */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <Typography variant="h4" fontWeight="700">
+                        Design system – Atoms
+                    </Typography>
+                    <ThemeToggle />
+                </Box>
 
-            {/* Boutons */}
-            <Section title="Buttons – intents">
-                <div className="flex flex-wrap gap-4">
-                    <Button intent="primary">Primary</Button>
-                    <Button intent="secondary">Secondary</Button>
-                    <Button intent="ghost">Ghost</Button>
-                </div>
-            </Section>
+                {/* Buttons – intents */}
+                <Section title="Buttons – intents">
+                    <Stack direction="row" spacing={2} flexWrap="wrap">
+                        <Button intent="primary">Primary</Button>
+                        <Button intent="secondary">Secondary</Button>
+                        <Button intent="ghost">Ghost</Button>
+                    </Stack>
+                </Section>
 
-            <Section title="Buttons – sizes">
-                <div className="flex flex-wrap gap-4 items-center">
-                    <Button size="sm">Small</Button>
-                    <Button size="md">Medium</Button>
-                    <Button size="lg">Large</Button>
-                </div>
-            </Section>
+                {/* Buttons – sizes */}
+                <Section title="Buttons – sizes">
+                    <Stack direction="row" spacing={2} flexWrap="wrap">
+                        <Button size="sm">Small</Button>
+                        <Button size="md">Medium</Button>
+                        <Button size="lg">Large</Button>
+                    </Stack>
+                </Section>
 
-            <Section title="Buttons – states">
-                <div className="flex flex-wrap gap-4 items-center">
-                    <Button intent="primary">Default</Button>
-                    <Button intent="primary" disabled>
-                        Disabled
-                    </Button>
-                    <Button intent="primary" isLoading>
-                        Loading
-                    </Button>
-                </div>
-            </Section>
-        </main>
+                {/* Buttons – states */}
+                <Section title="Buttons – states">
+                    <Stack direction="row" spacing={2} flexWrap="wrap">
+                        <Button>Default</Button>
+                        <Button disabled>Disabled</Button>
+                        <Button isLoading>Loading</Button>
+                    </Stack>
+                </Section>
+            </Stack>
+        </Container>
     );
 }
