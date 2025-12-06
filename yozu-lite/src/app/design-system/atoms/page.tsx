@@ -1,6 +1,6 @@
 import { Container, Stack, Box, Typography, Divider } from "@mui/material";
-import { Button } from "@/design/atoms/Button";
-import { ThemeToggle } from "@/design/atoms/ThemeToggle";
+import { Button } from "@/design-system/atoms/Button";
+import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import type { ReactNode } from "react";
 
 

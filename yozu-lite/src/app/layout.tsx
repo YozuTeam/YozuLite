@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import AppThemeProvider from "./_providers/AppThemeProvider";
 import type { ReactNode } from "react";
+import ClientOnlyProvider from "./_providers/ClientOnlyProvider";
 
 export const metadata: Metadata = {
   title: "YOZU Lite",
@@ -12,9 +13,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr">
       <body>
-        <AppThemeProvider>
-          {children}
-        </AppThemeProvider>
+        <ClientOnlyProvider>
+          <AppThemeProvider>
+            {children}
+          </AppThemeProvider>
+        </ClientOnlyProvider>
       </body>
     </html>
   );

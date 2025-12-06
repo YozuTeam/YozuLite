@@ -1,19 +1,12 @@
 "use client";
 
-import { Button } from "@/design/atoms/Button";
+import { Button } from "@/design-system/atoms/Button";
 import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { ThemeToggle } from "@/design/atoms/ThemeToggle";
+import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import { Box, Stack } from "@mui/material";
 
-
-// interface Users {
-//   id: number;
-//   name: string;
-//   username: string;
-//   email: string;}
-
-export default function HomeClient(/* { users }: { users: Users[] } */) {
+export default function HomeClient() {
   const [compteur, setCompteur] = useState(0);
 
   useEffect(() => {
@@ -22,15 +15,13 @@ export default function HomeClient(/* { users }: { users: Users[] } */) {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-  // console.log(users);
 
   return (
     <Stack
       alignItems="center"
-      spacing={2.5} // équivalent du gap 20px environ
-      sx={{ py: 6 }} // padding vertical
+      spacing={2.5}
+      sx={{ py: 6 }}
     >
-      {/* Zone “header” avec le ThemeToggle aligné à droite */}
       <Box
         sx={{
           width: "100%",
@@ -41,7 +32,6 @@ export default function HomeClient(/* { users }: { users: Users[] } */) {
         <ThemeToggle />
       </Box>
 
-      {/* Contenu principal */}
       <TextField
         label="Home Client Component"
         variant="outlined"
