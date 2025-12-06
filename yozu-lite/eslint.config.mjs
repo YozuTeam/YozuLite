@@ -16,7 +16,7 @@ const eslintConfig = defineConfig([
           varsIgnorePattern: "^_",
         },
       ],
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "error",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "@typescript-eslint/no-non-null-assertion": "warn",
 
@@ -44,6 +44,8 @@ const eslintConfig = defineConfig([
     "*.config.{js,mjs,ts}",
     "coverage/**",
     ".jest/**",
+    "scripts/**",
+    "**/*.css",
   ]),
   {
     // Exception for theme.tsx - useEffect pattern is valid for hydration fix

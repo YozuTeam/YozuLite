@@ -1,35 +1,34 @@
 "use client";
 
+import { NAV_THEME } from "@/theme/constant";
+import { useColorTheme } from "@/theme/useColorTheme";
 import MuiButton, { ButtonProps as MuiButtonProps } from "@mui/material/Button";
 
 type ButtonSize = "sm" | "md" | "lg";
-type ButtonIntent = "primary" | "secondary" | "ghost";
+export type ThemeColor = keyof typeof NAV_THEME.light;
 
 export type ButtonProps = {
   size?: ButtonSize;
-  intent?: ButtonIntent;
+  themeColor?: ThemeColor;
   isLoading?: boolean;
   className?: string;
 } & Omit<MuiButtonProps, "size" | "color" | "variant">;
 
 export function Button({
   size = "md",
-  intent = "primary",
+  themeColor = "primary",
   isLoading = false,
   className,
   children,
   disabled,
+  style,
   ...rest
 }: ButtonProps) {
-  // 1️⃣ Mapping taille → taille MUI
-  const muiSize =
-    size === "sm" ? "small" : size === "lg" ? "large" : "medium";
+  const { isDarkColorScheme } = useColorTheme();
+  const colors = isDarkColorScheme ? NAV_THEME.dark : NAV_THEME.light;
 
-  // 2️⃣ Mapping intent → variant / color MUI
-  const color = intent === "primary" ? "primary" : "inherit";
-  const variant = intent === "ghost" ? "text" : "contained";
+  const muiSize = size === "sm" ? "small" : size === "lg" ? "large" : "medium";
 
-  // 3️⃣ Classes Tailwind pour la taille / look
   const sizeClasses =
     size === "sm"
       ? "px-3 py-1 text-sm"
@@ -37,24 +36,40 @@ export function Button({
         ? "px-5 py-3 text-base"
         : "px-4 py-2 text-sm";
 
-  const baseClasses =
-    "rounded-xl font-medium normal-case transition-all";
+  const baseClasses = "rounded-xl font-medium normal-case transition-all";
 
-  const combinedClassName = [
-    baseClasses,
-    sizeClasses,
-    className,
-  ]
+  const backgroundColor = colors[themeColor];
+
+  let color = colors.primaryForeground;
+
+  const foregroundKey = `${themeColor}Foreground` as keyof typeof colors;
+
+  if (colors[foregroundKey]) {
+    color = colors[foregroundKey];
+  } else if (themeColor === "buttonsPrimary") {
+    color = colors.primaryForeground;
+  } else if (themeColor === "buttonsSecondary") {
+    color = colors.secondaryForeground;
+  } else if (themeColor === "background" || themeColor === "card") {
+    color = colors.text;
+  }
+
+  const dynamicStyle = {
+    backgroundColor,
+    color,
+    ...style,
+  };
+
+  const combinedClassName = [baseClasses, sizeClasses, className]
     .filter(Boolean)
     .join(" ");
 
   return (
     <MuiButton
       size={muiSize}
-      variant={variant}
-      color={color}
       disabled={disabled || isLoading}
       className={combinedClassName}
+      style={dynamicStyle}
       {...rest}
     >
       {isLoading ? "Chargement..." : children}
