@@ -1,13 +1,13 @@
 "use client";
 
 import { NAV_THEME } from "@/theme/constant";
-import { useColorTheme } from "@/theme/useColorTheme";
 import MuiButton, { ButtonProps as MuiButtonProps } from "@mui/material/Button";
 
 type ButtonSize = "sm" | "md" | "lg";
 export type ThemeColor = keyof typeof NAV_THEME.light;
 
 export type ButtonProps = {
+  colors: typeof NAV_THEME.light;
   size?: ButtonSize;
   themeColor?: ThemeColor;
   isLoading?: boolean;
@@ -15,6 +15,7 @@ export type ButtonProps = {
 } & Omit<MuiButtonProps, "size" | "color" | "variant">;
 
 export function Button({
+  colors,
   size = "md",
   themeColor = "primary",
   isLoading = false,
@@ -24,9 +25,6 @@ export function Button({
   style,
   ...rest
 }: ButtonProps) {
-  const { isDarkColorScheme } = useColorTheme();
-  const colors = isDarkColorScheme ? NAV_THEME.dark : NAV_THEME.light;
-
   const muiSize = size === "sm" ? "small" : size === "lg" ? "large" : "medium";
 
   const sizeClasses =

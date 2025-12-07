@@ -41,17 +41,18 @@ export default function HomeClient() {
         <ThemeToggle />
       </Box>
 
-      <Typography sx={{ color: colors.text }}>
+      <Typography sx={{ color: colors.input }}>
         Current Theme: {colorScheme}
       </Typography>
 
-      <Button themeColor="primary" onClick={() => setCompteur((c) => c + 100)}>
+      <Button themeColor="primary" onClick={() => setCompteur((c) => c + 100)} colors={colors}>
         Like Button : {compteur}
       </Button>
 
       <Button
         themeColor="secondary"
         onClick={() => setCompteur((c) => c + 100)}
+        colors={colors}
       >
         Secondary Button
       </Button>
@@ -59,8 +60,8 @@ export default function HomeClient() {
       <Button
         themeColor="notification"
         onClick={() => setCompteur((c) => c + 100)}
+        colors={colors}
       >
-
         Destructive Button
       </Button>
     </Stack>

@@ -52,25 +52,25 @@ export default function AtomsPreviewPage() {
 
         <Section title="Buttons – colors" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
-            <Button themeColor="primary">Primary</Button>
-            <Button themeColor="secondary">Secondary</Button>
-            <Button themeColor="muted">Muted</Button>
+            <Button themeColor="primary" colors={colors}>Primary</Button>
+            <Button themeColor="secondary" colors={colors}>Secondary</Button>
+            <Button themeColor="muted" colors={colors}>Muted</Button>
           </Stack>
         </Section>
 
         <Section title="Buttons – sizes" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
-            <Button size="sm">Small</Button>
-            <Button size="md">Medium</Button>
-            <Button size="lg">Large</Button>
+            <Button size="sm" colors={colors}>Small</Button>
+            <Button size="md" colors={colors}>Medium</Button>
+            <Button size="lg" colors={colors}>Large</Button>
           </Stack>
         </Section>
 
         <Section title="Buttons – states" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
-            <Button>Default</Button>
-            <Button disabled>Disabled</Button>
-            <Button isLoading>Loading</Button>
+            <Button colors={colors}>Default</Button>
+            <Button disabled colors={colors}>Disabled</Button>
+            <Button isLoading colors={colors}>Loading</Button>
           </Stack>
         </Section>
       </Stack>

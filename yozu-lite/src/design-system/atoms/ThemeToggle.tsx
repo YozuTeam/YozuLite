@@ -13,7 +13,7 @@ export function ThemeToggle() {
       onClick={toggleColorScheme}
       className="inline-flex items-center justify-center rounded-md p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
       style={{
-        color: colors.text,
+        color: colors.primary,
       }}
     >
       {isDarkColorScheme ? (
