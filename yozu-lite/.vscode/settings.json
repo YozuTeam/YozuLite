@@ -1,0 +1,47 @@
+{
+  "editor.colorDecorators": true,
+  "editor.defaultColorDecorators": "auto",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "color-highlight.markerType": "background",
+  "colorize.include": [
+    "**/*.css",
+    "**/*.scss",
+    "**/*.sass",
+    "**/*.less",
+    "**/*.styl",
+    "**/*.xml",
+    "**/*.json",
+    "**/*.js",
+    "**/*.ts",
+    "**/*.jsx",
+    "**/*.tsx"
+  ],
+  "colorize.languages": [
+    "typescript",
+    "typescriptreact",
+    "javascript",
+    "javascriptreact",
+    "css",
+    "scss",
+    "json"
+  ],
+  "colorize.colorized_colors": ["HEXA", "RGB", "HSL", "BROWSER_COLORS"],
+  "colorize.colorized_variables": ["CSS", "SASS", "LESS"],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.requireConfig": true
+}

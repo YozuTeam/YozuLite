@@ -1,11 +1,66 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "../../tailwind.config.ts";
 
-:root {
-  color-scheme: light dark;
+@layer base {
+  :root {
+    --background: 0, 0%, 100%;
+    --border: 240, 5%, 84%;
+    --card: 0, 0%, 100%;
+    --destructive: 0, 72%, 51%;
+    --primary: 263, 67%, 51%;
+    --foreground: 222, 84%, 5%;
+    --primary-foreground: 0, 0%, 98%;
+    --secondary: 224, 76%, 70%;
+    --secondary-foreground: 222, 84%, 5%;
+    --accent: 142, 71%, 45%;
+    --accent-foreground: 0, 0%, 98%;
+    --success: 142, 71%, 45%;
+    --warning: 38, 92%, 50%;
+    --card-foreground: 222, 84%, 5%;
+    --popover: 0, 0%, 100%;
+    --popover-foreground: 222, 84%, 5%;
+    --ring: 263, 67%, 51%;
+    --muted: 240, 5%, 64%;
+    --muted-foreground: 240, 4%, 46%;
+    --input: 240, 5%, 84%;
+    --buttons-primary: 263, 67%, 51%;
+    --buttons-secondary: 224, 76%, 70%;
+    --reversed: 0,0%,0%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222, 84%, 5%;
+    --border: 240, 5%, 26%;
+    --card: 222, 84%, 7%;
+    --destructive: 0, 73%, 63%;
+    --primary: 224, 76%, 70%;
+    --foreground: 210, 20%, 98%;
+    --primary-foreground: 222, 84%, 5%;
+    --secondary: 263, 67%, 51%;
+    --secondary-foreground: 210, 20%, 98%;
+    --accent: 142, 71%, 45%;
+    --accent-foreground: 222, 84%, 5%;
+    --success: 142, 76%, 50%;
+    --warning: 38, 100%, 60%;
+    --card-foreground: 210, 20%, 98%;
+    --popover: 222, 84%, 7%;
+    --popover-foreground: 210, 20%, 98%;
+    --ring: 224, 76%, 70%;
+    --muted: 240, 5%, 44%;
+    --muted-foreground: 240, 5%, 64%;
+    --input: 240, 5%, 26%;
+    --buttons-primary: 224, 76%, 70%;
+    --buttons-secondary: 263, 67%, 51%;
+    --reversed: 0,0%,100%;
+  }
 }
 
-html, body, #__next {
-  height: 100%;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

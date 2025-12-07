@@ -9,5 +9,5 @@ import HomeClient from "./_components/HomeClient";
 export default async function Page() {
   // const users = await getUsers();
 
-  return <HomeClient />;
+  return <HomeClient/>;
 }
