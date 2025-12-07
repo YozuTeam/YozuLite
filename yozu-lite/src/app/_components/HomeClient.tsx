@@ -60,6 +60,7 @@ export default function HomeClient() {
         themeColor="notification"
         onClick={() => setCompteur((c) => c + 100)}
       >
+
         Destructive Button
       </Button>
     </Stack>
