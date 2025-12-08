@@ -1,11 +1,14 @@
 "use client";
 
 import { Button } from "@/design-system/atoms/Button";
+import { TextField } from "@/design-system/atoms/TextField";
 import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container, Divider, Stack, Typography } from "@mui/material";
 import type { ReactNode } from "react";
+
+
 
 function Section({
   title,
@@ -52,27 +55,106 @@ export default function AtomsPreviewPage() {
 
         <Section title="Buttons – colors" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
-            <Button themeColor="primary" colors={colors}>Primary</Button>
-            <Button themeColor="secondary" colors={colors}>Secondary</Button>
-            <Button themeColor="muted" colors={colors}>Muted</Button>
+            <Button colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.buttonsPrimary,
+            }}>Primary</Button>
+            <Button colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.buttonsSecondary,
+            }}>Secondary</Button>
+            <Button colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.muted,
+            }}>Muted</Button>
           </Stack>
         </Section>
 
         <Section title="Buttons – sizes" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
-            <Button size="sm" colors={colors}>Small</Button>
-            <Button size="md" colors={colors}>Medium</Button>
-            <Button size="lg" colors={colors}>Large</Button>
+            <Button size="small" colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.buttonsSecondary,
+            }}>Small</Button>
+            <Button size="medium" colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.buttonsSecondary,
+            }}>Medium</Button>
+            <Button size="large" colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.buttonsSecondary,
+            }}>Large</Button>
           </Stack>
         </Section>
 
         <Section title="Buttons – states" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
-            <Button colors={colors}>Default</Button>
-            <Button disabled colors={colors}>Disabled</Button>
-            <Button isLoading colors={colors}>Loading</Button>
+            <Button colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.primary,
+            }}>Default</Button>
+            <Button disabled colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.primary,
+            }}>Disabled</Button>
+            <Button isLoading colors={{
+              text: colors.primaryForeground,
+              border: colors.border,
+              background: colors.primary,
+            }}>Loading</Button>
           </Stack>
         </Section>
+
+        <Section title="TextFields" colors={colors}>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            <TextField
+              colors={colors}
+              label="Normal"
+              placeholder="Votre nom"
+            />
+            <TextField
+              colors={colors}
+              label="Required"
+              required
+              placeholder="Obligatoire"
+            />
+            <TextField
+              colors={colors}
+              label="Email"
+              type="email"
+              placeholder="you@example.com"
+            />
+            <TextField
+              colors={colors}
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+            />
+            <TextField
+              colors={colors}
+              label="Error"
+              error
+              helperText="Invalid value"
+              placeholder="Erreur"
+            />
+            <TextField
+              colors={colors}
+              label="Disabled"
+              disabled
+              placeholder="Désactivé"
+            />
+          </Stack>
+        </Section>
+
+
       </Stack>
     </Container>
   );
