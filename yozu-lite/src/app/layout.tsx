@@ -1,3 +1,4 @@
+import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import ClientOnlyProvider from "./_providers/ClientOnlyProvider";
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
+            <ThemeToggle />
             {children}
           </ThemeProvider>
         </ClientOnlyProvider>

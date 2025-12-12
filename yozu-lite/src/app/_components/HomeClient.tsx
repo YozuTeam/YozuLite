@@ -45,22 +45,32 @@ export default function HomeClient() {
         Current Theme: {colorScheme}
       </Typography>
 
-      <Button themeColor="primary" onClick={() => setCompteur((c) => c + 100)} colors={colors}>
+      <Button onClick={() => setCompteur((c) => c + 100)} colors={{
+        text: colors.text,
+        border: colors.border,
+        background: colors.primary,
+      }}>
         Like Button : {compteur}
       </Button>
 
       <Button
-        themeColor="secondary"
         onClick={() => setCompteur((c) => c + 100)}
-        colors={colors}
+        colors={{
+          text: colors.text,
+          border: colors.border,
+          background: colors.secondary,
+        }}
       >
         Secondary Button
       </Button>
 
       <Button
-        themeColor="notification"
         onClick={() => setCompteur((c) => c + 100)}
-        colors={colors}
+        colors={{
+          text: colors.text,
+          border: colors.border,
+          background: colors.warning,
+        }}
       >
         Destructive Button
       </Button>
