@@ -31,9 +31,8 @@ export function EmailField({
     const newValue = e.target.value;
     setValue(newValue);
 
-    if (newValue.length === 0) {
-      setError(required ? "Ce champ est requis" : null);
-    } else if (!emailRegex.test(newValue)) {
+    // Valider uniquement le format de l'email si le champ n'est pas vide
+    if (newValue.length > 0 && !emailRegex.test(newValue)) {
       setError("Adresse email invalide");
     } else {
       setError(null);

@@ -23,6 +23,7 @@ const config: Config = {
         "!src/**/*.d.ts",
         "!src/**/*.stories.{js,jsx,ts,tsx}",
         "!src/**/__tests__/**",
+        "!src/app/design-system/**",
     ],
 };
 
