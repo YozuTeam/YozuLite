@@ -11,7 +11,7 @@ describe("LoginPage UI", () => {
     render(<LoginPage />);
   });
 
-  it("affiche les champs de base (email + mot de passe + bouton)", () => {
+  it("displays the basic fields (email + password + button)", () => {
 
     expect(screen.getByPlaceholderText(/email@exemple.com/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Votre mot de passe/i)).toBeInTheDocument();
@@ -21,7 +21,7 @@ describe("LoginPage UI", () => {
     ).toBeInTheDocument();
   });
 
-  it("affiche une erreur si l'email n'est pas valide", async () => {
+  it("displays an error if the email is not valid", async () => {
     const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
 
     await user.type(emailInput, "pas-un-mail");
@@ -31,7 +31,7 @@ describe("LoginPage UI", () => {
     ).toBeInTheDocument();
   });
 
-  it("accepte un email valide sans afficher d'erreur", async () => {
+  it("accepts a valid email without displaying an error", async () => {
 
     const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
 
@@ -41,14 +41,14 @@ describe("LoginPage UI", () => {
     expect(screen.queryByText(/Ce champ est requis/i)).not.toBeInTheDocument();
   });
 
-  it("contient un lien vers la page d'inscription", () => {
+  it("contains a link to the registration page", () => {
     const link = screen.getByRole("link", { name: /Créer un compte/i });
 
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/register");
   });
 
-  it("soumet le formulaire et log l'email et le mot de passe", async () => {
+  it("submits the form and logs the email and password", async () => {
     const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
 
     const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
@@ -68,7 +68,7 @@ describe("LoginPage UI", () => {
 
   });
 
-  it("affiche une erreur si les champs sont vides", async () => {
+  it("displays an error if the fields are empty", async () => {
 
     const button = screen.getByRole("button", { name: /Se connecter/i });
     await user.click(button);

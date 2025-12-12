@@ -24,7 +24,26 @@ const config: Config = {
         "!src/**/*.stories.{js,jsx,ts,tsx}",
         "!src/**/__tests__/**",
         "!src/app/design-system/**",
+        "!src/app/layout.tsx",  
+        "!src/app/_providers/*",
+        "!src/app/_components/*",
+        "!src/app/_hooks/**",
+        "!src/app/_utils/**",
+        "!src/app/_services/**",
+        "!src/app/_store/**",
+        "!src/app/_types/**",
+        "!src/app/_constants/**",
+        "!src/app/_styles/**",
+        "!src/app/page.tsx",
     ],
+    coverageThreshold: {
+        global: {
+            branches: 95,
+            functions: 95,
+            lines: 95,
+            statements: 95,
+        },
+    },
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

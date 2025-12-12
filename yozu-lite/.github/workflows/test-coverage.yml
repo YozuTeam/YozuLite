@@ -1,0 +1,38 @@
+name: Test Coverage
+
+on:
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
+
+jobs:
+    coverage:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+                  cache: "npm"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run tests with coverage
+              run: npm run test:coverage
+
+            - name: Upload coverage reports to Codecov
+              uses: codecov/codecov-action@v4
+              if: always()
+              with:
+                  files: ./coverage/lcov.info
+                  fail_ci_if_error: false
+                  # Token is optional - only needed if you want to use Codecov service
+                  # You can add CODECOV_TOKEN in your repository secrets if needed
+                  token: ${{ secrets.CODECOV_TOKEN }}
+              continue-on-error: true
