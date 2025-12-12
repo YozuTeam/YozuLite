@@ -6,9 +6,8 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 
 import { Button } from "@/design-system/atoms/Button";
-import { TextField } from "@/design-system/atoms/TextField";
-import { FormField } from "@/design-system/molecule/FormField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
+import { EmailField } from "@/design-system/molecule/EmailField";
 
 export default function LoginPage() {
   const { colorScheme } = useColorTheme();
@@ -69,17 +68,13 @@ export default function LoginPage() {
             </Typography>
           </Stack>
 
-          {/* Form Fields */}
           <Stack spacing={3}>
-            <FormField label="Email" required colors={colors}>
-              <TextField
-                colors={colors}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="vous@exemple.com"
-              />
-            </FormField>
+            <EmailField 
+              label="Email" 
+              required 
+              colors={colors}
+              onChange={(value) => setEmail(value)}
+            />
 
             <PasswordField
               label="Mot de passe"
@@ -88,7 +83,6 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {/* Submit Button */}
             <Button
               colors={{
                 text: colors.primaryForeground,
@@ -108,7 +102,6 @@ export default function LoginPage() {
             </Button>
           </Stack>
 
-          {/* Forgot Password */}
           <Box sx={{ mt: 3, textAlign: "center" }}>
             <Typography
               component="a"
@@ -127,7 +120,6 @@ export default function LoginPage() {
             </Typography>
           </Box>
 
-          {/* Divider */}
           <Box
             sx={{
               display: "flex",
