@@ -5,7 +5,7 @@ import { useColorTheme } from "@/theme/useColorTheme";
 import { Container, Stack } from "@mui/material";
 import { useState } from "react";
 
-import { TextField } from "@/design-system/atoms/TextField";
+import TextField from "@/design-system/atoms/TextField";
 import { FormField } from "@/design-system/molecule/FormField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { Role, RoleSelector } from "@/design-system/molecule/RoleSelector";

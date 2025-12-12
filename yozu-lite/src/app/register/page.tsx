@@ -6,10 +6,9 @@ import { Box, Container, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 
 import { Button } from "@/design-system/atoms/Button";
-import { TextField } from "@/design-system/atoms/TextField";
-import { FormField } from "@/design-system/molecule/FormField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { Role, RoleSelector } from "@/design-system/molecule/RoleSelector";
+import { EmailField } from "@/design-system/molecule/EmailField";
 
 export default function RegisterPage() {
   const { colorScheme } = useColorTheme();
@@ -22,7 +21,7 @@ export default function RegisterPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log({ email, password, role });
-    // Logique d'inscription ici
+   
   };
 
   return (
@@ -71,15 +70,12 @@ export default function RegisterPage() {
           </Stack>
 
           <Stack spacing={3}>
-            <FormField label="Email" required colors={colors}>
-              <TextField
-                colors={colors}
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="vous@exemple.com"
-              />
-            </FormField>
+            <EmailField 
+                          label="Email" 
+                          required 
+                          colors={colors}
+                          onChange={(value) => setEmail(value)}
+                        />
 
             <PasswordField
               label="Mot de passe"
