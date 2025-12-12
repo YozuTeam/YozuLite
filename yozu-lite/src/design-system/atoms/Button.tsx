@@ -3,9 +3,9 @@
 import MuiButton, { ButtonProps as MuiButtonProps } from "@mui/material/Button";
 
 export interface ButtonColors {
-  text: string;
-  border: string;
-  background: string;
+  textColor: string;
+  borderColor: string;
+  backgroundColor: string;
 }
 
 export type ButtonProps = {
@@ -18,9 +18,9 @@ export function Button({ colors, size="medium", isLoading=false, ...rest }: Butt
   return (
     <MuiButton
       style={{
-        backgroundColor: colors.background,
-        color: colors.text,
-        borderColor: colors.border,
+        backgroundColor: colors.backgroundColor,
+        color: colors.textColor,
+        borderColor: colors.borderColor,
         borderWidth: 1,
         borderStyle: "solid",
       }}

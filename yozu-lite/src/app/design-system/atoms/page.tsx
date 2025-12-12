@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/design-system/atoms/Button";
+import { Icon } from "@/design-system/atoms/Icon";
 import  TextField  from "@/design-system/atoms/TextField";
 import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container, Divider, Stack, Typography } from "@mui/material";
 import type { ReactNode } from "react";
-
-
+import Text from "@/design-system/atoms/Text";  
 
 function Section({
   title,
@@ -56,19 +56,19 @@ export default function AtomsPreviewPage() {
         <Section title="Buttons – colors" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
             <Button colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.buttonsPrimary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.buttonsPrimary,
             }}>Primary</Button>
             <Button colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.buttonsSecondary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.buttonsSecondary,
             }}>Secondary</Button>
             <Button colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.muted,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.muted,
             }}>Muted</Button>
           </Stack>
         </Section>
@@ -76,19 +76,19 @@ export default function AtomsPreviewPage() {
         <Section title="Buttons – sizes" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
             <Button size="small" colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.buttonsSecondary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.buttonsSecondary,
             }}>Small</Button>
             <Button size="medium" colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.buttonsSecondary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.buttonsSecondary,
             }}>Medium</Button>
             <Button size="large" colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.buttonsSecondary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.buttonsSecondary,
             }}>Large</Button>
           </Stack>
         </Section>
@@ -96,19 +96,19 @@ export default function AtomsPreviewPage() {
         <Section title="Buttons – states" colors={colors}>
           <Stack direction="row" spacing={2} flexWrap="wrap">
             <Button colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.primary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.primary,
             }}>Default</Button>
             <Button disabled colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.primary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.primary,
             }}>Disabled</Button>
             <Button isLoading colors={{
-              text: colors.primaryForeground,
-              border: colors.border,
-              background: colors.primary,
+              textColor: colors.primaryForeground,
+              borderColor: colors.border,
+              backgroundColor: colors.primary,
             }}>Loading</Button>
           </Stack>
         </Section>
@@ -154,7 +154,42 @@ export default function AtomsPreviewPage() {
           </Stack>
         </Section>
 
+        <Section title="Icons" colors={colors}>
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            <Icon colors={{iconColor: colors.primary}}>
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </Icon>
+            <Icon colors={{iconColor: colors.secondary}}>
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </Icon>
+            <Icon colors={{iconColor: colors.accent}}>
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </Icon>
+            <Icon colors={{iconColor: colors.success}}>
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </Icon>
+            <Icon colors={{iconColor: colors.warning}}>
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </Icon>
+            <Icon colors={{iconColor: colors.notification}}>
+              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+            </Icon>
+          </Stack>
+        </Section>
 
+        <Section title="Text" colors={colors}>
+          <Stack direction="column" spacing={2} flexWrap="wrap">
+            <Text variant="h1">Alan</Text>
+            <Text variant="h2">Alan</Text>
+            <Text variant="h3">Alan</Text>
+            <Text variant="h4">Alan</Text>
+
+            <Text variant="subtitle1">Alan</Text>
+            <Text variant="subtitle2">Alan</Text>
+            <Text variant="body1">Alan</Text>
+            <Text variant="body2">Alan</Text>
+          </Stack>
+        </Section>         
       </Stack>
     </Container>
   );

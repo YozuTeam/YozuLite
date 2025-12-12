@@ -38,9 +38,9 @@ export function RoleSelector({
       <Stack direction="row" spacing={2}>
         <Button
           colors={{
-            text: colors.primaryForeground,
-            border: colors.background,
-            background: isStudent ? colors.primary : colors.muted,
+            textColor: colors.primaryForeground,
+            borderColor: colors.background,
+            backgroundColor: isStudent ? colors.primary : colors.muted,
           }}
           onClick={() => onChange("student")}
         >
@@ -48,9 +48,9 @@ export function RoleSelector({
         </Button>
         <Button
           colors={{
-            text: colors.primaryForeground,
-            border: colors.background,
-            background: isCompany ? colors.primary : colors.muted,
+            textColor: colors.primaryForeground,
+            borderColor: colors.background,
+            backgroundColor: isCompany ? colors.primary : colors.muted,
           }}
           onClick={() => onChange("company")}
         >
