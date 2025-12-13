@@ -1,0 +1,129 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import RegisterPage from "@/app/register/page";
+import { Button } from "@/design-system/atoms/Button";
+
+describe("RegisterPage UI", () => {
+  let user: ReturnType<typeof userEvent.setup>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    user = userEvent.setup();
+    render(<RegisterPage />);
+  });
+
+  it("displays the main fields (email + password + button)", () => {
+    expect(screen.getByPlaceholderText(/email@exemple.com/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Créez un mot de passe/i)).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("button", { name: /S'inscrire/i })
+    ).toBeInTheDocument();
+  });
+
+  it("displays the RoleSelector with both options", () => {
+    expect(screen.getByRole("button", { name: /Student/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Company/i })).toBeInTheDocument();
+  });
+
+  it("displays an error if the email is invalid", async () => {
+    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
+
+    await user.type(emailInput, "pas-un-mail");
+
+    expect(
+      await screen.findByText(/Adresse email invalide/i)
+    ).toBeInTheDocument();
+  });
+
+  it("accepts a valid email without displaying an error", async () => {
+    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
+
+    await user.type(emailInput, "test@example.com");
+
+    expect(screen.queryByText(/Adresse email invalide/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Ce champ est requis/i)).not.toBeInTheDocument();
+  });
+
+  it("allows changing role via the RoleSelector", async () => {
+    const companyButton = screen.getByRole("button", { name: /Company/i });
+
+    await user.click(companyButton);
+    expect(companyButton).toBeInTheDocument();
+  });
+
+  it("contains a link to the login page", () => {
+    const loginLink = screen.getByRole("link", { name: /Se connecter/i });
+
+    expect(loginLink).toBeInTheDocument();
+    expect(loginLink).toHaveAttribute("href", "/login");
+  });
+
+  it("submits the form and logs the email, password and role", async () => {
+    const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
+
+    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
+    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
+
+    await user.type(emailInput, "test@example.com");
+    await user.type(passwordInput, "MonMotDePasse123");
+
+    const button = screen.getByRole("button", { name: /S'inscrire/i });
+    await user.click(button);
+
+    expect(consoleLogSpy).toHaveBeenCalledWith({
+      email: "test@example.com",
+      password: "MonMotDePasse123",
+      role: "student",
+    });
+  });
+
+  it("displays an error if the fields are empty", async () => {
+    const button = screen.getByRole("button", { name: /S'inscrire/i });
+    await user.click(button);
+
+    expect(screen.getByText(/Veuillez remplir tous les champs/i)).toBeInTheDocument();
+    
+    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
+    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
+
+    await user.type(emailInput, "test@example.com");
+    await user.type(passwordInput, "MonMotDePasse123");
+
+    expect(screen.queryByText(/Veuillez remplir tous les champs/i)).not.toBeInTheDocument();
+  });
+  it("toggles password visibility", async () => {
+    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
+    expect(passwordInput).toHaveAttribute("type", "password");
+
+    const buttons = screen.getAllByRole("button");
+    const toggleButton = buttons.find(
+      (btn) => !btn.textContent?.match(/S'inscrire|Student|Company/i)
+    );
+
+    if (!toggleButton) {
+      throw new Error("Password visibility toggle button not found");
+    }
+
+    await user.click(toggleButton);
+    expect(passwordInput).toHaveAttribute("type", "text");
+
+    await user.click(toggleButton);
+    expect(passwordInput).toHaveAttribute("type", "password");
+  });
+});
+
+describe("Button Component Standalone", () => {
+  it("renders loading state correctly", () => {
+    render(
+      <Button
+        isLoading={true}
+        colors={{ text: "white", background: "blue", border: "blue" }}
+      >
+        CTA Button
+      </Button>
+    );
+    expect(screen.getByText("Chargement...")).toBeInTheDocument();
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
+});

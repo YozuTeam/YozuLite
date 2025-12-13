@@ -15,13 +15,26 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (email==="" || password==="") {
+      setError("Veuillez remplir tous les champs");
+      return;
+    }
     console.log({ email, password });
+    setError(null);
     // Logique de connexion ici
   };
-
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setError(null);
+  };
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    setError(null);
+  };
   return (
     <Box
       sx={{
@@ -73,16 +86,17 @@ export default function LoginPage() {
               label="Email" 
               required 
               colors={colors}
-              onChange={(value) => setEmail(value)}
+              onChange={(value) => handleEmailChange(value)}
+            
             />
 
             <PasswordField
               label="Mot de passe"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => handlePasswordChange(e.target.value)}
             />
-
+            {error && <Typography style={{ color: colors.notification }}>{error}</Typography>}
             <Button
               colors={{
                 text: colors.primaryForeground,

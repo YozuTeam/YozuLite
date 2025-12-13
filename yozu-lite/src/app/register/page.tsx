@@ -17,11 +17,27 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<Role>("student");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (email === "" || password === "") {
+      setError("Veuillez remplir tous les champs");
+      return;
+    }
     console.log({ email, password, role });
-   
+    setError(null);
+    // Logique d'inscription ici
+  };
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    setError(null);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    setError(null);
   };
 
   return (
@@ -71,17 +87,17 @@ export default function RegisterPage() {
 
           <Stack spacing={3}>
             <EmailField 
-                          label="Email" 
-                          required 
-                          colors={colors}
-                          onChange={(value) => setEmail(value)}
-                        />
+              label="Email" 
+              required 
+              colors={colors}
+              onChange={(value) => handleEmailChange(value)}
+            />
 
             <PasswordField
               label="Mot de passe"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => handlePasswordChange(e.target.value)}
               placeholder="Créez un mot de passe"
             />
 
@@ -92,9 +108,11 @@ export default function RegisterPage() {
               hint="Choisissez votre rôle pour adapter l'expérience"
             />
 
+            {error && <Typography style={{ color: colors.notification }}>{error}</Typography>}
+
             <Button
               colors={{
-                text: colors.text,
+                text: colors.primaryForeground,
                 border: colors.border,
                 background: colors.primary,
               }}
@@ -180,7 +198,7 @@ export default function RegisterPage() {
             </Typography>
             <Button
               colors={{
-                text: colors.text,
+                text: colors.primaryForeground,
                 border: colors.border,
                 background: colors.primary,
               }}
