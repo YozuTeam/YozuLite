@@ -46,9 +46,9 @@ export default function HomeClient() {
       </Typography>
 
       <Button onClick={() => setCompteur((c) => c + 100)} colors={{
-        text: colors.text,
-        border: colors.border,
-        background: colors.primary,
+        textColor: colors.text,
+        borderColor: colors.border,
+        backgroundColor: colors.primary,
       }}>
         Like Button : {compteur}
       </Button>
@@ -56,9 +56,9 @@ export default function HomeClient() {
       <Button
         onClick={() => setCompteur((c) => c + 100)}
         colors={{
-          text: colors.text,
-          border: colors.border,
-          background: colors.secondary,
+          textColor: colors.text,
+          borderColor: colors.border,
+          backgroundColor: colors.secondary,
         }}
       >
         Secondary Button
@@ -67,9 +67,9 @@ export default function HomeClient() {
       <Button
         onClick={() => setCompteur((c) => c + 100)}
         colors={{
-          text: colors.text,
-          border: colors.border,
-          background: colors.warning,
+          textColor: colors.text,
+          borderColor: colors.border,
+          backgroundColor: colors.warning,
         }}
       >
         Destructive Button
