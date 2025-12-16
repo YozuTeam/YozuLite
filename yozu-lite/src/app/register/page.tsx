@@ -112,9 +112,9 @@ export default function RegisterPage() {
 
             <Button
               colors={{
-                text: colors.primaryForeground,
-                border: colors.border,
-                background: colors.primary,
+                textColor: colors.primaryForeground,
+                borderColor: colors.border,
+                backgroundColor: colors.primary,
               }}
               size="large"
               type="submit"
@@ -198,9 +198,9 @@ export default function RegisterPage() {
             </Typography>
             <Button
               colors={{
-                text: colors.primaryForeground,
-                border: colors.border,
-                background: colors.primary,
+                textColor: colors.primaryForeground,
+                borderColor: colors.border,
+                backgroundColor: colors.primary,
               }}
               size="medium"
               href="/login"

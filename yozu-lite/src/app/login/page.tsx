@@ -99,9 +99,9 @@ export default function LoginPage() {
             {error && <Typography style={{ color: colors.notification }}>{error}</Typography>}
             <Button
               colors={{
-                text: colors.primaryForeground,
-                border: colors.border,
-                background: colors.primary,
+                textColor: colors.primaryForeground,
+                borderColor: colors.border,
+                backgroundColor: colors.primary,
               }}
               size="large"
               type="submit"
@@ -179,9 +179,9 @@ export default function LoginPage() {
             </Typography>
             <Button
               colors={{
-                text: colors.primaryForeground,
-                border: colors.border,
-                background: colors.primary,
+                textColor: colors.primaryForeground,
+                borderColor: colors.border,
+                backgroundColor: colors.primary,
               }}
               size="medium"
               href="/register"
