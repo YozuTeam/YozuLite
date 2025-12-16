@@ -13,9 +13,9 @@ return (
     onClick={toggleColorScheme}
     className="inline-flex items-center justify-center rounded-md p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
     colors={{
-      text: colors.text,
-      border: colors.border,
-      background: colors.background,
+      textColor: colors.text,
+      borderColor: colors.border,
+      backgroundColor: colors.background,
     }}
     size="small"
   >
