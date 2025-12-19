@@ -32,13 +32,13 @@ describe("Text", () => {
   });
 
   it("applies color from theme", () => {
-    render(<Text color="primary">Colored Text</Text>);
+    render(<Text color={{ text: "primary" }}>Colored Text</Text>);
     const element = screen.getByText("Colored Text");
     expect(element).toBeInTheDocument();
   });
 
   it("applies custom className", () => {
-    render(<Text className="custom-class">Class Text</Text>);
+    render(<Text color={{ text: "primary" }}>Class Text</Text>);
     expect(screen.getByText("Class Text")).toHaveClass("custom-class");
   });
 });

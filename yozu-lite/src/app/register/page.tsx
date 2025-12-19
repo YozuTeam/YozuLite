@@ -2,8 +2,9 @@
 
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
+import Text from "@/design-system/atoms/Text";
 
 import { Button } from "@/design-system/atoms/Button";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
@@ -64,25 +65,18 @@ export default function RegisterPage() {
           }}
         >
           <Stack spacing={1} mb={4} textAlign="center">
-            <Typography
+            <Text
               variant="h4"
-              sx={{
-                fontWeight: 700,
-                color: colors.text,
-                fontSize: { xs: "1.75rem", sm: "2rem" },
-              }}
+              color={{ text: colors.text }}
             >
               Créer un compte
-            </Typography>
-            <Typography
+            </Text>
+            <Text
               variant="body1"
-              sx={{
-                color: colors.mutedForeground,
-                fontSize: "0.95rem",
-              }}
+              color={{ text: colors.mutedForeground }}
             >
-              Rejoignez-nous dès aujourd'hui
-            </Typography>
+              Rejoignez-nous dès aujourd&apos;hui
+            </Text>
           </Stack>
 
           <Stack spacing={3}>
@@ -99,6 +93,7 @@ export default function RegisterPage() {
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
               placeholder="Créez un mot de passe"
+              colors={colors}
             />
 
             <RoleSelector
@@ -106,9 +101,10 @@ export default function RegisterPage() {
               value={role}
               onChange={setRole}
               hint="Choisissez votre rôle pour adapter l'expérience"
+              colors={colors}
             />
 
-            {error && <Typography style={{ color: colors.notification }}>{error}</Typography>}
+            {error && <Text variant="body2" color={{ text: colors.notification }}>{error}</Text>}
 
             <Button
               colors={{
@@ -130,28 +126,18 @@ export default function RegisterPage() {
           </Stack>
 
           <Box sx={{ mt: 3, textAlign: "center" }}>
-            <Typography
-              sx={{
-                color: colors.mutedForeground,
-                fontSize: "0.8rem",
-              }}
+            <Text
+              variant="body2"
+              color={{ text: colors.mutedForeground }}
             >
               En vous inscrivant, vous acceptez nos{" "}
-              <Typography
-                component="a"
-                href="#"
-                sx={{
-                  color: colors.primary,
-                  textDecoration: "none",
-                  fontWeight: 500,
-                  "&:hover": {
-                    textDecoration: "underline",
-                  },
-                }}
+              <Text
+                variant="body2"
+                color={{ text: colors.primary }}
               >
-                conditions d'utilisation
-              </Typography>
-            </Typography>
+                conditions d&apos;utilisation
+              </Text>
+            </Text>
           </Box>
 
           <Box
@@ -169,15 +155,12 @@ export default function RegisterPage() {
                 backgroundColor: colors.border,
               }}
             />
-            <Typography
-              sx={{
-                color: colors.mutedForeground,
-                fontSize: "0.875rem",
-                fontWeight: 500,
-              }}
+            <Text
+              variant="body2"
+              color={{ text: colors.mutedForeground }}
             >
               OU
-            </Typography>
+            </Text>
             <Box
               sx={{
                 flex: 1,
@@ -188,14 +171,12 @@ export default function RegisterPage() {
           </Box>
 
           <Stack spacing={2} alignItems="center">
-            <Typography
-              sx={{
-                color: colors.mutedForeground,
-                fontSize: "0.9rem",
-              }}
+            <Text
+              variant="body2"
+              color={{ text: colors.mutedForeground }}
             >
               Vous avez déjà un compte ?
-            </Typography>
+            </Text>
             <Button
               colors={{
                 textColor: colors.primaryForeground,
@@ -204,11 +185,6 @@ export default function RegisterPage() {
               }}
               size="medium"
               href="/login"
-              sx={{
-                width: "100%",
-                fontWeight: 600,
-                textTransform: "none",
-              }}
             >
               Se connecter
             </Button>

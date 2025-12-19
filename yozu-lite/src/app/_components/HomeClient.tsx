@@ -4,8 +4,9 @@ import { Button } from "@/design-system/atoms/Button";
 import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
+import Text from "@/design-system/atoms/Text";
 
 export default function HomeClient() {
   const [compteur, setCompteur] = useState(0);
@@ -41,9 +42,9 @@ export default function HomeClient() {
         <ThemeToggle />
       </Box>
 
-      <Typography sx={{ color: colors.input }}>
+      <Text variant="body1" color={{ text: colors.input }}>
         Current Theme: {colorScheme}
-      </Typography>
+      </Text>
 
       <Button onClick={() => setCompteur((c) => c + 100)} colors={{
         textColor: colors.text,

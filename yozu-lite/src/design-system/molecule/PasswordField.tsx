@@ -5,14 +5,10 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from "@mui/material";
 import { useState } from "react";
 
-import { NAV_THEME } from "@/theme/constant";
-import { useColorTheme } from "@/theme/useColorTheme";
 import { FormField } from "./FormField";
-import TextField from "../atoms/TextField";
+import TextField, { TextFieldColors } from "../atoms/TextField"
 
-type ThemeColors = (typeof NAV_THEME)["light"] | (typeof NAV_THEME)["dark"];
-
-export type PasswordFieldProps = {
+export interface PasswordFieldProps {
   label: string;
   required?: boolean;
   hint?: string;
@@ -20,7 +16,7 @@ export type PasswordFieldProps = {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  colors?: ThemeColors; 
+  colors: TextFieldColors; 
 };
 
 export function PasswordField({
@@ -31,10 +27,8 @@ export function PasswordField({
   value,
   onChange,
   placeholder = "Votre mot de passe",
-  colors: overrideColors,
+  colors,
 }: PasswordFieldProps) {
-  const { colorScheme } = useColorTheme();
-  const colors = overrideColors ?? NAV_THEME[colorScheme];
 
   const [showPassword, setShowPassword] = useState(false);
 

@@ -1,36 +1,29 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { Typography } from "@mui/material";
+import { TYPOGRAPHY } from "@/theme/typography";
+import type { ReactNode } from "react";
 
-import { NAV_THEME } from "@/theme/constant";
-import { useColorTheme } from "@/theme/useColorTheme";
-import type { TextVariant } from "@/theme/typography";
-
-type ThemeColors = (typeof NAV_THEME)["light"];
-export type TextColor = keyof ThemeColors;
-
-export interface TextProps {
-  children: ReactNode;
-  variant?: TextVariant;
-  color?: TextColor;
-  className?: string;
+export interface TextColor {
+  text: string;
 }
+
+export type TextProps=  {
+  children: ReactNode;
+  variant?: keyof typeof TYPOGRAPHY;
+  color?: TextColor;
+};
 
 export default function Text({
   children,
-  variant = "body1",
-  color = "text",
-  className,
+  color,
+  ...rest
 }: TextProps) {
-  const { colorScheme } = useColorTheme();
-  const themeColors = NAV_THEME[colorScheme];
-
   return (
     <Typography
-      className={className}
-      variant={variant}
-      sx={{ color: themeColors[color] }}
+      variant= "h1"
+      sx={{ color: color?.text }}
+      {...rest}
     >
       {children}
     </Typography>

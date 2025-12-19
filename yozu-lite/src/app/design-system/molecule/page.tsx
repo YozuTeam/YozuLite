@@ -2,8 +2,9 @@
 
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Container, Stack, Typography, Divider } from "@mui/material";
+import { Container, Stack, Divider } from "@mui/material";
 import { useState, type ReactNode } from "react";
+import Text from "@/design-system/atoms/Text";
 
 import TextField from "@/design-system/atoms/TextField";
 import IconButton from "@/design-system/molecule/IconButton";
@@ -21,9 +22,9 @@ function Section({
 }) {
   return (
     <Stack spacing={2}>
-      <Typography variant="h6" fontWeight="600" sx={{ color: colors.text }}>
+      <Text variant="h4" color={{ text: colors.text }}>
         {title}
-      </Typography>
+      </Text>
       {children}
       <Divider sx={{ borderColor: colors.border }} />
     </Stack>
@@ -64,6 +65,7 @@ export default function MoleculesPreviewPage() {
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          colors={colors}
         />
         </Section>
 
@@ -73,6 +75,7 @@ export default function MoleculesPreviewPage() {
           value={role}
           onChange={setRole}
           hint="Choisissez votre rôle pour adapter l'expérience."
+          colors={colors}
         />
         </Section>
         <Section title="IconButton" colors={colors}>

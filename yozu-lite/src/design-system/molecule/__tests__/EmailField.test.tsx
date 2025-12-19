@@ -27,4 +27,8 @@ describe("EmailField", () => {
     fireEvent.change(input, { target: { value: "a" } });
     expect(handleChange).toHaveBeenCalledWith("a");
   });
+  it("renders correctly without colors prop", () => {
+    render(<EmailField label="No Colors" />);
+    expect(screen.getByText("No Colors")).toBeInTheDocument();
+  });
 });

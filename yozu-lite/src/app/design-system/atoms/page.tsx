@@ -6,7 +6,7 @@ import  TextField  from "@/design-system/atoms/TextField";
 import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Box, Container, Divider, Stack, Typography } from "@mui/material";
+import { Box, Container, Divider, Stack } from "@mui/material";
 import type { ReactNode } from "react";
 import Text from "@/design-system/atoms/Text";  
 
@@ -21,9 +21,9 @@ function Section({
 }) {
   return (
     <Stack spacing={2}>
-      <Typography variant="h6" fontWeight="600" sx={{ color: colors.text }}>
+      <Text variant="h4" color={{ text: colors.text }}>
         {title}
-      </Typography>
+      </Text>
       {children}
       <Divider sx={{ borderColor: colors.border }} />
     </Stack>
@@ -47,9 +47,9 @@ export default function AtomsPreviewPage() {
             justifyContent: "space-between",
           }}
         >
-          <Typography variant="h4" fontWeight="700" sx={{ color: colors.text }}>
+          <Text variant="h2" color={{ text: colors.text }}>
             Design system – Atoms
-          </Typography>
+          </Text>
           <ThemeToggle />
         </Box>
 

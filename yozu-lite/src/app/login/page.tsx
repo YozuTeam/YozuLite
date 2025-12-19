@@ -2,8 +2,9 @@
 
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Box, Container, Stack, Typography } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
+import Text from "@/design-system/atoms/Text";
 
 import { Button } from "@/design-system/atoms/Button";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
@@ -60,25 +61,18 @@ export default function LoginPage() {
         >
           {/* Header */}
           <Stack spacing={1} mb={4} textAlign="center">
-            <Typography
+            <Text
               variant="h4"
-              sx={{
-                fontWeight: 700,
-                color: colors.text,
-                fontSize: { xs: "1.75rem", sm: "2rem" },
-              }}
+              color={{ text: colors.text }}
             >
               Bienvenue
-            </Typography>
-            <Typography
+            </Text>
+            <Text
               variant="body1"
-              sx={{
-                color: colors.mutedForeground,
-                fontSize: "0.95rem",
-              }}
+              color={{ text: colors.mutedForeground }}
             >
               Connectez-vous pour continuer
-            </Typography>
+            </Text>
           </Stack>
 
           <Stack spacing={3}>
@@ -95,8 +89,9 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
+              colors={colors}
             />
-            {error && <Typography style={{ color: colors.notification }}>{error}</Typography>}
+            {error && <Text color={{ text: colors.notification }}>{error}</Text>}
             <Button
               colors={{
                 textColor: colors.primaryForeground,
@@ -105,33 +100,18 @@ export default function LoginPage() {
               }}
               size="large"
               type="submit"
-              sx={{
-                mt: 2,
-                width: "100%",
-                fontWeight: 600,
-                textTransform: "none",
-              }}
             >
               Se connecter
             </Button>
           </Stack>
 
           <Box sx={{ mt: 3, textAlign: "center" }}>
-            <Typography
-              component="a"
-              href="#"
-              sx={{
-                color: colors.primary,
-                fontSize: "0.875rem",
-                textDecoration: "none",
-                fontWeight: 500,
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
+            <Text
+              variant="body2"
+              color={{ text: colors.primary }}
             >
               Mot de passe oublié ?
-            </Typography>
+            </Text>
           </Box>
 
           <Box
@@ -149,15 +129,12 @@ export default function LoginPage() {
                 backgroundColor: colors.border,
               }}
             />
-            <Typography
-              sx={{
-                color: colors.mutedForeground,
-                fontSize: "0.875rem",
-                fontWeight: 500,
-              }}
+            <Text
+              variant="body2"
+              color={{ text: colors.mutedForeground }}
             >
               OU
-            </Typography>
+            </Text>
             <Box
               sx={{
                 flex: 1,
@@ -169,14 +146,12 @@ export default function LoginPage() {
 
           {/* Register Link */}
           <Stack spacing={2} alignItems="center">
-            <Typography
-              sx={{
-                color: colors.mutedForeground,
-                fontSize: "0.9rem",
-              }}
+            <Text
+              variant="body2"
+              color={{ text: colors.mutedForeground }}
             >
-              Vous n'avez pas encore de compte ?
-            </Typography>
+              Vous n&apos;avez pas encore de compte ?
+            </Text>
             <Button
               colors={{
                 textColor: colors.primaryForeground,
@@ -185,11 +160,6 @@ export default function LoginPage() {
               }}
               size="medium"
               href="/register"
-              sx={{
-                width: "100%",
-                fontWeight: 600,
-                textTransform: "none",
-              }}
             >
               Créer un compte
             </Button>

@@ -36,7 +36,7 @@ jest.mock("@/design-system/atoms/Button", () => ({
         children: React.ReactNode;
         onClick?: () => void;
         className?: string;
-        colors?: { text: string; border: string; background: string };
+        colors?: { textColor: string; borderColor: string; backgroundColor: string };
         size?: string;
     }) => (
         <button
@@ -45,9 +45,9 @@ jest.mock("@/design-system/atoms/Button", () => ({
             data-testid="theme-toggle-button"
             data-size={size}
             style={{
-                color: colors?.text,
-                borderColor: colors?.border,
-                backgroundColor: colors?.background,
+                color: colors?.textColor,
+                borderColor: colors?.borderColor,
+                backgroundColor: colors?.backgroundColor,
             }}
         >
             {children}

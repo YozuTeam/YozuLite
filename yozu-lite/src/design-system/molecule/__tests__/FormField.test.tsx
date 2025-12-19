@@ -48,4 +48,12 @@ describe("FormField", () => {
     expect(screen.getByText("This is an error")).toBeInTheDocument();
     expect(screen.queryByText("This is a hint")).not.toBeInTheDocument();
   });
+  it("renders correctly without colors prop", () => {
+    render(
+      <FormField label="No Colors Prop">
+        <input />
+      </FormField>
+    );
+    expect(screen.getByText("No Colors Prop")).toBeInTheDocument();
+  });
 });
