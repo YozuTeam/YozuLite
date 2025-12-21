@@ -1,33 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { RoleSelector } from "../RoleSelector";
-import * as useColorThemeModule from "@/theme/useColorTheme";
-
-jest.mock("@/theme/constant", () => ({
-  NAV_THEME: {
-    light: {
-      background: "#fff",
-      text: "#000",
-      border: "#ccc",
-      primary: "#blue",
-      muted: "#eee",
-      secondary: "#green",
-      primaryForeground: "#white",
-      mutedForeground: "#gray",
-    },
-  },
-}));
-
-jest.mock("@/theme/useColorTheme", () => ({
-  useColorTheme: jest.fn(),
-}));
 
 describe("RoleSelector", () => {
-  beforeEach(() => {
-    (useColorThemeModule.useColorTheme as jest.Mock).mockReturnValue({
-      colorScheme: "light",
-    });
-  });
-
   it("renders buttons", () => {
     const handleChange = jest.fn();
     render(<RoleSelector label="Select Role" value="student" onChange={handleChange} />);

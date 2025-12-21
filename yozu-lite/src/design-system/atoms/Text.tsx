@@ -10,19 +10,19 @@ export interface TextColor {
 
 export type TextProps=  {
   children: ReactNode;
+  colors: TextColor;
   variant?: keyof typeof TYPOGRAPHY;
-  color?: TextColor;
 };
 
 export default function Text({
   children,
-  color,
+  colors,
   ...rest
 }: TextProps) {
   return (
     <Typography
       variant= "h1"
-      sx={{ color: color?.text }}
+      sx={{ colors: colors.text }}
       {...rest}
     >
       {children}

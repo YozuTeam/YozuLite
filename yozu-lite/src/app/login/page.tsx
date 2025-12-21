@@ -55,7 +55,7 @@ export default function LoginPage() {
             backgroundColor: colors.card,
             borderRadius: "24px",
             padding: { xs: 3, sm: 5 },
-            boxShadow: `0 8px 32px ${colorScheme === "dark" ? "rgba(0,0,0,0.4)" : "rgba(0,0,0,0.08)"}`,
+            boxShadow: `0 8px 32px rgba(0,0,0,0.4)`,
             border: `1px solid ${colors.border}`,
           }}
         >
@@ -63,13 +63,13 @@ export default function LoginPage() {
           <Stack spacing={1} mb={4} textAlign="center">
             <Text
               variant="h4"
-              color={{ text: colors.text }}
+              colors={{ text: colors.text }}
             >
               Bienvenue
             </Text>
             <Text
               variant="body1"
-              color={{ text: colors.mutedForeground }}
+              colors={{ text: colors.mutedForeground }}
             >
               Connectez-vous pour continuer
             </Text>
@@ -91,7 +91,7 @@ export default function LoginPage() {
               onChange={(e) => handlePasswordChange(e.target.value)}
               colors={colors}
             />
-            {error && <Text color={{ text: colors.notification }}>{error}</Text>}
+            {error && <Text colors={{ text: colors.notification }}>{error}</Text>}
             <Button
               colors={{
                 textColor: colors.primaryForeground,
@@ -108,7 +108,7 @@ export default function LoginPage() {
           <Box sx={{ mt: 3, textAlign: "center" }}>
             <Text
               variant="body2"
-              color={{ text: colors.primary }}
+              colors={{ text: colors.primary }}
             >
               Mot de passe oublié ?
             </Text>
@@ -131,7 +131,7 @@ export default function LoginPage() {
             />
             <Text
               variant="body2"
-              color={{ text: colors.mutedForeground }}
+              colors={{ text: colors.mutedForeground }}
             >
               OU
             </Text>
@@ -148,7 +148,7 @@ export default function LoginPage() {
           <Stack spacing={2} alignItems="center">
             <Text
               variant="body2"
-              color={{ text: colors.mutedForeground }}
+              colors={{ text: colors.mutedForeground }}
             >
               Vous n&apos;avez pas encore de compte ?
             </Text>

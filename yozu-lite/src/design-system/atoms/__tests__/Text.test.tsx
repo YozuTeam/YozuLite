@@ -1,44 +1,23 @@
 import { render, screen } from "@testing-library/react";
 import Text from "../Text";
 
-jest.mock("@/theme/useColorTheme", () => ({
-  useColorTheme: () => ({
-    colorScheme: "light",
-  }),
-}));
-
-jest.mock("@/theme/constant", () => ({
-  NAV_THEME: {
-    light: {
-      text: "#000000",
-      primary: "#0000ff",
-    },
-    dark: {
-      text: "#ffffff",
-      primary: "#add8e6",
-    },
-  },
-}));
-
 describe("Text", () => {
+  const defaultColors = {
+    text: "#ff0000",
+  };
   it("renders children correctly", () => {
-    render(<Text>Hello World</Text>);
+    render(<Text colors={defaultColors}>Hello World</Text>);
     expect(screen.getByText("Hello World")).toBeInTheDocument();
   });
 
   it("applies variant", () => {
-    const { container } = render(<Text variant="h1">Heading</Text>);
+    const { container } = render(<Text colors={defaultColors} variant="h1">Heading</Text>);
     expect(container.querySelector("h1")).toBeInTheDocument();
   });
 
   it("applies color from theme", () => {
-    render(<Text color={{ text: "primary" }}>Colored Text</Text>);
+    render(<Text colors={defaultColors}>Colored Text</Text>);
     const element = screen.getByText("Colored Text");
     expect(element).toBeInTheDocument();
-  });
-
-  it("applies custom className", () => {
-    render(<Text color={{ text: "primary" }}>Class Text</Text>);
-    expect(screen.getByText("Class Text")).toHaveClass("custom-class");
   });
 });

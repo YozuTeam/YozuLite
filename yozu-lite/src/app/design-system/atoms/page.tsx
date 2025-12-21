@@ -21,7 +21,7 @@ function Section({
 }) {
   return (
     <Stack spacing={2}>
-      <Text variant="h4" color={{ text: colors.text }}>
+      <Text variant="h4" colors={{ text: colors.text }}>
         {title}
       </Text>
       {children}
@@ -47,7 +47,7 @@ export default function AtomsPreviewPage() {
             justifyContent: "space-between",
           }}
         >
-          <Text variant="h2" color={{ text: colors.text }}>
+          <Text variant="h2" colors={{ text: colors.text }}>
             Design system – Atoms
           </Text>
           <ThemeToggle />
@@ -179,15 +179,15 @@ export default function AtomsPreviewPage() {
 
         <Section title="Text" colors={colors}>
           <Stack direction="column" spacing={2} flexWrap="wrap">
-            <Text variant="h1">Alan</Text>
-            <Text variant="h2">Alan</Text>
-            <Text variant="h3">Alan</Text>
-            <Text variant="h4">Alan</Text>
+            <Text colors={colors}>Alan</Text>
+            <Text variant="h2" colors={colors}>Alan</Text>
+            <Text variant="h3" colors={colors}>Alan</Text>
+            <Text variant="h4" colors={colors}>Alan</Text>
 
-            <Text variant="subtitle1">Alan</Text>
-            <Text variant="subtitle2">Alan</Text>
-            <Text variant="body1">Alan</Text>
-            <Text variant="body2">Alan</Text>
+            <Text variant="subtitle1" colors={colors}>Alan</Text>
+            <Text variant="subtitle2" colors={colors}>Alan</Text>
+            <Text variant="body1" colors={colors}>Alan</Text>
+            <Text variant="body2" colors={colors}>Alan</Text>
           </Stack>
         </Section>         
       </Stack>

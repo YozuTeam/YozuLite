@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { PasswordField } from "../PasswordField";
 import { TextFieldColors } from "../../atoms/TextField";
 
-// Mock colors object satisfying TextFieldColors interface
 const mockColors: TextFieldColors = {
   background: "#ffffff",
   text: "#000000",

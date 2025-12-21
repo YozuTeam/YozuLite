@@ -22,7 +22,7 @@ function Section({
 }) {
   return (
     <Stack spacing={2}>
-      <Text variant="h4" color={{ text: colors.text }}>
+      <Text variant="h4" colors={{ text: colors.text }}>
         {title}
       </Text>
       {children}

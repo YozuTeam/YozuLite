@@ -33,11 +33,11 @@ export function FormField({
   return (
     <Stack spacing={0.5}>
       <Stack direction="row" spacing={0.5}>
-        <Text variant="body2" color={{ text: colors.text }}>
+        <Text variant="body2" colors={{ text: colors.text }}>
           {label}
         </Text>
         {required && (
-          <Text variant="body2" color={{ text: colors.notification }}>
+          <Text variant="body2" colors={{ text: colors.notification }}>
             *
           </Text>
         )}
@@ -46,13 +46,13 @@ export function FormField({
       {children}
 
       {showError && (
-        <Text variant="body2" color={{ text: colors.notification }}>
+        <Text variant="body2" colors={{ text: colors.notification }}>
           {error}
         </Text>
       )}
 
       {showHint && (
-        <Text variant="body2" color={{ text: colors.mutedForeground }}>
+        <Text variant="body2" colors={{ text: colors.mutedForeground }}>
           {hint}
         </Text>
       )}

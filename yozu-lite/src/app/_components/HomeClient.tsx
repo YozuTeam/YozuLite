@@ -27,7 +27,7 @@ export default function HomeClient() {
       sx={{
         py: 6,
         backgroundColor: colors.background,
-        color: colors.text,
+        colors: colors.text,
         minHeight: "100vh",
       }}
     >
@@ -42,7 +42,7 @@ export default function HomeClient() {
         <ThemeToggle />
       </Box>
 
-      <Text variant="body1" color={{ text: colors.input }}>
+      <Text variant="body1" colors={{ text: colors.input }}>
         Current Theme: {colorScheme}
       </Text>
 

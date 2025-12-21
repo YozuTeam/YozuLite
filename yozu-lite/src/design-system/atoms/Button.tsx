@@ -30,7 +30,7 @@ export function Button({ colors, size="medium", isLoading=false, ...rest }: Butt
       {...rest}
     >
       {isLoading ? (
-        <Text color={{ text: colors.textColor }} variant="body2">
+        <Text colors={{ text: colors.textColor }} variant="body2">
           Chargement...
         </Text>
       ) : (

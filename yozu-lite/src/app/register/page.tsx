@@ -60,20 +60,20 @@ export default function RegisterPage() {
             backgroundColor: colors.card,
             borderRadius: "24px",
             padding: { xs: 3, sm: 5 },
-            boxShadow: `0 8px 32px ${colorScheme === "dark" ? "rgba(0,0,0,0.4)" : "rgba(0,0,0,0.08)"}`,
+            boxShadow: `0 8px 32px rgba(0,0,0,0.4)`,
             border: `1px solid ${colors.border}`,
           }}
         >
           <Stack spacing={1} mb={4} textAlign="center">
             <Text
               variant="h4"
-              color={{ text: colors.text }}
+              colors={{ text: colors.text }}
             >
               Créer un compte
             </Text>
             <Text
               variant="body1"
-              color={{ text: colors.mutedForeground }}
+              colors={{ text: colors.mutedForeground }}
             >
               Rejoignez-nous dès aujourd&apos;hui
             </Text>
@@ -104,7 +104,7 @@ export default function RegisterPage() {
               colors={colors}
             />
 
-            {error && <Text variant="body2" color={{ text: colors.notification }}>{error}</Text>}
+            {error && <Text variant="body2" colors={{ text: colors.notification }}>{error}</Text>}
 
             <Button
               colors={{
@@ -128,12 +128,12 @@ export default function RegisterPage() {
           <Box sx={{ mt: 3, textAlign: "center" }}>
             <Text
               variant="body2"
-              color={{ text: colors.mutedForeground }}
+              colors={{ text: colors.mutedForeground }}
             >
               En vous inscrivant, vous acceptez nos{" "}
               <Text
                 variant="body2"
-                color={{ text: colors.primary }}
+                colors={{ text: colors.primary }}
               >
                 conditions d&apos;utilisation
               </Text>
@@ -157,7 +157,7 @@ export default function RegisterPage() {
             />
             <Text
               variant="body2"
-              color={{ text: colors.mutedForeground }}
+              colors={{ text: colors.mutedForeground }}
             >
               OU
             </Text>
@@ -173,7 +173,7 @@ export default function RegisterPage() {
           <Stack spacing={2} alignItems="center">
             <Text
               variant="body2"
-              color={{ text: colors.mutedForeground }}
+              colors={{ text: colors.mutedForeground }}
             >
               Vous avez déjà un compte ?
             </Text>
