@@ -1,8 +1,11 @@
 "use client";
 
-import { NAV_THEME } from "@/theme/constant";
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import type { ReactNode } from "react";
+import Text from "@/design-system/atoms/Text";
+import { TextFieldColors } from "../atoms/TextField";
+import { useColorTheme } from "@/theme/useColorTheme";
+import { NAV_THEME } from "@/theme/constant";
 
 export type FormFieldProps = {
   label: string;
@@ -10,43 +13,48 @@ export type FormFieldProps = {
   hint?: string;
   error?: string;
   children: ReactNode;
-  colors: typeof NAV_THEME.light;
-};
+  colors?: TextFieldColors;
+};  
 
 export function FormField({
   label,
   required,
   hint,
   error,
-  colors,
+  colors: overrideColors,
   children,
 }: FormFieldProps) {
+  const { colorScheme } = useColorTheme();
+  const colors = overrideColors ?? NAV_THEME[colorScheme];
+
   const showHint = hint && !error;
   const showError = Boolean(error);
 
   return (
     <Stack spacing={0.5}>
-      <Typography variant="body2" fontWeight={500}>
-        {label}
+      <Stack direction="row" spacing={0.5}>
+        <Text variant="body2" colors={{ text: colors.text }}>
+          {label}
+        </Text>
         {required && (
-          <Typography component="span" color="error" ml={0.5}>
+          <Text variant="body2" colors={{ text: colors.notification }}>
             *
-          </Typography>
+          </Text>
         )}
-      </Typography>
+      </Stack>
 
       {children}
 
       {showError && (
-        <Typography variant="caption" color="error">
+        <Text variant="body2" colors={{ text: colors.notification }}>
           {error}
-        </Typography>
+        </Text>
       )}
 
       {showHint && (
-        <Typography variant="caption" style={{ color: colors.mutedForeground }}>
+        <Text variant="body2" colors={{ text: colors.mutedForeground }}>
           {hint}
-        </Typography>
+        </Text>
       )}
     </Stack>
   );

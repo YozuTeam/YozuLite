@@ -4,8 +4,9 @@ import { Button } from "@/design-system/atoms/Button";
 import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
+import Text from "@/design-system/atoms/Text";
 
 export default function HomeClient() {
   const [compteur, setCompteur] = useState(0);
@@ -26,7 +27,7 @@ export default function HomeClient() {
       sx={{
         py: 6,
         backgroundColor: colors.background,
-        color: colors.text,
+        colors: colors.text,
         minHeight: "100vh",
       }}
     >
@@ -41,14 +42,14 @@ export default function HomeClient() {
         <ThemeToggle />
       </Box>
 
-      <Typography sx={{ color: colors.input }}>
+      <Text variant="body1" colors={{ text: colors.input }}>
         Current Theme: {colorScheme}
-      </Typography>
+      </Text>
 
       <Button onClick={() => setCompteur((c) => c + 100)} colors={{
-        text: colors.text,
-        border: colors.border,
-        background: colors.primary,
+        textColor: colors.text,
+        borderColor: colors.border,
+        backgroundColor: colors.primary,
       }}>
         Like Button : {compteur}
       </Button>
@@ -56,9 +57,9 @@ export default function HomeClient() {
       <Button
         onClick={() => setCompteur((c) => c + 100)}
         colors={{
-          text: colors.text,
-          border: colors.border,
-          background: colors.secondary,
+          textColor: colors.text,
+          borderColor: colors.border,
+          backgroundColor: colors.secondary,
         }}
       >
         Secondary Button
@@ -67,9 +68,9 @@ export default function HomeClient() {
       <Button
         onClick={() => setCompteur((c) => c + 100)}
         colors={{
-          text: colors.text,
-          border: colors.border,
-          background: colors.warning,
+          textColor: colors.text,
+          borderColor: colors.border,
+          backgroundColor: colors.warning,
         }}
       >
         Destructive Button

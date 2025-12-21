@@ -5,6 +5,7 @@ import { ColorMode, COLOR_MODES } from "../ColorMode";
 import { useColorTheme } from "../useColorTheme";
 import { ThemeToggle } from "@/design-system/atoms/ThemeToggle";
 import { NAV_THEME } from "../constant";
+import { TYPOGRAPHY } from "../typography";
 
 jest.mock("next-themes", () => ({
     useTheme: jest.fn(),
@@ -35,7 +36,7 @@ jest.mock("@/design-system/atoms/Button", () => ({
         children: React.ReactNode;
         onClick?: () => void;
         className?: string;
-        colors?: { text: string; border: string; background: string };
+        colors?: { textColor: string; borderColor: string; backgroundColor: string };
         size?: string;
     }) => (
         <button
@@ -44,9 +45,9 @@ jest.mock("@/design-system/atoms/Button", () => ({
             data-testid="theme-toggle-button"
             data-size={size}
             style={{
-                color: colors?.text,
-                borderColor: colors?.border,
-                backgroundColor: colors?.background,
+                color: colors?.textColor,
+                borderColor: colors?.borderColor,
+                backgroundColor: colors?.backgroundColor,
             }}
         >
             {children}
@@ -324,6 +325,36 @@ describe("ThemeToggle", () => {
 
         const moonIcon = screen.getByTestId("moon-icon");
         expect(moonIcon).toHaveAttribute("color", NAV_THEME.dark.text);
+    });
+});
+
+describe("Typography", () => {
+    it("should export TYPOGRAPHY constant", () => {
+        expect(TYPOGRAPHY).toBeDefined();
+    });
+
+    it("should include valid typography variants", () => {
+        const variants = Object.keys(TYPOGRAPHY);
+        expect(variants).toContain("h1");
+        expect(variants).toContain("h2");
+        expect(variants).toContain("h3");
+        expect(variants).toContain("h4");
+        expect(variants).toContain("subtitle1");
+        expect(variants).toContain("subtitle2");
+        expect(variants).toContain("body1");
+        expect(variants).toContain("body2");
+    });
+
+    it("should have correct properties for h1", () => {
+        expect(TYPOGRAPHY.h1).toHaveProperty("fontSize", "2.5rem");
+        expect(TYPOGRAPHY.h1).toHaveProperty("fontWeight", 700);
+        expect(TYPOGRAPHY.h1).toHaveProperty("lineHeight", 1.2);
+    });
+
+    it("should have correct properties for body1", () => {
+        expect(TYPOGRAPHY.body1).toHaveProperty("fontSize", "1rem");
+        expect(TYPOGRAPHY.body1).toHaveProperty("fontWeight", 400);
+        expect(TYPOGRAPHY.body1).toHaveProperty("lineHeight", 1.6);
     });
 });
 

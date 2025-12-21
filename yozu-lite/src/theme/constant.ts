@@ -23,6 +23,7 @@ export const NAV_THEME = {
     buttonsPrimary: "hsl(263, 67%, 51%)", // button primary (Bleu)
     buttonsSecondary: "hsl(224, 76%, 70%)", // button secondary (Violet clair)
     reversed: "hsl(0,0%,0%)", // BLACK
+    white: "hsl(0,0%,100%)", // WHITE
   },
   dark: {
     background: "hsl(222, 84%, 5%)", // background (Gris très foncé)
@@ -48,5 +49,6 @@ export const NAV_THEME = {
     buttonsPrimary: "hsl(224, 76%, 70%)", // button primary (Violet clair)
     buttonsSecondary: "hsl(263, 67%, 51%)", // button secondary (Bleu)
     reversed: "hsl(0,0%,100%)",
+    white: "hsl(0,0%,100%)", // WHITE
   },
 };

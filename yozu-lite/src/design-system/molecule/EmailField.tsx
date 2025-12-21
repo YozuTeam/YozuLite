@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 import { NAV_THEME } from "@/theme/constant";
+import { useColorTheme } from "@/theme/useColorTheme";
 import TextField from "../atoms/TextField";
 import { FormField } from "./FormField";
 
-type ThemeColors = (typeof NAV_THEME)["light"];
+type ThemeColors = (typeof NAV_THEME)["light"] | (typeof NAV_THEME)["dark"];
 
 export interface EmailFieldProps {
   label: string;
   required?: boolean;
   hint?: string;
-  colors: ThemeColors;
+  colors?: ThemeColors;
   onChange?: (value: string) => void;
 }
 
@@ -19,9 +20,12 @@ export function EmailField({
   label,
   required = false,
   hint,
-  colors,
+  colors: overrideColors,
   onChange,
 }: EmailFieldProps) {
+  const { colorScheme } = useColorTheme();
+  const colors = overrideColors ?? NAV_THEME[colorScheme];
+
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -30,8 +34,7 @@ export function EmailField({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setValue(newValue);
-
-    // Valider uniquement le format de l'email si le champ n'est pas vide
+  
     if (newValue.length > 0 && !emailRegex.test(newValue)) {
       setError("Adresse email invalide");
     } else {

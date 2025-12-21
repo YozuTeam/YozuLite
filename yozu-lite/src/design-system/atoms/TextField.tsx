@@ -28,7 +28,7 @@ export default function TextField({
 
   const style = {
     backgroundColor: colors.background,
-    color: colors.text,
+    colors: colors.text,
   };
 
   
@@ -36,7 +36,7 @@ export default function TextField({
   const sx = {
     "& .MuiOutlinedInput-root": {
       backgroundColor: colors.background,
-      color: colors.text,
+      colors: colors.text,
       "& fieldset": {
         borderColor: colors.border,
       },

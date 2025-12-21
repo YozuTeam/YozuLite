@@ -118,7 +118,7 @@ describe("Button Component Standalone", () => {
     render(
       <Button
         isLoading={true}
-        colors={{ text: "white", background: "blue", border: "blue" }}
+        colors={{ textColor: "text", backgroundColor: "background", borderColor: "border" }}
       >
         CTA Button
       </Button>

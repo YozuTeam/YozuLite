@@ -1,11 +1,12 @@
 "use client";
 
 import MuiButton, { ButtonProps as MuiButtonProps } from "@mui/material/Button";
+import Text from "@/design-system/atoms/Text";
 
 export interface ButtonColors {
-  text: string;
-  border: string;
-  background: string;
+  textColor: string;
+  borderColor: string;
+  backgroundColor: string;
 }
 
 export type ButtonProps = {
@@ -18,9 +19,9 @@ export function Button({ colors, size="medium", isLoading=false, ...rest }: Butt
   return (
     <MuiButton
       style={{
-        backgroundColor: colors.background,
-        color: colors.text,
-        borderColor: colors.border,
+        backgroundColor: colors.backgroundColor,
+        color: colors.textColor,
+        borderColor: colors.borderColor,
         borderWidth: 1,
         borderStyle: "solid",
       }}
@@ -28,7 +29,13 @@ export function Button({ colors, size="medium", isLoading=false, ...rest }: Butt
       size={size}
       {...rest}
     >
-      {isLoading ? "Chargement..." : rest.children}
+      {isLoading ? (
+        <Text colors={{ text: colors.textColor }} variant="body2">
+          Chargement...
+        </Text>
+      ) : (
+        rest.children
+      )}
     </MuiButton>
   );
 }
