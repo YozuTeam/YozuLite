@@ -2,13 +2,14 @@
 
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Box, Container, Stack } from "@mui/material";
+import { Container, Box, Stack } from "@mui/material";
 import { useState } from "react";
-import Text from "@/design-system/atoms/Text";
+import { Text } from "@/design-system/atoms/Text";
 
 import { Button } from "@/design-system/atoms/Button";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { EmailField } from "@/design-system/molecule/EmailField";
+import Card from "@/design-system/organism/Card";
 
 export default function LoginPage() {
   const { colorScheme } = useColorTheme();
@@ -43,27 +44,23 @@ export default function LoginPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: colors.background,
+        backgroundColor: colors.secondaryBackground,
         py: 4,
       }}
     >
-      <Container maxWidth="sm">
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{
-            backgroundColor: colors.card,
-            borderRadius: "24px",
-            padding: { xs: 3, sm: 5 },
-            boxShadow: `0 8px 32px rgba(0,0,0,0.4)`,
-            border: `1px solid ${colors.border}`,
-          }}
-        >
+    <Container maxWidth="sm">
+      <Card
+        colors={{
+          background: colors.background,
+          border: colors.border,
+        }}
+        onSubmit={handleSubmit}
+      >
           {/* Header */}
           <Stack spacing={1} mb={4} textAlign="center">
             <Text
               variant="h4"
-              colors={{ text: colors.text }}
+              colors={{ text: colors.primary }}
             >
               Bienvenue
             </Text>
@@ -154,9 +151,9 @@ export default function LoginPage() {
             </Text>
             <Button
               colors={{
-                textColor: colors.primaryForeground,
-                borderColor: colors.border,
-                backgroundColor: colors.primary,
+                textColor: colors.primary,
+                borderColor: colors.background,
+                backgroundColor: colors.background,
               }}
               size="medium"
               href="/register"
@@ -164,7 +161,7 @@ export default function LoginPage() {
               Créer un compte
             </Button>
           </Stack>
-        </Box>
+        </Card>
       </Container>
     </Box>
   );

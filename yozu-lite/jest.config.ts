@@ -35,6 +35,7 @@ const config: Config = {
         "!src/app/_constants/**",
         "!src/app/_styles/**",
         "!src/app/page.tsx",
+        "!src/app/test/page.tsx",
     ],
     coverageThreshold: {
         global: {

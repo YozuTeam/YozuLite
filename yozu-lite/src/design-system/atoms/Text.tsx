@@ -1,28 +1,31 @@
 "use client";
 
-import { Typography } from "@mui/material";
-import { TYPOGRAPHY } from "@/theme/typography";
+import { Typography, SxProps, Theme } from "@mui/material";
 import type { ReactNode } from "react";
+import { TextVariant } from "@/theme/typography";
 
 export interface TextColor {
   text: string;
 }
 
-export type TextProps=  {
+export type TextProps = {
   children: ReactNode;
-  colors: TextColor;
-  variant?: keyof typeof TYPOGRAPHY;
+  colors?: TextColor;
+  variant?: TextVariant;
+  sx?: SxProps<Theme>;
 };
 
-export default function Text({
+export function Text({
+  variant,
   children,
   colors,
   ...rest
 }: TextProps) {
   return (
     <Typography
-      variant= "h1"
-      sx={{ colors: colors.text }}
+      component="span"
+      variant={variant}
+      color={colors?.text}
       {...rest}
     >
       {children}

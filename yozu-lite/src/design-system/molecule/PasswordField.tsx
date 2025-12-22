@@ -33,7 +33,7 @@ export function PasswordField({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <FormField label={label} required={required} hint={hint} error={error} colors={colors}>
+    <FormField label={label} required={required} hint={hint} error={error !== undefined} errorText={error} colors={colors}>
       <TextField
         colors={{
           ...colors,

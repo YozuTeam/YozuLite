@@ -9,6 +9,7 @@ export interface TextFieldColors {
   primary: string;
   mutedForeground: string;
   notification: string;
+  muted: string;
 }
 
 export interface TextFieldProps
@@ -16,12 +17,18 @@ export interface TextFieldProps
   colors: TextFieldColors;
   size?: "small" | "medium";
   className?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: boolean;
+  errorText?: string;
 }
 
 export default function TextField({
   colors,
   size = "medium",  
   className,
+  onChange,
+  error = false,
+  errorText = "Ce champ est obligatoire",
   ...rest
 }: TextFieldProps) {
 
@@ -37,8 +44,10 @@ export default function TextField({
     "& .MuiOutlinedInput-root": {
       backgroundColor: colors.background,
       colors: colors.text,
+      borderRadius: "15px",
       "& fieldset": {
         borderColor: colors.border,
+        borderRadius: "15px",
       },
       "&:hover fieldset": {
         borderColor: colors.primary,
@@ -60,6 +69,9 @@ export default function TextField({
         color: colors.mutedForeground,
       },
     },
+    "& .MuiInputBase-root": {
+      color: colors.text,
+    },
 
     "& .MuiFormHelperText-root": {
       color: colors.mutedForeground,
@@ -73,11 +85,15 @@ export default function TextField({
   
   return (
     <MuiTextField
+      fullWidth
       variant="outlined"
       size={size}
       className={className}
       sx={sx}
       style={style}
+      onChange={onChange}
+      error={error}
+      helperText={error ? errorText : rest.helperText}
       {...rest} 
   
     />

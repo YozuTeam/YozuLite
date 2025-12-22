@@ -13,6 +13,7 @@ type IconButtonProps = Omit<ButtonProps, "children" | "colors"> & {
   colors: IconButtonColors;
   paddingX?: number;
   paddingY?: number;
+  iconSize?: number;
 };
 
 export default function IconButton({
@@ -20,6 +21,7 @@ export default function IconButton({
   colors,
   paddingX = 4,
   paddingY = 1,
+  iconSize = 2,
   ...rest
 }: IconButtonProps) {
   return (
@@ -29,9 +31,9 @@ export default function IconButton({
         backgroundColor: colors.button.backgroundColor,
         borderColor: colors.button.borderColor,
         textColor: colors.button.textColor,
-      }}size="large"
+      }}
+      size="large"
       sx={{
-        position: "absolute",
         minWidth: 0,
         paddingInline: paddingX, 
         paddingBlock: paddingY,  
@@ -40,6 +42,7 @@ export default function IconButton({
     > 
       <Icon
         colors={{ iconColor: colors.icon.iconColor }}
+        size={iconSize}
           >
         <path d={iconPath} />
       </Icon>

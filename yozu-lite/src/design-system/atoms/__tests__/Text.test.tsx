@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import Text from "../Text";
+import { Text } from "../Text";
 
 describe("Text", () => {
   const defaultColors = {
@@ -11,8 +11,8 @@ describe("Text", () => {
   });
 
   it("applies variant", () => {
-    const { container } = render(<Text colors={defaultColors} variant="h1">Heading</Text>);
-    expect(container.querySelector("h1")).toBeInTheDocument();
+    render(<Text colors={defaultColors} variant="h1">Heading</Text>);
+    expect(screen.getByText("Heading")).toHaveClass("MuiTypography-h1");
   });
 
   it("applies color from theme", () => {

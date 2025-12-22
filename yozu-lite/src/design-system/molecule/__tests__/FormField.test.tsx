@@ -39,14 +39,15 @@ describe("FormField", () => {
       <FormField
         label="Error Field"
         hint="This is a hint"
-        error="This is an error"
+        error={true}
+        errorText="This is an error"
         colors={defaultColors}
       >
         <input />
       </FormField>
     );
     expect(screen.getByText("This is an error")).toBeInTheDocument();
-    expect(screen.queryByText("This is a hint")).not.toBeInTheDocument();
+    expect(screen.getByText("This is a hint")).toBeInTheDocument();
   });
   it("renders correctly without colors prop", () => {
     render(

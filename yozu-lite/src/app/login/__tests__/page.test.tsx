@@ -25,6 +25,7 @@ describe("LoginPage UI", () => {
     const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
 
     await user.type(emailInput, "pas-un-mail");
+    await user.tab();
 
     expect(
       await screen.findByText(/Adresse email invalide/i)

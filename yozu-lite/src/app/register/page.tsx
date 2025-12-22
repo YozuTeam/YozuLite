@@ -4,20 +4,23 @@ import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
-import Text from "@/design-system/atoms/Text";
+import { Text } from "@/design-system/atoms/Text";
 
 import { Button } from "@/design-system/atoms/Button";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
-import { Role, RoleSelector } from "@/design-system/molecule/RoleSelector";
+import { Selector } from "@/design-system/molecule/Selector";
 import { EmailField } from "@/design-system/molecule/EmailField";
+import Card from "@/design-system/organism/Card";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
   const { colorScheme } = useColorTheme();
   const colors = NAV_THEME[colorScheme];
+  const router = useRouter();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("student");
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -26,9 +29,10 @@ export default function RegisterPage() {
       setError("Veuillez remplir tous les champs");
       return;
     }
-    console.log({ email, password, role });
+    console.log({ email, password, selectedValues });
     setError(null);
     // Logique d'inscription ici
+    router.push(selectedValues[0] === "student" ? "/onboarding/student" : "/onboarding/company");
   };
 
   const handleEmailChange = (value: string) => {
@@ -48,26 +52,22 @@ export default function RegisterPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: colors.background,
+        backgroundColor: colors.secondaryBackground,
         py: 4,
       }}
     >
       <Container maxWidth="sm">
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{
-            backgroundColor: colors.card,
-            borderRadius: "24px",
-            padding: { xs: 3, sm: 5 },
-            boxShadow: `0 8px 32px rgba(0,0,0,0.4)`,
-            border: `1px solid ${colors.border}`,
+        <Card
+          colors={{
+            background: colors.background,
+            border: colors.border,
           }}
+          onSubmit={handleSubmit}
         >
           <Stack spacing={1} mb={4} textAlign="center">
             <Text
               variant="h4"
-              colors={{ text: colors.text }}
+              colors={{ text: colors.primary }}
             >
               Créer un compte
             </Text>
@@ -96,11 +96,15 @@ export default function RegisterPage() {
               colors={colors}
             />
 
-            <RoleSelector
-              label="Vous êtes"
-              value={role}
-              onChange={setRole}
-              hint="Choisissez votre rôle pour adapter l'expérience"
+            <Selector
+              label="Vous êtes :"
+              multiple = {false}
+              selectedValues={selectedValues}
+              setSelectedValues={setSelectedValues}
+              options={[
+                { value: "student" },
+                { value: "company" },
+              ]}
               colors={colors}
             />
 
@@ -114,12 +118,6 @@ export default function RegisterPage() {
               }}
               size="large"
               type="submit"
-              sx={{
-                mt: 2,
-                width: "100%",
-                fontWeight: 600,
-                textTransform: "none",
-              }}
             >
               S'inscrire
             </Button>
@@ -179,9 +177,9 @@ export default function RegisterPage() {
             </Text>
             <Button
               colors={{
-                textColor: colors.primaryForeground,
-                borderColor: colors.border,
-                backgroundColor: colors.primary,
+                textColor: colors.primary,
+                borderColor: colors.background,
+                backgroundColor: colors.background,
               }}
               size="medium"
               href="/login"
@@ -189,7 +187,7 @@ export default function RegisterPage() {
               Se connecter
             </Button>
           </Stack>
-        </Box>
+        </Card>
       </Container>
     </Box>
   );
