@@ -21,7 +21,7 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email==="" || password==="") {
+    if (email === "" || password === "") {
       setError("Veuillez remplir tous les champs");
       return;
     }
@@ -48,37 +48,30 @@ export default function LoginPage() {
         py: 4,
       }}
     >
-    <Container maxWidth="sm">
-      <Card
-        colors={{
-          background: colors.background,
-          border: colors.border,
-        }}
-        onSubmit={handleSubmit}
-      >
+      <Container maxWidth="sm">
+        <Card
+          colors={{
+            background: colors.background,
+            border: colors.border,
+          }}
+          onSubmit={handleSubmit}
+        >
           {/* Header */}
           <Stack spacing={1} mb={4} textAlign="center">
-            <Text
-              variant="h4"
-              colors={{ text: colors.primary }}
-            >
+            <Text variant="h4" colors={{ text: colors.primary }}>
               Bienvenue
             </Text>
-            <Text
-              variant="body1"
-              colors={{ text: colors.mutedForeground }}
-            >
+            <Text variant="body1" colors={{ text: colors.mutedForeground }}>
               Connectez-vous pour continuer
             </Text>
           </Stack>
 
           <Stack spacing={3}>
-            <EmailField 
-              label="Email" 
-              required 
+            <EmailField
+              label="Email"
+              required
               colors={colors}
               onChange={(value) => handleEmailChange(value)}
-            
             />
 
             <PasswordField
@@ -88,7 +81,9 @@ export default function LoginPage() {
               onChange={(e) => handlePasswordChange(e.target.value)}
               colors={colors}
             />
-            {error && <Text colors={{ text: colors.notification }}>{error}</Text>}
+            {error && (
+              <Text colors={{ text: colors.notification }}>{error}</Text>
+            )}
             <Button
               colors={{
                 textColor: colors.primaryForeground,
@@ -103,10 +98,7 @@ export default function LoginPage() {
           </Stack>
 
           <Box sx={{ mt: 3, textAlign: "center" }}>
-            <Text
-              variant="body2"
-              colors={{ text: colors.primary }}
-            >
+            <Text variant="body2" colors={{ text: colors.primary }}>
               Mot de passe oublié ?
             </Text>
           </Box>
@@ -126,10 +118,7 @@ export default function LoginPage() {
                 backgroundColor: colors.border,
               }}
             />
-            <Text
-              variant="body2"
-              colors={{ text: colors.mutedForeground }}
-            >
+            <Text variant="body2" colors={{ text: colors.mutedForeground }}>
               OU
             </Text>
             <Box
@@ -143,10 +132,7 @@ export default function LoginPage() {
 
           {/* Register Link */}
           <Stack spacing={2} alignItems="center">
-            <Text
-              variant="body2"
-              colors={{ text: colors.mutedForeground }}
-            >
+            <Text variant="body2" colors={{ text: colors.mutedForeground }}>
               Vous n&apos;avez pas encore de compte ?
             </Text>
             <Button

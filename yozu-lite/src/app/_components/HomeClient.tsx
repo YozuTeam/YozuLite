@@ -14,42 +14,55 @@ export default function HomeClient() {
   const router = useRouter();
 
   return (
-    <Box sx={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      minHeight: "100vh",
-    }}
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+      }}
     >
-    <Card colors={{ background: colors.background, border: colors.border }}>
-      <Stack spacing={8} margin={2}>
-        <Stack alignItems="center" spacing={1}>
-          <Text variant="h4" colors={{ text: colors.text }}>
-            Bienvenue sur
-          </Text>
-          <Text variant="h3" colors={{ text: colors.primary }}>
-            YozuLite
-          </Text>
-        </Stack>
+      <Card colors={{ background: colors.background, border: colors.border }}>
+        <Stack spacing={8} margin={2}>
+          <Stack alignItems="center" spacing={1}>
+            <Text variant="h4" colors={{ text: colors.text }}>
+              Bienvenue sur
+            </Text>
+            <Text variant="h3" colors={{ text: colors.primary }}>
+              YozuLite
+            </Text>
+          </Stack>
 
-        <Stack spacing={2}>
-          <Button variant="contained" colors={{
-            textColor: colors.background,
-            borderColor: colors.primary,
-            backgroundColor: colors.primary,
-          }} onClick={() => {router.push("/login")}}>
-            Se connecter
-          </Button>
-          <Button variant="outlined" colors={{
-            textColor: colors.primary,
-            borderColor: colors.primary,
-            backgroundColor: colors.background,
-          }} onClick={() => {router.push("/register")}}>
-            S&apos;inscrire
-          </Button>
+          <Stack spacing={2}>
+            <Button
+              variant="contained"
+              colors={{
+                textColor: colors.background,
+                borderColor: colors.primary,
+                backgroundColor: colors.primary,
+              }}
+              onClick={() => {
+                router.push("/login");
+              }}
+            >
+              Se connecter
+            </Button>
+            <Button
+              variant="outlined"
+              colors={{
+                textColor: colors.primary,
+                borderColor: colors.primary,
+                backgroundColor: colors.background,
+              }}
+              onClick={() => {
+                router.push("/register");
+              }}
+            >
+              S&apos;inscrire
+            </Button>
+          </Stack>
         </Stack>
-      </Stack>
-    </Card>
+      </Card>
     </Box>
   );
 }

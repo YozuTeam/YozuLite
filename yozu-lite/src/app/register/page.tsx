@@ -32,7 +32,11 @@ export default function RegisterPage() {
     console.log({ email, password, selectedValues });
     setError(null);
     // Logique d'inscription ici
-    router.push(selectedValues[0] === "student" ? "/onboarding/student" : "/onboarding/company");
+    router.push(
+      selectedValues[0] === "student"
+        ? "/onboarding/student"
+        : "/onboarding/company",
+    );
   };
 
   const handleEmailChange = (value: string) => {
@@ -65,24 +69,18 @@ export default function RegisterPage() {
           onSubmit={handleSubmit}
         >
           <Stack spacing={1} mb={4} textAlign="center">
-            <Text
-              variant="h4"
-              colors={{ text: colors.primary }}
-            >
+            <Text variant="h4" colors={{ text: colors.primary }}>
               Créer un compte
             </Text>
-            <Text
-              variant="body1"
-              colors={{ text: colors.mutedForeground }}
-            >
+            <Text variant="body1" colors={{ text: colors.mutedForeground }}>
               Rejoignez-nous dès aujourd&apos;hui
             </Text>
           </Stack>
 
           <Stack spacing={3}>
-            <EmailField 
-              label="Email" 
-              required 
+            <EmailField
+              label="Email"
+              required
               colors={colors}
               onChange={(value) => handleEmailChange(value)}
             />
@@ -98,17 +96,18 @@ export default function RegisterPage() {
 
             <Selector
               label="Vous êtes :"
-              multiple = {false}
+              multiple={false}
               selectedValues={selectedValues}
               setSelectedValues={setSelectedValues}
-              options={[
-                { value: "student" },
-                { value: "company" },
-              ]}
+              options={[{ value: "student" }, { value: "company" }]}
               colors={colors}
             />
 
-            {error && <Text variant="body2" colors={{ text: colors.notification }}>{error}</Text>}
+            {error && (
+              <Text variant="body2" colors={{ text: colors.notification }}>
+                {error}
+              </Text>
+            )}
 
             <Button
               colors={{
@@ -124,15 +123,9 @@ export default function RegisterPage() {
           </Stack>
 
           <Box sx={{ mt: 3, textAlign: "center" }}>
-            <Text
-              variant="body2"
-              colors={{ text: colors.mutedForeground }}
-            >
+            <Text variant="body2" colors={{ text: colors.mutedForeground }}>
               En vous inscrivant, vous acceptez nos{" "}
-              <Text
-                variant="body2"
-                colors={{ text: colors.primary }}
-              >
+              <Text variant="body2" colors={{ text: colors.primary }}>
                 conditions d&apos;utilisation
               </Text>
             </Text>
@@ -153,10 +146,7 @@ export default function RegisterPage() {
                 backgroundColor: colors.border,
               }}
             />
-            <Text
-              variant="body2"
-              colors={{ text: colors.mutedForeground }}
-            >
+            <Text variant="body2" colors={{ text: colors.mutedForeground }}>
               OU
             </Text>
             <Box
@@ -169,10 +159,7 @@ export default function RegisterPage() {
           </Box>
 
           <Stack spacing={2} alignItems="center">
-            <Text
-              variant="body2"
-              colors={{ text: colors.mutedForeground }}
-            >
+            <Text variant="body2" colors={{ text: colors.mutedForeground }}>
               Vous avez déjà un compte ?
             </Text>
             <Button
