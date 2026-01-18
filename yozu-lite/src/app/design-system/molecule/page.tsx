@@ -4,13 +4,15 @@ import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import { Container, Stack, Divider } from "@mui/material";
 import { useState, type ReactNode } from "react";
-import Text from "@/design-system/atoms/Text";
+import { Text } from "@/design-system/atoms/Text";
 
 import TextField from "@/design-system/atoms/TextField";
 import IconButton from "@/design-system/molecule/IconButton";
 import { FormField } from "@/design-system/molecule/FormField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
-import { Role, RoleSelector } from "@/design-system/molecule/RoleSelector";
+import { Selector } from "@/design-system/molecule/Selector";
+import  TextArea  from "@/design-system/molecule/TextArea";
+
 function Section({
   title,
   children,
@@ -37,7 +39,7 @@ export default function MoleculesPreviewPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("student");
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   return (
     <Container maxWidth="sm" sx={{ py: 6 }}>
@@ -59,6 +61,16 @@ export default function MoleculesPreviewPage() {
         </FormField>
         </Section>
 
+        <Section title="Textarea" colors={colors}>
+          <TextArea
+            label="Bio"
+            colors={colors}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Dites-nous en plus sur vous..."
+            />
+        </Section>
+
         <Section title="PasswordField" colors={colors}> 
         <PasswordField
           label="Mot de passe"
@@ -70,11 +82,16 @@ export default function MoleculesPreviewPage() {
         </Section>
 
         <Section title="RoleSelector" colors={colors}>
-        <RoleSelector
+        <Selector
           label="Vous êtes"
-          value={role}
-          onChange={setRole}
-          hint="Choisissez votre rôle pour adapter l'expérience."
+          required
+          options={[
+            { value: "student" },
+            { value: "teacher" },
+            { value: "admin" },
+          ]}
+          selectedValues={selectedValues}
+          setSelectedValues={setSelectedValues}
           colors={colors}
         />
         </Section>

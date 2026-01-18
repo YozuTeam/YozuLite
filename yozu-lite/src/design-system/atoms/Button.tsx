@@ -1,7 +1,7 @@
 "use client";
 
 import MuiButton, { ButtonProps as MuiButtonProps } from "@mui/material/Button";
-import Text from "@/design-system/atoms/Text";
+import { Text } from "@/design-system/atoms/Text";
 
 export interface ButtonColors {
   textColor: string;
@@ -24,6 +24,7 @@ export function Button({ colors, size="medium", isLoading=false, ...rest }: Butt
         borderColor: colors.borderColor,
         borderWidth: 1,
         borderStyle: "solid",
+        borderRadius: "15px",
       }}
       disabled={isLoading || rest.disabled}
       size={size}

@@ -8,7 +8,7 @@ import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container, Divider, Stack } from "@mui/material";
 import type { ReactNode } from "react";
-import Text from "@/design-system/atoms/Text";  
+import { Text } from "@/design-system/atoms/Text";  
 
 function Section({
   title,

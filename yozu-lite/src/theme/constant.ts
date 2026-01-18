@@ -1,13 +1,14 @@
 export const NAV_THEME = {
   light: {
-    background: "hsl(0, 0%, 100%)", // background (Blanc)
+    background: "hsla(0, 0%, 100%, 1.00)", // background (Blanc)
+    secondaryBackground: "hsla(0, 0%, 100%, 1.00)", // background (Gris très foncé)
     border: "hsl(240, 5%, 84%)", // border (Gris clair)
     card: "hsl(0, 0%, 100%)", // card (Blanc)
     notification: "hsl(0, 72%, 51%)", // destructive (Rouge)
-    primary: "hsl(263, 67%, 51%)", // primary (Bleu)
+    primary: "hsl(263, 67%, 51%)", // primary (Violet clair)
     text: "hsl(222, 84%, 5%)", // foreground (Gris très foncé)
     primaryForeground: "hsl(0, 0%, 98%)", // primary-foreground (Blanc très clair)
-    secondary: "hsl(224, 76%, 70%)", // secondary (Violet clair)
+    secondary: "hsla(263, 67%, 51%, 0.15)", // secondary (Bleu)
     secondaryForeground: "hsl(222, 84%, 5%)", // secondary-foreground (Gris très foncé)
     accent: "hsl(142, 71%, 45%)", // accent (Vert)
     accentForeground: "hsl(0, 0%, 98%)", // accent-foreground (Blanc très clair)
@@ -26,14 +27,15 @@ export const NAV_THEME = {
     white: "hsl(0,0%,100%)", // WHITE
   },
   dark: {
-    background: "hsl(222, 84%, 5%)", // background (Gris très foncé)
+    background: "hsla(0, 0%, 9%, 1.00)", // background (Gris très foncé)
+    secondaryBackground: "hsla(0, 0%, 9%, 1.00)", // background (Gris très foncé)
     border: "hsl(240, 5%, 26%)", // border (Gris plus foncé)
     card: "hsl(222, 84%, 7%)", // card (Gris très foncé)
     notification: "hsl(0, 73%, 63%)", // destructive (Rouge)
-    primary: "hsl(224, 76%, 70%)", // primary (Violet clair)
+    primary: "hsl(263, 67%, 51%)", // primary (Violet clair)
     text: "hsl(210, 20%, 98%)", // foreground (Blanc très clair)
     primaryForeground: "hsl(222, 84%, 5%)", // primary-foreground (Gris très foncé)
-    secondary: "hsl(263, 67%, 51%)", // secondary (Bleu)
+    secondary: "hsla(263, 67%, 51%, 0.15)", // secondary (Bleu)
     secondaryForeground: "hsl(210, 20%, 98%)", // secondary-foreground (Blanc très clair)
     accent: "hsl(142, 71%, 45%)", // accent (Vert)
     accentForeground: "hsl(222, 84%, 5%)", // accent-foreground (Gris très foncé)
@@ -52,3 +54,4 @@ export const NAV_THEME = {
     white: "hsl(0,0%,100%)", // WHITE
   },
 };
+export type ThemeColors = (typeof NAV_THEME)["light"] | (typeof NAV_THEME)["dark"];

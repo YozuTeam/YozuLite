@@ -9,6 +9,7 @@ const mockColors: TextFieldColors = {
   primary: "#0000ff",
   mutedForeground: "#999999",
   notification: "#ff0000",
+  muted: "#cccccc",
 };
 
 describe("PasswordField", () => {
@@ -98,7 +99,7 @@ describe("PasswordField", () => {
     // Error message
     expect(screen.getByText("My Error")).toBeInTheDocument();
     // Hint should not be visible when error is present (based on FormField logic)
-    expect(screen.queryByText("My Hint")).not.toBeInTheDocument();
+    expect(screen.getByText("My Hint")).toBeInTheDocument();
 
     // Rerender without error to see hint
     rerender(

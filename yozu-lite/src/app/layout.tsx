@@ -21,7 +21,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             enableSystem
             disableTransitionOnChange
           >
-            <ThemeToggle />
+            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 1000 }}>
+              <ThemeToggle />
+            </div>
             {children}
           </ThemeProvider>
         </ClientOnlyProvider>

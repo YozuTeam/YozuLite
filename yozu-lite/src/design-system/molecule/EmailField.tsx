@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { NAV_THEME } from "@/theme/constant";
+import { NAV_THEME, ThemeColors } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import TextField from "../atoms/TextField";
 import { FormField } from "./FormField";
-
-type ThemeColors = (typeof NAV_THEME)["light"] | (typeof NAV_THEME)["dark"];
 
 export interface EmailFieldProps {
   label: string;
@@ -27,38 +25,52 @@ export function EmailField({
   const colors = overrideColors ?? NAV_THEME[colorScheme];
 
   const [value, setValue] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
+  const errorText = "Adresse email invalide";
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setValue(newValue);
-  
-    if (newValue.length > 0 && !emailRegex.test(newValue)) {
-      setError("Adresse email invalide");
-    } else {
-      setError(null);
-    }
+  const validate = (v: string) => {
+  const trimmed = v.trim();
 
-    onChange?.(newValue);
-  };
+  if (trimmed.length === 0) {
+    setHasError(false);
+    return;
+  }
+
+  setHasError(!emailRegex.test(trimmed));
+};
+
+const handleBlur = () => {
+  validate(value);
+};
+  
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const newValue = e.target.value;
+  setValue(newValue);
+  onChange?.(newValue);
+
+  if (hasError) setHasError(false);
+};
+   
 
   return (
     <FormField
       label={label}
       required={required}
       hint={hint}
-      error={error || undefined}
       colors={colors}
     >
       <TextField
         type="email"
         value={value}
         onChange={handleChange}
+        onBlur={handleBlur}
         colors={colors}
         size="medium"
         placeholder="email@exemple.com"
+        error={hasError}
+        errorText={errorText}
       />
     </FormField>
   );
