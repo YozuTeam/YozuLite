@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { ReactNode, FormEvent } from "react";
 
 const padding = {
-  xs: 3,
+  xs: 2,
   sm: 5,
 };
 const borderRadius = "15px";
@@ -21,11 +21,7 @@ type CardProps = {
   onSubmit?: (e: FormEvent) => void;
 };
 
-export default function Card({
-  colors,
-  children,
-  onSubmit,
-}: CardProps) {
+export default function Card({ colors, children, onSubmit }: CardProps) {
   return (
     <Box
       component={onSubmit ? "form" : "div"}
