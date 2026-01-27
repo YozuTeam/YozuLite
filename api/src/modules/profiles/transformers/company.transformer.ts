@@ -9,7 +9,8 @@ export const CompanyTransformer = {
       e.companyName,
       e.description ?? null,
       e.industry ?? null,
-      e.techStack,
+      e.competences,
+      e.contractType,
     );
   },
 
@@ -18,16 +19,16 @@ export const CompanyTransformer = {
     companyName: string;
     description?: string | null;
     industry?: string | null;
-    techStack?: string[];
-    hiringCriteria?: Record<string, unknown> | null;
+    competences?: string[];
+    contractType?: string[];
   }) {
     return {
       userId: input.userId,
       companyName: input.companyName,
       description: input.description ?? null,
       industry: input.industry ?? null,
-      techStack: input.techStack ?? [],
-      hiringCriteria: input.hiringCriteria ?? null,
+      competences: input.competences ?? [],
+      contractType: input.contractType ?? [],
     };
   },
 
@@ -36,8 +37,8 @@ export const CompanyTransformer = {
       companyName: string;
       description: string | null;
       industry: string | null;
-      techStack: string[];
-      hiringCriteria: Record<string, unknown> | null;
+      competences: string[];
+      contractType: string[];
     }>,
   ) {
     return { ...input };

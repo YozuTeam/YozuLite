@@ -10,7 +10,7 @@ export const StudentTransformer = {
       e.firstName,
       e.lastName,
       e.bio ?? null,
-      e.school ?? null,
+      e.contractType,
       e.skills,
     );
   },
@@ -20,7 +20,7 @@ export const StudentTransformer = {
     firstName: string;
     lastName: string;
     bio?: string | null;
-    school?: string | null;
+    contractType?: string[];
     skills?: string[];
   }): Prisma.StudentProfileCreateInput {
     return {
@@ -28,7 +28,7 @@ export const StudentTransformer = {
       firstName: input.firstName,
       lastName: input.lastName,
       bio: input.bio ?? null,
-      school: input.school ?? null,
+      contractType: input.contractType ?? [],
       skills: input.skills ?? [],
     };
   },
@@ -38,7 +38,7 @@ export const StudentTransformer = {
       firstName?: string;
       lastName?: string;
       bio?: string | null;
-      school?: string | null;
+      contractType?: string[];
       skills?: string[];
     }>,
   ): Prisma.StudentProfileUpdateInput {

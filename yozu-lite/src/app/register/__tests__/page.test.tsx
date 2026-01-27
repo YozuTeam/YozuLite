@@ -2,7 +2,7 @@ import RegisterPage from "@/app/register/page";
 import { Button } from "@/design-system/atoms/Button";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Role } from "@yozu/shared";
+import { Role } from "@yozu/contracts";
 
 // Mock useRouter
 const mockPush = jest.fn();

@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main, feature/*]
+    branches: [main, feature/*, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
-  lint-and-build:
-    name: 🔍 Lint & 🏗️ Build
+  ci:
+    name: 🔍 Lint, 🏗️ Build & 🧪 Test
     runs-on: ubuntu-latest
 
     steps:
@@ -19,18 +19,30 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
-      - name: 📥 Install dependencies (fresh install for Linux bindings)
-        run: |
-          rm -rf package-lock.json node_modules yozu-lite/node_modules api/node_modules libs/shared/node_modules
-          npm install
+      - name: 📥 Install dependencies
+        run: npm install
+
+      - name: 🏗️ Build contracts library
+        run: npm run build --workspace=@yozu/contracts
 
       - name: 🏗️ Build shared library
         run: npm run build --workspace=@yozu/shared
+
+      - name: 🛠️ Generate Prisma Client
+        working-directory: api
+        run: npx prisma generate
+
+      - name: 🏗️ Build backend
+        run: npm run build --workspace=api
 
       - name: 🔍 Run ESLint
         working-directory: yozu-lite
         run: npm run lint
 
-      - name: 🏗️ Build project
+      - name: 🏗️ Build frontend
         run: npm run build --workspace=yozu-lite
+
+      - name: 🧪 Run frontend tests with coverage
+        run: npm run test:coverage --workspace=yozu-lite

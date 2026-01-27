@@ -1,4 +1,4 @@
-import { Role } from '@yozu/shared';
+import { OnboardingStep, Role } from '@yozu/shared';
 
 export class UserEntity {
   id!: string;
@@ -6,6 +6,7 @@ export class UserEntity {
   password!: string;
   phoneNumber!: string;
   role!: Role;
+  onboardingStep!: OnboardingStep;
   createdAt!: Date;
   updatedAt!: Date;
   constructor(
@@ -14,6 +15,7 @@ export class UserEntity {
     password: string,
     phoneNumber: string,
     role: Role,
+    onboardingStep: OnboardingStep,
     createdAt: Date,
     updatedAt: Date,
   ) {
@@ -22,6 +24,7 @@ export class UserEntity {
     this.password = password;
     this.phoneNumber = phoneNumber;
     this.role = role;
+    this.onboardingStep = onboardingStep;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
