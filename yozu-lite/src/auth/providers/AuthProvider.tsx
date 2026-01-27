@@ -103,12 +103,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setIsAuthenticated(true);
       setRole(userRole);
       if (userRole) {
-<<<<<<< HEAD
-        await updateProfileStatus(userRole);
-=======
         const completed = await authService.getOnboardingStatus(userRole);
         setIsOnboarded(completed);
->>>>>>> 61da8c8e (refacto(auth) + fix(backend))
       }
     } else {
       setIsAuthenticated(false);
@@ -117,15 +113,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (effectRan.current) return;
-    effectRan.current = true;
-    checkAuthStatus();
-  }, []);
-
-=======
->>>>>>> 61da8c8e (refacto(auth) + fix(backend))
   return (
     <AuthContext.Provider
       value={{ isAuthenticated, role, isOnboarded, logout, checkAuthStatus }}
