@@ -1,16 +1,17 @@
 "use client";
 
+import { Text } from "@/design-system/atoms/Text";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
-import { Text } from "@/design-system/atoms/Text";
 
 import { Button } from "@/design-system/atoms/Button";
+import { EmailField } from "@/design-system/molecule/EmailField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { Selector } from "@/design-system/molecule/Selector";
-import { EmailField } from "@/design-system/molecule/EmailField";
 import Card from "@/design-system/organism/Card";
+import { Role } from "@yozu/shared";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
@@ -33,7 +34,7 @@ export default function RegisterPage() {
     setError(null);
     // Logique d'inscription ici
     router.push(
-      selectedValues[0] === "student"
+      selectedValues[0] === Role.STUDENT
         ? "/onboarding/student"
         : "/onboarding/company",
     );
@@ -99,7 +100,7 @@ export default function RegisterPage() {
               multiple={false}
               selectedValues={selectedValues}
               setSelectedValues={setSelectedValues}
-              options={[{ value: "student" }, { value: "company" }]}
+              options={[{ value: Role.STUDENT }, { value: Role.COMPANY }]}
               colors={colors}
             />
 

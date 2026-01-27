@@ -1,31 +1,29 @@
-import {
-  Injectable,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
 import { PrismaService } from '@/infra/database/database.service';
 import {
-  CreateStudentProfileDto,
-  UpdateStudentProfileDto,
-} from '../dto/student-profile.dto';
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
-  CreateCompanyProfileDto,
-  UpdateCompanyProfileDto,
-} from '../dto/company-profile.dto';
+  CreateCompanyProfileRequest,
+  CreateStudentProfileRequest,
+  UpdateCompanyProfileRequest,
+  UpdateStudentProfileRequest,
+} from '@yozu/shared';
 
 import {
-  StudentProfile as PrismaStudent,
   CompanyProfile as PrismaCompany,
+  StudentProfile as PrismaStudent,
 } from '@prisma/client';
 
-import { StudentProfileEntity } from '../entities/student.entity';
 import { CompanyProfileEntity } from '../entities/company.entity';
+import { StudentProfileEntity } from '../entities/student.entity';
 
-import { StudentProfileModel } from '../models/student.model';
 import { CompanyProfileModel } from '../models/company.model';
+import { StudentProfileModel } from '../models/student.model';
 
-import { StudentTransformer } from '../transformers/student.transformer';
 import { CompanyTransformer } from '../transformers/company.transformer';
+import { StudentTransformer } from '../transformers/student.transformer';
 
 @Injectable()
 export class ProfilesService {
@@ -63,7 +61,7 @@ export class ProfilesService {
   }
 
   async createStudent(
-    dto: CreateStudentProfileDto,
+    dto: CreateStudentProfileRequest,
     userId: string,
   ): Promise<StudentProfileModel> {
     const exists = await this.prisma.studentProfile.findUnique({
@@ -87,7 +85,7 @@ export class ProfilesService {
 
   async updateStudent(
     userId: string,
-    dto: UpdateStudentProfileDto,
+    dto: UpdateStudentProfileRequest,
   ): Promise<StudentProfileModel> {
     await this.ensureStudentExists(userId);
     const data = StudentTransformer.toPrismaUpdate({
@@ -134,7 +132,7 @@ export class ProfilesService {
   }
 
   async createCompany(
-    dto: CreateCompanyProfileDto,
+    dto: CreateCompanyProfileRequest,
     userId: string,
   ): Promise<CompanyProfileModel> {
     const exists = await this.prisma.companyProfile.findUnique({
@@ -157,7 +155,7 @@ export class ProfilesService {
 
   async updateCompany(
     userId: string,
-    dto: UpdateCompanyProfileDto,
+    dto: UpdateCompanyProfileRequest,
   ): Promise<CompanyProfileModel> {
     await this.ensureCompanyExists(userId);
     const data = CompanyTransformer.toPrismaUpdate({

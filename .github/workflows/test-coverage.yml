@@ -18,10 +18,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
-      - name: Install dependencies
-        run: cd yozu-lite && npm ci
+      - name: Install dependencies (fresh install for Linux bindings)
+        run: |
+          rm -rf package-lock.json node_modules yozu-lite/node_modules api/node_modules libs/shared/node_modules
+          npm install
+
+      - name: Build shared library
+        run: npm run build --workspace=@yozu/shared
 
       - name: Run tests with coverage
-        run: cd yozu-lite && npm run test:coverage
+        run: npm run test:coverage --workspace=yozu-lite

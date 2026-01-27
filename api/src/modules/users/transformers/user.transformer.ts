@@ -1,7 +1,6 @@
 import { Prisma, User as PrismaUser } from '@prisma/client';
+import { Role, UserModel } from '@yozu/shared';
 import { UserEntity } from '../entities/user.entity';
-import { UserModel } from '../models/user.model';
-import { Role } from '@/common/enums/role.enums';
 
 export const UserTransformer = {
   fromPrisma(p: PrismaUser): UserEntity {

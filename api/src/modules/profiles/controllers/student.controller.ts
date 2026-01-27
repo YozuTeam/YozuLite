@@ -6,23 +6,23 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
+  Param,
   Patch,
   Post,
-  Param,
   UseGuards,
-  Logger,
 } from '@nestjs/common';
-import { ProfilesService } from '../services/profiles.service';
 import {
-  CreateStudentProfileDto,
-  UpdateStudentProfileDto,
-} from '../dto/student-profile.dto';
+  CreateStudentProfileRequest,
+  Role,
+  UpdateStudentProfileRequest,
+} from '@yozu/shared';
+import { ProfilesService } from '../services/profiles.service';
 
+import { AuthUser, Roles } from '@/common/auth/auth.decorators';
+import { AuthJwtPayload } from '@/common/auth/auth.types';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { RolesGuard } from '@/common/guards/roles.guard';
-import { Roles, AuthUser } from '@/common/auth/auth.decorators';
-import { Role } from '@/common/enums/role.enums';
-import { AuthJwtPayload } from '@/common/auth/auth.types';
 
 @Controller('profiles/students')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -36,11 +36,11 @@ export class StudentController {
   @HttpCode(HttpStatus.CREATED)
   async createMe(
     @AuthUser() user: AuthJwtPayload,
-    @Body() dto: CreateStudentProfileDto,
+    @Body() dto: CreateStudentProfileRequest,
   ) {
     this.logger.debug(`POST /profiles/students/me - userId=${user.sub}`);
     this.logger.verbose(
-      `Received CreateStudentProfileDto: ${JSON.stringify(dto)}`,
+      `Received CreateStudentProfileRequest: ${JSON.stringify(dto)}`,
     );
 
     try {
@@ -79,10 +79,10 @@ export class StudentController {
   @Patch('me')
   async updateMe(
     @AuthUser() user: AuthJwtPayload,
-    @Body() dto: UpdateStudentProfileDto,
+    @Body() dto: UpdateStudentProfileRequest,
   ) {
     this.logger.debug(`PATCH /profiles/students/me - userId=${user.sub}`);
-    this.logger.verbose(`UpdateStudentProfileDto: ${JSON.stringify(dto)}`);
+    this.logger.verbose(`UpdateStudentProfileRequest: ${JSON.stringify(dto)}`);
 
     try {
       const result = await this.svc.updateStudent(user.sub, dto);
@@ -153,7 +153,7 @@ export class StudentController {
   @Patch(':id')
   async updateById(
     @Param('id') id: string,
-    @Body() dto: UpdateStudentProfileDto,
+    @Body() dto: UpdateStudentProfileRequest,
   ) {
     this.logger.debug(`PATCH /profiles/students/${id} (admin access)`);
     this.logger.verbose(`UpdateStudentProfileDto: ${JSON.stringify(dto)}`);
