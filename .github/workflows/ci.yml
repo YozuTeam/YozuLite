@@ -28,12 +28,6 @@ jobs:
       - name: 🏗️ Build shared library
         run: npm run build --workspace=@yozu/shared
 
-      - name: 🏗️ Build shared library
-        run: npm run build --workspace=@yozu/shared
-
-      - name: 🏗️ Build shared library
-        run: npm run build --workspace=@yozu/shared
-
       - name: 🔍 Run ESLint
         working-directory: yozu-lite
         run: npm run lint
