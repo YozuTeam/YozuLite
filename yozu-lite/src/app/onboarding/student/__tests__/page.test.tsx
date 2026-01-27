@@ -11,26 +11,38 @@ jest.mock("next/navigation", () => ({
 }));
 
 jest.mock("@/design-system/template/OnboardingForm", () => {
-  return jest.fn((props: any) => (
-    <div data-testid="mock-form">
-      <h1 data-testid="form-title">{props.labels.labelTitle}</h1>
-      <button
-        onClick={() => {
-          props.setFormData.setInputField1("John");
-          props.setFormData.setInputField2("Doe");
-          props.setFormData.setTextAreaField("Bio test");
-          props.setFormData.setPickerField(["Skill1"]);
-          props.setFormData.setSelectorField(["Oui"]);
-        }}
-        data-testid="btn-fill-form"
-      >
-        Fill
-      </button>
-      <button onClick={props.onSubmit} data-testid="btn-submit">
-        Submit
-      </button>
-    </div>
-  ));
+  return jest.fn(
+    (props: {
+      labels: { labelTitle: string };
+      setFormData: {
+        setInputField1: (v: string) => void;
+        setInputField2: (v: string) => void;
+        setTextAreaField: (v: string) => void;
+        setPickerField: (v: string[]) => void;
+        setSelectorField: (v: string[]) => void;
+      };
+      onSubmit: () => void;
+    }) => (
+      <div data-testid="mock-form">
+        <h1 data-testid="form-title">{props.labels.labelTitle}</h1>
+        <button
+          onClick={() => {
+            props.setFormData.setInputField1("John");
+            props.setFormData.setInputField2("Doe");
+            props.setFormData.setTextAreaField("Bio test");
+            props.setFormData.setPickerField(["Skill1"]);
+            props.setFormData.setSelectorField(["Oui"]);
+          }}
+          data-testid="btn-fill-form"
+        >
+          Fill
+        </button>
+        <button onClick={props.onSubmit} data-testid="btn-submit">
+          Submit
+        </button>
+      </div>
+    ),
+  );
 });
 
 describe("OnboardingStudentPage", () => {

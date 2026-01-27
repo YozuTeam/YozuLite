@@ -1,6 +1,5 @@
-import { Method } from "./constants";
 import axios, { AxiosResponse } from "axios";
-import { BACKEND_URL } from "./constants";
+import { BACKEND_URL, Method } from "./constants";
 
 export async function submitData<T, R>(props: {
   route: string;
@@ -55,6 +54,5 @@ export function parseJwt(token: string) {
 export function isTokenExpired(token: string): boolean {
   const decoded = parseJwt(token);
   const isExpired = decoded?.exp ? decoded.exp * 1000 < Date.now() : true;
-  console.log("Token expired:", isExpired);
   return isExpired;
 }

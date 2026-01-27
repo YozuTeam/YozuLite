@@ -43,8 +43,6 @@ export default function AccueilPage() {
             : `/profiles/companies/me`,
         method: Method.GET,
       });
-      console.log(profileResponse);
-
       if (profileResponse.ok && profileResponse.data) {
         if (role === Role.STUDENT) {
           setStudentProfile(profileResponse.data as IStudentProfileResponse);

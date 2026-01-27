@@ -113,9 +113,6 @@ describe("RegisterPage", () => {
 
       await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
 
-      // The validation happens on blur or on submit in some cases
-      // In our code, validation happens on Blur.
-      const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
       await user.tab(); // trigger blur
 
       expect(

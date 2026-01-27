@@ -24,10 +24,60 @@ export function AuthProvider({ children }: PropsWithChildren) {
     router.replace("/login");
   };
 
+<<<<<<< HEAD
   const updateProfileStatus = async (userRole: Role) => {
     const completed = await authService.getOnboardingStatus(userRole);
     setIsOnboarded(completed);
   };
+=======
+  useEffect(() => {
+    if (effectRan.current) return;
+    effectRan.current = true;
+
+    const initAuth = async () => {
+      const accessToken = getAccessToken();
+      const refreshToken = getRefreshToken();
+
+      if (!accessToken && !refreshToken) {
+        setIsAuthenticated(false);
+        setRole(null);
+        setIsOnboarded(null);
+        return;
+      }
+
+      let validToken = accessToken;
+
+      if (!accessToken || isTokenExpired(accessToken)) {
+        if (refreshToken && !isTokenExpired(refreshToken)) {
+          const refreshed = await authService.refreshAccessToken();
+          validToken = refreshed?.accessToken || null;
+        } else {
+          setIsAuthenticated(false);
+          setRole(null);
+          setIsOnboarded(null);
+          return;
+        }
+      }
+
+      if (validToken) {
+        const decoded = parseJwt(validToken);
+        const userRole = decoded?.role as Role;
+        setIsAuthenticated(true);
+        setRole(userRole);
+        if (userRole) {
+          const completed = await authService.getOnboardingStatus(userRole);
+          setIsOnboarded(completed);
+        }
+      } else {
+        setIsAuthenticated(false);
+        setRole(null);
+        setIsOnboarded(null);
+      }
+    };
+
+    initAuth();
+  }, []);
+>>>>>>> 61da8c8e (refacto(auth) + fix(backend))
 
   const checkAuthStatus = async () => {
     const accessToken = getAccessToken();
@@ -60,7 +110,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setIsAuthenticated(true);
       setRole(userRole);
       if (userRole) {
+<<<<<<< HEAD
         await updateProfileStatus(userRole);
+=======
+        const completed = await authService.getOnboardingStatus(userRole);
+        setIsOnboarded(completed);
+>>>>>>> 61da8c8e (refacto(auth) + fix(backend))
       }
     } else {
       setIsAuthenticated(false);
@@ -69,12 +124,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     if (effectRan.current) return;
     effectRan.current = true;
     checkAuthStatus();
   }, []);
 
+=======
+>>>>>>> 61da8c8e (refacto(auth) + fix(backend))
   return (
     <AuthContext.Provider
       value={{ isAuthenticated, role, isOnboarded, logout, checkAuthStatus }}
