@@ -228,7 +228,7 @@ export class StudentController {
     this.logger.debug(`DELETE /profiles/students/me - userId=${user.sub}`);
 
     try {
-      const result = await this.svc.deleteStudent(user.sub);
+      const result = await this.svc.deleteStudentByUserId(user.sub);
       this.logger.log(`Deleted student profile for user ${user.sub}`);
       return result;
     } catch (error) {
@@ -308,7 +308,7 @@ export class StudentController {
   async getById(@Param('id') id: string): Promise<StudentProfileResponse> {
     this.logger.debug(`GET /profiles/students/${id} (admin access)`);
     try {
-      const result = await this.svc.getStudent(id);
+      const result = await this.svc.getStudentById(id);
       this.logger.log(`Fetched student profile id=${id}`);
       return result;
     } catch (error) {
@@ -354,7 +354,7 @@ export class StudentController {
     this.logger.verbose(`UpdateStudentProfileDto: ${JSON.stringify(dto)}`);
 
     try {
-      const result = await this.svc.updateStudent(id, dto);
+      const result = await this.svc.updateStudentById(id, dto);
       this.logger.log(`Updated student profile id=${id} successfully`);
       return result;
     } catch (error) {
@@ -394,7 +394,7 @@ export class StudentController {
   async removeById(@Param('id') id: string): Promise<DeleteResponse> {
     this.logger.debug(`DELETE /profiles/students/${id} (admin access)`);
     try {
-      const result = await this.svc.deleteStudent(id);
+      const result = await this.svc.deleteStudentById(id);
       this.logger.log(`Deleted student profile id=${id}`);
       return result;
     } catch (error) {

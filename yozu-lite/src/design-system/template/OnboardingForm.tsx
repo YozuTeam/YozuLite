@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { Box } from "@mui/material";
+import Card from "@/design-system/organism/Card";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import Card from "@/design-system/organism/Card";
+import { Box } from "@mui/material";
+import { useState } from "react";
+import { Button } from "../atoms/Button";
+import { Text } from "../atoms/Text";
+import { Selector, SelectorOption } from "../molecule/Selector";
+import Textarea from "../molecule/TextArea";
+import TextFormField from "../molecule/TextFormField";
 import Picker from "../organism/Picker";
 import SelectOverlay from "../organism/SelectOverlay";
-import { Button } from "../atoms/Button";
-import Textarea from "../molecule/TextArea";
-import { Selector, SelectorOption } from "../molecule/Selector";
-import { Text } from "../atoms/Text";
-import TextFormField from "../molecule/TextFormField";
 
 export type PickerOption = { label: string; value: string };
 
@@ -68,7 +68,7 @@ export default function Form({
   const { colorScheme } = useColorTheme();
   const colors = NAV_THEME[colorScheme];
   const [pickerOpen, setPickerOpen] = useState(false);
-  const formattedSelectorOptions: SelectorOption[] = (
+  const formattedSelectorOptions: SelectorOption<string>[] = (
     selectorOptions || []
   ).map((opt) => ({ value: opt }));
   const formattedPickerOptions: string[] = pickerOptions || [];

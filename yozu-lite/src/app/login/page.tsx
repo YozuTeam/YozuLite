@@ -1,25 +1,27 @@
 "use client";
 
+import { Text } from "@/design-system/atoms/Text";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Container, Box, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
-import { Text } from "@/design-system/atoms/Text";
 
+import { authService } from "@/auth";
 import { Button } from "@/design-system/atoms/Button";
-import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { EmailField } from "@/design-system/molecule/EmailField";
+import { PasswordField } from "@/design-system/molecule/PasswordField";
 import Card from "@/design-system/organism/Card";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const { colorScheme } = useColorTheme();
   const colors = NAV_THEME[colorScheme];
-
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email === "" || password === "") {
       setError("Veuillez remplir tous les champs");
@@ -27,7 +29,15 @@ export default function LoginPage() {
     }
     console.log({ email, password });
     setError(null);
-    // Logique de connexion ici
+    try {
+      await authService.login(email, password);
+      router.replace("/yozu-lite/accueil");
+    } catch (error: unknown) {
+      console.error("Login Error:", error);
+      setError(
+        error instanceof Error ? error.message : "Une erreur est survenue",
+      );
+    }
   };
   const handleEmailChange = (value: string) => {
     setEmail(value);

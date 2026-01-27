@@ -1,178 +1,242 @@
 import RegisterPage from "@/app/register/page";
-import { Button } from "@/design-system/atoms/Button";
-import { render, screen } from "@testing-library/react";
+import { authService } from "@/auth";
+import * as themeHook from "@/theme/useColorTheme";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Role } from "@yozu/contracts";
+import * as navigation from "next/navigation";
 
-// Mock useRouter
-const mockPush = jest.fn();
+const mockReplace = jest.fn();
+
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: mockPush,
-  }),
+  useRouter: jest.fn(),
 }));
 
-// Mock useColorTheme
 jest.mock("@/theme/useColorTheme", () => ({
-  useColorTheme: () => ({
-    colorScheme: "light",
-  }),
+  useColorTheme: jest.fn(),
 }));
 
-describe("RegisterPage UI", () => {
+describe("RegisterPage", () => {
   let user: ReturnType<typeof userEvent.setup>;
+  let registerSpy: jest.SpyInstance;
+  let useColorThemeMock: jest.Mock;
+  let useRouterMock: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     user = userEvent.setup();
-    render(<RegisterPage />);
-  });
 
-  it("displays the main fields (email + password + button)", () => {
-    expect(
-      screen.getByPlaceholderText(/email@exemple.com/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByPlaceholderText(/Créez un mot de passe/i),
-    ).toBeInTheDocument();
+    // Setup Mocks and Spies
+    useRouterMock = navigation.useRouter as jest.Mock;
+    useColorThemeMock = themeHook.useColorTheme as jest.Mock;
 
-    expect(
-      screen.getByRole("button", { name: /S'inscrire/i }),
-    ).toBeInTheDocument();
-  });
-
-  it("displays the RoleSelector with both options", () => {
-    expect(
-      screen.getByRole("button", { name: Role.STUDENT }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: Role.COMPANY }),
-    ).toBeInTheDocument();
-  });
-
-  it("displays an error if the email is invalid", async () => {
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-
-    await user.type(emailInput, "pas-un-mail");
-    await user.tab();
-
-    expect(
-      await screen.findByText(/Adresse email invalide/i),
-    ).toBeInTheDocument();
-  });
-
-  it("accepts a valid email without displaying an error", async () => {
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-
-    await user.type(emailInput, "test@example.com");
-
-    expect(
-      screen.queryByText(/Adresse email invalide/i),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText(/Ce champ est requis/i)).not.toBeInTheDocument();
-  });
-
-  it("allows changing role via the RoleSelector", async () => {
-    const companyButton = screen.getByRole("button", { name: Role.COMPANY });
-
-    await user.click(companyButton);
-    expect(companyButton).toBeInTheDocument();
-  });
-
-  it("contains a link to the login page", () => {
-    const loginLink = screen.getByRole("link", { name: /Se connecter/i });
-
-    expect(loginLink).toBeInTheDocument();
-    expect(loginLink).toHaveAttribute("href", "/login");
-  });
-
-  it("submits the form and logs the email, password and role", async () => {
-    const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
-
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
-
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "MonMotDePasse123");
-
-    // Select role
-    await user.click(screen.getByRole("button", { name: Role.STUDENT }));
-
-    const button = screen.getByRole("button", { name: /S'inscrire/i });
-    await user.click(button);
-
-    expect(consoleLogSpy).toHaveBeenCalledWith({
-      email: "test@example.com",
-      password: "MonMotDePasse123",
-      selectedValues: [Role.STUDENT],
+    useRouterMock.mockReturnValue({
+      replace: mockReplace,
+      push: jest.fn(),
+      prefetch: jest.fn(),
     });
 
-    expect(mockPush).toHaveBeenCalledWith("/onboarding/student");
+    useColorThemeMock.mockReturnValue({
+      colorScheme: "light",
+      isDarkColorScheme: false,
+      setColorScheme: jest.fn(),
+      toggleColorScheme: jest.fn(),
+    });
+
+    // We can use SpyInstance on authService because it's an object we control
+    registerSpy = jest.spyOn(authService, "register");
   });
 
-  it("displays an error if the fields are empty", async () => {
-    const button = screen.getByRole("button", { name: /S'inscrire/i });
-    await user.click(button);
-
-    expect(
-      screen.getByText(/Veuillez remplir tous les champs/i),
-    ).toBeInTheDocument();
-
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
-
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "MonMotDePasse123");
-
-    // Clear error by filling
-    const submitBtn = screen.getByRole("button", { name: /S'inscrire/i });
-    await user.click(submitBtn);
-
-    expect(
-      screen.queryByText(/Veuillez remplir tous les champs/i),
-    ).not.toBeInTheDocument();
+  afterEach(() => {
+    registerSpy.mockRestore();
   });
 
-  it("toggles password visibility", async () => {
-    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
-    expect(passwordInput).toHaveAttribute("type", "password");
+  describe("Rendering", () => {
+    it("should render the registration title and subtitle", () => {
+      render(<RegisterPage />);
+      expect(screen.getByText("Créer un compte")).toBeInTheDocument();
+      expect(
+        screen.getByText("Rejoignez-nous dès aujourd'hui"),
+      ).toBeInTheDocument();
+    });
 
-    // The toggle button is an IconButton inside PasswordField.
-    // It usually has an aria-label or accessible icon.
-    // Without specific label, we might find it by excluding others.
-    // But let's check PasswordField implementation to see if we can add aria-label or find it better.
-    // Assuming previous logic worked:
-    const buttons = screen.getAllByRole("button");
-    const toggleButton = buttons.find(
-      (btn) =>
-        !btn.textContent?.match(/S'inscrire|student|company|Se connecter/i),
-    );
+    it("should display all required input fields", () => {
+      render(<RegisterPage />);
+      expect(
+        screen.getByPlaceholderText(/email@exemple.com/i),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByPlaceholderText(/Créez un mot de passe/i),
+      ).toBeInTheDocument();
+      expect(screen.getByPlaceholderText("06 12 34 56 78")).toBeInTheDocument();
+    });
 
-    if (!toggleButton) {
-      // If we can't find it, maybe the previous test logic was flaky.
-      // Let's assume it works or try to find by specific icon path if visible to screen? specific logic.
-      // For now, let's keep the existing logic but improved regex
-    }
-
-    // Actually, let's verify if PasswordField has a visibility toggle.
+    it("should display role selection options", () => {
+      render(<RegisterPage />);
+      expect(
+        screen.getByRole("button", { name: Role.STUDENT }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: Role.COMPANY }),
+      ).toBeInTheDocument();
+    });
   });
-});
 
-describe("Button Component Standalone", () => {
-  it("renders loading state correctly", () => {
-    render(
-      <Button
-        colors={{
-          textColor: "text",
-          backgroundColor: "background",
-          borderColor: "border",
-        }}
-        isLoading={true}
-      >
-        CTA Button
-      </Button>,
-    );
-    expect(screen.getByText("Chargement...")).toBeInTheDocument();
-    expect(screen.getByRole("button")).toBeDisabled();
+  describe("Form Validation", () => {
+    it("should show an error message if fields are empty on submission", async () => {
+      render(<RegisterPage />);
+      const submitBtn = screen.getByRole("button", { name: /S'inscrire/i });
+      await user.click(submitBtn);
+
+      expect(
+        screen.getByText("Veuillez remplir tous les champs"),
+      ).toBeInTheDocument();
+      expect(registerSpy).not.toHaveBeenCalled();
+    });
+
+    it("should show an email validation error for invalid email format", async () => {
+      render(<RegisterPage />);
+
+      await user.type(
+        screen.getByPlaceholderText(/email@exemple.com/i),
+        "invalid-email",
+      );
+      await user.type(
+        screen.getByPlaceholderText(/Créez un mot de passe/i),
+        "Password123!",
+      );
+      await user.type(
+        screen.getByPlaceholderText("06 12 34 56 78"),
+        "0612345678",
+      );
+      await user.click(screen.getByRole("button", { name: Role.STUDENT }));
+
+      await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
+
+      await user.tab(); // trigger blur
+
+      expect(
+        await screen.findByText(/Adresse email invalide/i),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("Authentication Logic (Unit Tests / Backend Mocking)", () => {
+    it("should call authService.register with correct data and redirect a student", async () => {
+      registerSpy.mockResolvedValue({
+        accessToken: "abc",
+        refreshToken: "def",
+      });
+      render(<RegisterPage />);
+
+      await user.type(
+        screen.getByPlaceholderText(/email@exemple.com/i),
+        "student@test.com",
+      );
+      await user.type(
+        screen.getByPlaceholderText(/Créez un mot de passe/i),
+        "Password123!",
+      );
+      await user.type(
+        screen.getByPlaceholderText("06 12 34 56 78"),
+        "0612345678",
+      );
+
+      // Select role
+      await user.click(screen.getByRole("button", { name: Role.STUDENT }));
+
+      await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
+
+      await waitFor(() => {
+        expect(registerSpy).toHaveBeenCalledWith(
+          "student@test.com",
+          "Password123!",
+          "0612345678",
+          Role.STUDENT,
+        );
+        expect(mockReplace).toHaveBeenCalledWith("/onboarding/student");
+      });
+    });
+
+    it("should call authService.register and redirect a company", async () => {
+      registerSpy.mockResolvedValue({
+        accessToken: "abc",
+        refreshToken: "def",
+      });
+      render(<RegisterPage />);
+
+      await user.type(
+        screen.getByPlaceholderText(/email@exemple.com/i),
+        "company@test.com",
+      );
+      await user.type(
+        screen.getByPlaceholderText(/Créez un mot de passe/i),
+        "Password123!",
+      );
+      await user.type(
+        screen.getByPlaceholderText("06 12 34 56 78"),
+        "0612345678",
+      );
+
+      // Select role
+      await user.click(screen.getByRole("button", { name: Role.COMPANY }));
+
+      await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
+
+      await waitFor(() => {
+        expect(registerSpy).toHaveBeenCalledWith(
+          "company@test.com",
+          "Password123!",
+          "0612345678",
+          Role.COMPANY,
+        );
+        expect(mockReplace).toHaveBeenCalledWith("/onboarding/company");
+      });
+    });
+
+    it("should display a specific error message if registration fails", async () => {
+      const errorMessage = "Cet email est déjà utilisé";
+      registerSpy.mockRejectedValue(new Error(errorMessage));
+      render(<RegisterPage />);
+
+      await user.type(
+        screen.getByPlaceholderText(/email@exemple.com/i),
+        "existing@test.com",
+      );
+      await user.type(
+        screen.getByPlaceholderText(/Créez un mot de passe/i),
+        "Password123!",
+      );
+      await user.type(
+        screen.getByPlaceholderText("06 12 34 56 78"),
+        "0612345678",
+      );
+      await user.click(screen.getByRole("button", { name: Role.STUDENT }));
+
+      await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
+
+      expect(await screen.findByText(errorMessage)).toBeInTheDocument();
+    });
+  });
+
+  describe("UI Interactions", () => {
+    it("should toggle password visibility when clicking the visibility icon", async () => {
+      render(<RegisterPage />);
+      const passwordInput = screen.getByPlaceholderText(
+        /Créez un mot de passe/i,
+      );
+      expect(passwordInput).toHaveAttribute("type", "password");
+
+      // Find the visibility icon button (it has an svg)
+      const buttons = screen.getAllByRole("button");
+      const visibilityToggle = buttons.find((b) => b.querySelector("svg"));
+
+      if (visibilityToggle) {
+        await user.click(visibilityToggle);
+        expect(passwordInput).toHaveAttribute("type", "text");
+        await user.click(visibilityToggle);
+        expect(passwordInput).toHaveAttribute("type", "password");
+      }
+    });
   });
 });

@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { CompanyProfileEntity } from '../entities/company.entity';
 import { CompanyProfileModel } from '../models/company.model';
 
@@ -21,9 +22,9 @@ export const CompanyTransformer = {
     industry?: string | null;
     competences?: string[];
     contractType?: string[];
-  }) {
+  }): Prisma.CompanyProfileCreateInput {
     return {
-      userId: input.userId,
+      user: { connect: { id: input.userId } },
       companyName: input.companyName,
       description: input.description ?? null,
       industry: input.industry ?? null,
@@ -40,7 +41,7 @@ export const CompanyTransformer = {
       competences: string[];
       contractType: string[];
     }>,
-  ) {
+  ): Prisma.CompanyProfileUpdateInput {
     return { ...input };
   },
 };
