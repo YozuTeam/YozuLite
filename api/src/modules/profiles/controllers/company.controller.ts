@@ -5,22 +5,22 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Patch,
   Post,
-  Param,
   UseGuards,
 } from '@nestjs/common';
-import { ProfilesService } from '../services/profiles.service';
 import {
-  CreateCompanyProfileDto,
-  UpdateCompanyProfileDto,
-} from '../dto/company-profile.dto';
+  CreateCompanyProfileRequest,
+  Role,
+  UpdateCompanyProfileRequest,
+} from '@yozu/shared';
+import { ProfilesService } from '../services/profiles.service';
 
+import { AuthUser, Roles } from '@/common/auth/auth.decorators';
+import { AuthJwtPayload } from '@/common/auth/auth.types';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { RolesGuard } from '@/common/guards/roles.guard';
-import { Roles, AuthUser } from '@/common/auth/auth.decorators';
-import { Role } from '@/common/enums/role.enums';
-import { AuthJwtPayload } from '@/common/auth/auth.types';
 
 @Controller('profiles/companies')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -32,7 +32,7 @@ export class CompanyController {
   @HttpCode(HttpStatus.CREATED)
   createMe(
     @AuthUser() user: AuthJwtPayload,
-    @Body() dto: CreateCompanyProfileDto,
+    @Body() dto: CreateCompanyProfileRequest,
   ) {
     return this.svc.createCompany(dto, user.sub);
   }
@@ -47,7 +47,7 @@ export class CompanyController {
   @Patch('me')
   updateMe(
     @AuthUser() user: AuthJwtPayload,
-    @Body() dto: UpdateCompanyProfileDto,
+    @Body() dto: UpdateCompanyProfileRequest,
   ) {
     return this.svc.updateCompany(user.sub, dto);
   }
@@ -72,7 +72,10 @@ export class CompanyController {
 
   @Roles(Role.ADMIN)
   @Patch(':id')
-  updateById(@Param('id') id: string, @Body() dto: UpdateCompanyProfileDto) {
+  updateById(
+    @Param('id') id: string,
+    @Body() dto: UpdateCompanyProfileRequest,
+  ) {
     return this.svc.updateCompany(id, dto);
   }
 

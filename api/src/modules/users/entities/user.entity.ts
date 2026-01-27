@@ -1,4 +1,4 @@
-import { Role } from '@/common/enums/role.enums';
+import { Role } from '@yozu/shared';
 
 export class UserEntity {
   id!: string;
