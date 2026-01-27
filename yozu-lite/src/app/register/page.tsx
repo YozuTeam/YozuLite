@@ -10,33 +10,47 @@ import { Button } from "@/design-system/atoms/Button";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { Selector } from "@/design-system/molecule/Selector";
 import { EmailField } from "@/design-system/molecule/EmailField";
+import { PhoneField } from "@/design-system/molecule/PhoneField";
 import Card from "@/design-system/organism/Card";
 import { useRouter } from "next/navigation";
+import { register } from "@/app/_providers/AuthProvider";
 
 export default function RegisterPage() {
   const { colorScheme } = useColorTheme();
   const colors = NAV_THEME[colorScheme];
   const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === "" || password === "") {
+    if (
+      email === "" ||
+      password === "" ||
+      !selectedValues[0] ||
+      phoneNumber === ""
+    ) {
       setError("Veuillez remplir tous les champs");
       return;
     }
     console.log({ email, password, selectedValues });
     setError(null);
-    // Logique d'inscription ici
-    router.push(
-      selectedValues[0] === "student"
-        ? "/onboarding/student"
-        : "/onboarding/company",
-    );
+    try {
+      await register(email, password, phoneNumber, selectedValues[0]);
+      router.replace(
+        selectedValues[0] === "ADMIN"
+          ? "/onboarding/student"
+          : "/onboarding/company",
+      );
+    } catch (error: unknown) {
+      console.error("Register Error:", error);
+      setError(
+        error instanceof Error ? error.message : "Une erreur est survenue",
+      );
+    }
   };
 
   const handleEmailChange = (value: string) => {
@@ -46,6 +60,11 @@ export default function RegisterPage() {
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
+    setError(null);
+  };
+
+  const handlePhoneNumberChange = (value: string) => {
+    setPhoneNumber(value);
     setError(null);
   };
 
@@ -94,12 +113,20 @@ export default function RegisterPage() {
               colors={colors}
             />
 
+            <PhoneField
+              label="Numéro de téléphone"
+              required
+              value={phoneNumber}
+              onChange={(value) => handlePhoneNumberChange(value)}
+              colors={colors}
+            />
+
             <Selector
               label="Vous êtes :"
               multiple={false}
               selectedValues={selectedValues}
               setSelectedValues={setSelectedValues}
-              options={[{ value: "student" }, { value: "company" }]}
+              options={[{ value: "ADMIN" }, { value: "COMPANY" }]}
               colors={colors}
             />
 

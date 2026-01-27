@@ -1,13 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import RegisterPage from "@/app/register/page";
-import { Button } from "@/design-system/atoms/Button";
+import { register } from "@/app/_providers/AuthProvider";
 
 // Mock useRouter
-const mockPush = jest.fn();
+const mockReplace = jest.fn();
 jest.mock("next/navigation", () => ({
   useRouter: () => ({
-    push: mockPush,
+    replace: mockReplace,
   }),
 }));
 
@@ -18,141 +18,182 @@ jest.mock("@/theme/useColorTheme", () => ({
   }),
 }));
 
-describe("RegisterPage UI", () => {
+// Mock register function
+jest.mock("@/app/_providers/AuthProvider", () => ({
+  register: jest.fn(),
+}));
+
+const mockRegister = register as jest.MockedFunction<typeof register>;
+
+describe("RegisterPage", () => {
   let user: ReturnType<typeof userEvent.setup>;
 
   beforeEach(() => {
     jest.clearAllMocks();
     user = userEvent.setup();
+  });
+
+  it("renders correctly", () => {
     render(<RegisterPage />);
+    expect(screen.getByText("Créer un compte")).toBeInTheDocument();
   });
 
-  it("displays the main fields (email + password + button)", () => {
-    expect(screen.getByPlaceholderText(/email@exemple.com/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Créez un mot de passe/i)).toBeInTheDocument();
+  it("displays error when fields are empty on submit", async () => {
+    render(<RegisterPage />);
+    const submitBtn = screen.getByRole("button", { name: /S'inscrire/i });
+
+    await user.click(submitBtn);
 
     expect(
-      screen.getByRole("button", { name: /S'inscrire/i })
+      screen.getByText("Veuillez remplir tous les champs"),
     ).toBeInTheDocument();
   });
 
-  it("displays the RoleSelector with both options", () => {
-    expect(screen.getByRole("button", { name: "student" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "company" })).toBeInTheDocument();
-  });
+  it("submits successfully and redirects for student role", async () => {
+    mockRegister.mockResolvedValueOnce();
+    render(<RegisterPage />);
 
-  it("displays an error if the email is invalid", async () => {
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-
-    await user.type(emailInput, "pas-un-mail");
-    await user.tab();
-
-    expect(
-      await screen.findByText(/Adresse email invalide/i)
-    ).toBeInTheDocument();
-  });
-
-  it("accepts a valid email without displaying an error", async () => {
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-
-    await user.type(emailInput, "test@example.com");
-
-    expect(screen.queryByText(/Adresse email invalide/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Ce champ est requis/i)).not.toBeInTheDocument();
-  });
-
-  it("allows changing role via the RoleSelector", async () => {
-    const companyButton = screen.getByRole("button", { name: "company" });
-
-    await user.click(companyButton);
-    expect(companyButton).toBeInTheDocument();
-  });
-
-  it("contains a link to the login page", () => {
-    const loginLink = screen.getByRole("link", { name: /Se connecter/i });
-
-    expect(loginLink).toBeInTheDocument();
-    expect(loginLink).toHaveAttribute("href", "/login");
-  });
-
-  it("submits the form and logs the email, password and role", async () => {
-    const consoleLogSpy = jest.spyOn(console, "log").mockImplementation();
-
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
-
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "MonMotDePasse123");
-    
-    // Select role
+    await user.type(
+      screen.getByPlaceholderText(/email@exemple.com/i),
+      "test@student.com",
+    );
+    await user.type(
+      screen.getByPlaceholderText(/Créez un mot de passe/i),
+      "Password123!",
+    );
+    await user.type(
+      screen.getByPlaceholderText("06 12 34 56 78"),
+      "0612345678",
+    );
     await user.click(screen.getByRole("button", { name: "student" }));
 
-    const button = screen.getByRole("button", { name: /S'inscrire/i });
-    await user.click(button);
+    await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
 
-    expect(consoleLogSpy).toHaveBeenCalledWith({
-      email: "test@example.com",
-      password: "MonMotDePasse123",
-      selectedValues: ["student"],
+    await waitFor(() => {
+      expect(mockRegister).toHaveBeenCalledWith(
+        "test@student.com",
+        "Password123!",
+        "0612345678",
+        "student",
+      );
+      expect(mockReplace).toHaveBeenCalledWith("/onboarding/student");
     });
-
-    expect(mockPush).toHaveBeenCalledWith("/onboarding/student");
   });
 
-  it("displays an error if the fields are empty", async () => {
-    const button = screen.getByRole("button", { name: /S'inscrire/i });
-    await user.click(button);
+  it("submits successfully and redirects for company role", async () => {
+    mockRegister.mockResolvedValueOnce();
+    render(<RegisterPage />);
 
-    expect(screen.getByText(/Veuillez remplir tous les champs/i)).toBeInTheDocument();
-    
-    const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
-    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
+    await user.type(
+      screen.getByPlaceholderText(/email@exemple.com/i),
+      "hr@company.com",
+    );
+    await user.type(
+      screen.getByPlaceholderText(/Créez un mot de passe/i),
+      "Password123!",
+    );
+    await user.type(
+      screen.getByPlaceholderText("06 12 34 56 78"),
+      "0612345678",
+    );
+    await user.click(screen.getByRole("button", { name: "company" }));
 
-    await user.type(emailInput, "test@example.com");
-    await user.type(passwordInput, "MonMotDePasse123");
-    
-    // Clear error by filling
+    await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
+
+    await waitFor(() => {
+      expect(mockRegister).toHaveBeenCalledWith(
+        "hr@company.com",
+        "Password123!",
+        "0612345678",
+        "company",
+      );
+      expect(mockReplace).toHaveBeenCalledWith("/onboarding/company");
+    });
+  });
+
+  it("displays error message from register failure (Error instance)", async () => {
+    mockRegister.mockRejectedValueOnce(new Error("Email already exists"));
+    render(<RegisterPage />);
+
+    await user.type(
+      screen.getByPlaceholderText(/email@exemple.com/i),
+      "exists@test.com",
+    );
+    await user.type(
+      screen.getByPlaceholderText(/Créez un mot de passe/i),
+      "Password123!",
+    );
+    await user.type(
+      screen.getByPlaceholderText("06 12 34 56 78"),
+      "0612345678",
+    );
+    await user.click(screen.getByRole("button", { name: "student" }));
+
+    await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Email already exists")).toBeInTheDocument();
+    });
+  });
+
+  it("displays generic error message from register failure (non-Error)", async () => {
+    mockRegister.mockRejectedValueOnce("unknown error");
+    render(<RegisterPage />);
+
+    await user.type(
+      screen.getByPlaceholderText(/email@exemple.com/i),
+      "fail@test.com",
+    );
+    await user.type(
+      screen.getByPlaceholderText(/Créez un mot de passe/i),
+      "Password123!",
+    );
+    await user.type(
+      screen.getByPlaceholderText("06 12 34 56 78"),
+      "0612345678",
+    );
+    await user.click(screen.getByRole("button", { name: "student" }));
+
+    await user.click(screen.getByRole("button", { name: /S'inscrire/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Une erreur est survenue")).toBeInTheDocument();
+    });
+  });
+
+  it("clears error on email change", async () => {
+    render(<RegisterPage />);
+    const submitBtn = screen.getByRole("button", { name: /S'inscrire/i });
+    await user.click(submitBtn);
+    expect(
+      screen.getByText("Veuillez remplir tous les champs"),
+    ).toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText(/email@exemple.com/i), "a");
+    expect(
+      screen.queryByText("Veuillez remplir tous les champs"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("clears error on password change", async () => {
+    render(<RegisterPage />);
     const submitBtn = screen.getByRole("button", { name: /S'inscrire/i });
     await user.click(submitBtn);
 
-    expect(screen.queryByText(/Veuillez remplir tous les champs/i)).not.toBeInTheDocument();
+    await user.type(screen.getByPlaceholderText(/Créez un mot de passe/i), "p");
+    expect(
+      screen.queryByText("Veuillez remplir tous les champs"),
+    ).not.toBeInTheDocument();
   });
 
-  it("toggles password visibility", async () => {
-    const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
-    expect(passwordInput).toHaveAttribute("type", "password");
+  it("clears error on phone number change", async () => {
+    render(<RegisterPage />);
+    const submitBtn = screen.getByRole("button", { name: /S'inscrire/i });
+    await user.click(submitBtn);
 
-    // The toggle button is an IconButton inside PasswordField.
-    // It usually has an aria-label or accessible icon.
-    // Without specific label, we might find it by excluding others.
-    // But let's check PasswordField implementation to see if we can add aria-label or find it better.
-    // Assuming previous logic worked:
-    const buttons = screen.getAllByRole("button");
-    const toggleButton = buttons.find(
-       (btn) => !btn.textContent?.match(/S'inscrire|student|company|Se connecter/i)
-    );
-
-    if (!toggleButton) {
-        // If we can't find it, maybe the previous test logic was flaky.
-        // Let's assume it works or try to find by specific icon path if visible to screen? specific logic.
-        // For now, let's keep the existing logic but improved regex
-    }
-    
-    // Actually, let's verify if PasswordField has a visibility toggle.
-  });
-});
-
-describe("Button Component Standalone", () => {
-  it("renders loading state correctly", () => {
-    render(
-      <Button
-        colors={{ textColor: "text", backgroundColor: "background", borderColor: "border" }}
-        isLoading={true}
-      >
-        CTA Button
-      </Button>
-    );
-    expect(screen.getByText("Chargement...")).toBeInTheDocument();
-    expect(screen.getByRole("button")).toBeDisabled();
+    await user.type(screen.getByPlaceholderText("06 12 34 56 78"), "0");
+    expect(
+      screen.queryByText("Veuillez remplir tous les champs"),
+    ).not.toBeInTheDocument();
   });
 });

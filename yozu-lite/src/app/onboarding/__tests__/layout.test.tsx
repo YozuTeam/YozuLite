@@ -7,6 +7,12 @@ jest.mock("@/theme/useColorTheme", () => ({
   useColorTheme: jest.fn(),
 }));
 
+// Mock AuthProvider to just render children
+jest.mock("@/app/_providers/AuthProvider", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 describe("OnboardingLayout", () => {
   it("renders the header and children in light mode", () => {
     (useColorTheme as jest.Mock).mockReturnValue({
@@ -16,7 +22,7 @@ describe("OnboardingLayout", () => {
     render(
       <OnboardingLayout>
         <div data-testid="child-content">Child Content</div>
-      </OnboardingLayout>
+      </OnboardingLayout>,
     );
 
     // Check for Header content
@@ -39,7 +45,7 @@ describe("OnboardingLayout", () => {
     render(
       <OnboardingLayout>
         <div>Dark Mode Child</div>
-      </OnboardingLayout>
+      </OnboardingLayout>,
     );
 
     const header = screen.getByRole("banner");
