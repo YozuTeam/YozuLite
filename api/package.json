@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "postbuild": "mkdir -p dist/generated && rsync -a generated/ dist/generated/",
+    "postbuild": "mkdir -p dist/generated && ( [ -d generated ] && rsync -a generated/ dist/generated/ || echo 'No local generated folder to sync' )",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
