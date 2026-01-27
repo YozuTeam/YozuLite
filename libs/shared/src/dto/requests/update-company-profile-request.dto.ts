@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsArray, IsOptional, IsString } from "class-validator";
-import { IUpdateCompanyProfileRequest } from "../../interfaces/requests/update-company-profile-request.interface";
+import { IUpdateCompanyProfileRequest } from "@yozu/contracts";
 
 export class UpdateCompanyProfileRequest implements IUpdateCompanyProfileRequest {
   @ApiPropertyOptional({
@@ -30,11 +30,20 @@ export class UpdateCompanyProfileRequest implements IUpdateCompanyProfileRequest
   industry?: string | null;
 
   @ApiPropertyOptional({
-    description: "Updated technology stack",
-    example: ["NestJS", "React", "PostgreSQL", "Kafka", "Redis"],
+    description: "Updated required competences for candidates",
+    example: ["TypeScript", "React", "PostgreSQL", "Redis"],
     type: [String],
   })
   @IsOptional()
   @IsArray()
-  techStack?: string[];
+  competences?: string[];
+
+  @ApiPropertyOptional({
+    description: "Updated types of contracts offered by the company",
+    example: ["CDI", "CDD", "Alternance", "Stage"],
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  contractType?: string[];
 }

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
-import { ILoginRequest } from "../../interfaces/requests/login-request.interface";
+import { ILoginRequest } from "@yozu/contracts";
 
 export class LoginRequest implements ILoginRequest {
   @ApiProperty({

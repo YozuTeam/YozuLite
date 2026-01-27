@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IStudentProfileResponse } from "../../interfaces/responses/student-profile-response.interface";
+import { IStudentProfileResponse } from "@yozu/contracts";
 
 export class StudentProfileResponse implements IStudentProfileResponse {
   @ApiProperty({
@@ -33,12 +33,12 @@ export class StudentProfileResponse implements IStudentProfileResponse {
   })
   bio!: string | null;
 
-  @ApiPropertyOptional({
-    description: "School or university",
-    example: "EPITECH Paris",
-    nullable: true,
+  @ApiProperty({
+    description: "Types of contracts the student is looking for",
+    example: ["CDI", "Alternance", "Stage"],
+    type: [String],
   })
-  school!: string | null;
+  contractType!: string[];
 
   @ApiProperty({
     description: "List of skills",

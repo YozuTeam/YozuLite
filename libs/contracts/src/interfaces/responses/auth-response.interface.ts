@@ -1,7 +1,7 @@
-import { UserResponse } from "src/dto/responses/user-response.dto";
+import { IUserResponse } from "./user-response.interface";
 
 export interface IAuthResponse {
-  user: UserResponse;
+  user: IUserResponse;
   accessToken: string;
   refreshToken: string;
   expiresIn: number;

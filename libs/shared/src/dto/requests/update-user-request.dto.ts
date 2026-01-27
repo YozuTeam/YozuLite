@@ -7,8 +7,8 @@ import {
   IsString,
   MinLength,
 } from "class-validator";
-import { Role } from "../../enums/role.enums";
-import { IUpdateUserRequest } from "../../interfaces/requests/update-user-request.interface";
+import { Role } from "@yozu/contracts";
+import { IUpdateUserRequest } from "@yozu/contracts";
 
 export class UpdateUserRequest implements IUpdateUserRequest {
   @ApiPropertyOptional({

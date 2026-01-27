@@ -37,7 +37,7 @@ export class ProfilesService {
       p.firstName,
       p.lastName,
       p.bio ?? null,
-      p.school ?? null,
+      Array.isArray(p.contractType) ? p.contractType : [],
       Array.isArray(p.skills) ? p.skills : [],
     );
   }
@@ -49,7 +49,8 @@ export class ProfilesService {
       p.companyName,
       p.description ?? null,
       p.industry ?? null,
-      Array.isArray(p.techStack) ? p.techStack : [],
+      Array.isArray(p.competences) ? p.competences : [],
+      Array.isArray(p.contractType) ? p.contractType : [],
     );
   }
 
@@ -76,7 +77,7 @@ export class ProfilesService {
       firstName: dto.firstName,
       lastName: dto.lastName,
       bio: dto.bio ?? null,
-      school: dto.school ?? null,
+      contractType: dto.contractType ?? [],
       skills: dto.skills ?? [],
     });
 
@@ -100,7 +101,7 @@ export class ProfilesService {
       firstName: dto.firstName,
       lastName: dto.lastName,
       bio: dto.bio,
-      school: dto.school,
+      contractType: dto.contractType,
       skills: dto.skills,
     });
     const updated = await this.prisma.studentProfile.update({
@@ -154,7 +155,8 @@ export class ProfilesService {
       companyName: dto.companyName,
       description: dto.description ?? null,
       industry: dto.industry ?? null,
-      techStack: dto.techStack ?? [],
+      competences: dto.competences ?? [],
+      contractType: dto.contractType ?? [],
     });
 
     const created = await this.prisma.companyProfile.create({ data });
@@ -176,7 +178,8 @@ export class ProfilesService {
       companyName: dto.companyName,
       description: dto.description ?? null,
       industry: dto.industry ?? null,
-      techStack: dto.techStack,
+      competences: dto.competences,
+      contractType: dto.contractType,
     });
     const updated = await this.prisma.companyProfile.update({
       where: { userId },

@@ -4,6 +4,6 @@ export interface IStudentProfileResponse {
   firstName: string;
   lastName: string;
   bio: string | null;
-  school: string | null;
+  contractType: string[];
   skills: string[];
 }

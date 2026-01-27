@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IDeleteResponse } from "../../interfaces/responses/delete-response.interface";
+import { IDeleteResponse } from "@yozu/contracts";
 
 export class DeleteResponse implements IDeleteResponse {
   @ApiProperty({

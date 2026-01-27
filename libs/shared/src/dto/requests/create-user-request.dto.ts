@@ -6,9 +6,9 @@ import {
   IsString,
   MinLength,
 } from "class-validator";
-import { Role } from "../../enums/role.enums";
+import { Role } from "@yozu/contracts";
 
-import { ICreateUserRequest } from "../../interfaces/requests/create-user-request.interface";
+import { ICreateUserRequest } from "@yozu/contracts";
 
 export class CreateUserRequest implements ICreateUserRequest {
   @IsEmail() email!: string;

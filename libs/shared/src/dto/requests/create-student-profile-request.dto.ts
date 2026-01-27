@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsArray, IsOptional, IsString } from "class-validator";
-import { ICreateStudentProfileRequest } from "../../interfaces/requests/create-student-profile-request.interface";
+import { ICreateStudentProfileRequest } from "@yozu/contracts";
 
 export class CreateStudentProfileRequest implements ICreateStudentProfileRequest {
   @ApiProperty({
@@ -27,13 +27,13 @@ export class CreateStudentProfileRequest implements ICreateStudentProfileRequest
   bio?: string | null;
 
   @ApiPropertyOptional({
-    description: "School or university",
-    example: "EPITECH Paris",
-    nullable: true,
+    description: "Types of contracts the student is looking for",
+    example: ["CDI", "Alternance", "Stage"],
+    type: [String],
   })
   @IsOptional()
-  @IsString()
-  school?: string | null;
+  @IsArray()
+  contractType?: string[];
 
   @ApiPropertyOptional({
     description: "List of skills",

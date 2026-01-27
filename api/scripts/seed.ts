@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
+import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -104,7 +104,8 @@ const INDUSTRIES = [
   'TravelTech',
   'FoodTech',
 ];
-const TECHS = [
+
+const COMPETENCES = [
   'TypeScript',
   'Node.js',
   'NestJS',
@@ -142,19 +143,9 @@ const TECHS = [
   'Go',
   'Rust',
 ];
-const SCHOOLS = [
-  'EPITA',
-  'EPITECH',
-  'ENSIMAG',
-  'UTC',
-  'INSA Lyon',
-  'IMT Atlantique',
-  'Sorbonne Université',
-  'Paris-Saclay',
-  'Polytech Nantes',
-  'UTBM',
-  'Mines Nancy',
-];
+
+const CONTRACT_TYPES = ['CDI', 'CDD', 'Alternance', 'Stage', 'Freelance'];
+
 const frenchCities = [
   'Paris',
   'Lyon',
@@ -216,12 +207,12 @@ async function main() {
     const { phone, next } = nextUniquePhone('+336', studentPhoneCounter);
     studentPhoneCounter = next;
 
-    const school = faker.helpers.arrayElement(SCHOOLS);
+    const contractType = pickSome(CONTRACT_TYPES, 1, 3);
     const bio =
       `Étudiant(e) ${faker.helpers.arrayElement(['en alternance', 'en stage', 'en dernière année'])} ` +
       `intéressé(e) par ${faker.helpers.arrayElement(['le backend', 'le frontend', 'le mobile', 'la data', 'la sécurité'])}. ` +
       `Basé(e) à ${faker.helpers.arrayElement(frenchCities)}.`;
-    const skills = pickSome(TECHS, 3, 7);
+    const skills = pickSome(COMPETENCES, 3, 7);
 
     const hashed = await bcrypt.hash(DEFAULT_USER_PWD, SALT_ROUNDS);
 
@@ -231,7 +222,14 @@ async function main() {
       });
 
       await prisma.studentProfile.create({
-        data: { userId: user.id, firstName, lastName, bio, school, skills },
+        data: {
+          userId: user.id,
+          firstName,
+          lastName,
+          bio,
+          contractType,
+          skills,
+        },
       });
 
       studentCreated++;
@@ -248,7 +246,8 @@ async function main() {
   for (let i = 0; i < N_COMPANIES; i++) {
     const companyName = faker.company.name();
     const industry = faker.helpers.arrayElement(INDUSTRIES);
-    const techStack = pickSome(TECHS, 4, 10);
+    const competences = pickSome(COMPETENCES, 4, 10);
+    const contractType = pickSome(CONTRACT_TYPES, 1, 4);
     const description = companyDescription(industry);
     const email = uniqueCompanyEmail(companyName);
     const { phone, next } = nextUniquePhone('+337', companyPhoneCounter);
@@ -267,7 +266,8 @@ async function main() {
           companyName,
           description,
           industry,
-          techStack,
+          competences,
+          contractType,
         },
       });
 

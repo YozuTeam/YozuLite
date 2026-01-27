@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsArray, IsOptional, IsString } from "class-validator";
-import { ICreateCompanyProfileRequest } from "../../interfaces/requests/create-company-profile-request.interface";
+import { ICreateCompanyProfileRequest } from "@yozu/contracts";
 
 export class CreateCompanyProfileRequest implements ICreateCompanyProfileRequest {
   @ApiProperty({
@@ -29,11 +29,20 @@ export class CreateCompanyProfileRequest implements ICreateCompanyProfileRequest
   industry?: string | null;
 
   @ApiPropertyOptional({
-    description: "Technology stack used by the company",
-    example: ["NestJS", "React", "PostgreSQL", "Kafka"],
+    description: "Required competences for candidates",
+    example: ["TypeScript", "React", "PostgreSQL"],
     type: [String],
   })
   @IsOptional()
   @IsArray()
-  techStack?: string[];
+  competences?: string[];
+
+  @ApiPropertyOptional({
+    description: "Types of contracts offered by the company",
+    example: ["CDI", "CDD", "Alternance"],
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  contractType?: string[];
 }

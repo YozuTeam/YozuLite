@@ -6,8 +6,8 @@ import {
   IsString,
   MinLength,
 } from "class-validator";
-import { Role } from "../../enums/role.enums";
-import { IRegisterRequest } from "../../interfaces/requests/register-request.interface";
+import { Role } from "@yozu/contracts";
+import { IRegisterRequest } from "@yozu/contracts";
 
 export class RegisterRequest implements IRegisterRequest {
   @ApiProperty({

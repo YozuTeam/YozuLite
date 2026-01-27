@@ -25,26 +25,27 @@ model User {
 }
 
 model StudentProfile {
-  id          String   @id @default(uuid())
-  userId         String  @unique
+  id             String   @id @default(uuid())
+  userId         String   @unique
   firstName      String
   lastName       String
   bio            String?
-  school         String?
+  contractType   String[]
   skills         String[]
-  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([lastName, firstName])
 }
 
 model CompanyProfile {
-  id          String   @id @default(uuid())
-  userId         String  @unique
+  id             String   @id @default(uuid())
+  userId         String   @unique
   companyName    String
   description    String?
   industry       String?
-  techStack      String[]
-  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  competences    String[]
+  contractType   String[]
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([companyName])
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IAuthResponse } from "../../interfaces/responses/auth-response.interface";
+import { IAuthResponse } from "@yozu/contracts";
 import { UserResponse } from "./user-response.dto";
 
 export class AuthResponse implements IAuthResponse {

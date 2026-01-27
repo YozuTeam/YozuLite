@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
-import { IRefreshTokenRequest } from "../../interfaces/requests/refresh-token-request.interface";
+import { IRefreshTokenRequest } from "@yozu/contracts";
 
 export class RefreshTokenRequest implements IRefreshTokenRequest {
   @ApiProperty({

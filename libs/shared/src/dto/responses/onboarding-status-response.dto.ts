@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OnboardingStep } from "../../enums/onboarding-step.enum";
-import { IOnboardingStatusResponse } from "../../interfaces/responses/onboarding-status-response.interface";
+import { OnboardingStep } from "@yozu/contracts";
+import { IOnboardingStatusResponse } from "@yozu/contracts";
 
 export class OnboardingStatusResponse implements IOnboardingStatusResponse {
   @ApiProperty({

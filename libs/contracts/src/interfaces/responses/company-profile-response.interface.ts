@@ -4,5 +4,6 @@ export interface ICompanyProfileResponse {
   companyName: string;
   description: string | null;
   industry: string | null;
-  techStack: string[];
+  competences: string[];
+  contractType: string[];
 }

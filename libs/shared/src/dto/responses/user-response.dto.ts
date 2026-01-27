@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { OnboardingStep } from "../../enums/onboarding-step.enum";
-import { Role } from "../../enums/role.enums";
-import { IUserResponse } from "../../interfaces/responses/user-response.interface";
+import { OnboardingStep } from "@yozu/contracts";
+import { Role } from "@yozu/contracts";
+import { IUserResponse } from "@yozu/contracts";
 
 export class UserResponse implements IUserResponse {
   @ApiProperty({

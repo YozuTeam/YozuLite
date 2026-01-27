@@ -11,7 +11,7 @@ import { EmailField } from "@/design-system/molecule/EmailField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { Selector } from "@/design-system/molecule/Selector";
 import Card from "@/design-system/organism/Card";
-import { Role } from "@yozu/shared";
+import { Role } from "@yozu/contracts";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {

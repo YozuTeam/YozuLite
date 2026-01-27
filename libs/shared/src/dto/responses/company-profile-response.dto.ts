@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { ICompanyProfileResponse } from "../../interfaces/responses/company-profile-response.interface";
+import { ICompanyProfileResponse } from "@yozu/contracts";
 
 export class CompanyProfileResponse implements ICompanyProfileResponse {
   @ApiProperty({
@@ -35,9 +35,16 @@ export class CompanyProfileResponse implements ICompanyProfileResponse {
   industry!: string | null;
 
   @ApiProperty({
-    description: "Technology stack used by the company",
-    example: ["NestJS", "React", "PostgreSQL"],
+    description: "Required competences for candidates",
+    example: ["TypeScript", "React", "PostgreSQL"],
     type: [String],
   })
-  techStack!: string[];
+  competences!: string[];
+
+  @ApiProperty({
+    description: "Types of contracts offered by the company",
+    example: ["CDI", "CDD", "Alternance"],
+    type: [String],
+  })
+  contractType!: string[];
 }
