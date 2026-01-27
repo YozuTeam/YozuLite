@@ -4,7 +4,7 @@ export class StudentProfileEntity {
   firstName!: string;
   lastName!: string;
   bio?: string | null;
-  school?: string | null;
+  contractType!: string[];
   skills!: string[];
   constructor(
     id: string,
@@ -12,7 +12,7 @@ export class StudentProfileEntity {
     firstName: string,
     lastName: string,
     bio?: string | null,
-    school?: string | null,
+    contractType?: string[],
     skills?: string[],
   ) {
     this.id = id;
@@ -20,7 +20,7 @@ export class StudentProfileEntity {
     this.firstName = firstName;
     this.lastName = lastName;
     this.bio = bio ?? null;
-    this.school = school ?? null;
+    this.contractType = contractType ?? [];
     this.skills = skills ?? [];
   }
 }

@@ -3,8 +3,8 @@ import {
   ExecutionContext,
   SetMetadata,
 } from '@nestjs/common';
+import { Role } from '@yozu/shared';
 import { AuthenticatedRequest, AuthJwtPayload } from './auth.types';
-import { Role } from '../enums/role.enums';
 
 export const ROLES_KEY = 'roles';
 export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);

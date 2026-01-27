@@ -1,24 +1,27 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
-  ConflictException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { PrismaService } from '../../../infra/database/database.service';
+import {
+  CreateUserRequest,
+  LoginRequest,
+  OnboardingStep,
+  RefreshTokenRequest,
+  RegisterRequest,
+  Role,
+  UpdateUserRequest,
+  UserModel,
+} from '@yozu/shared';
 import * as bcrypt from 'bcrypt';
-import { UpdateUserDto } from '../dto/update-user.dto';
-import { Role } from '@/common/enums/role.enums';
+import { PrismaService } from '../../../infra/database/database.service';
 
-import { UserModel } from '../models/user.model';
+import { AuthJwtPayload } from '@/common/auth/auth.types';
+import { TokenService } from '@/common/auth/token.service';
+import { User } from '@prisma/client';
 import { UserEntity } from '../entities/user.entity';
 import { UserTransformer } from '../transformers/user.transformer';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { TokenService } from '@/common/auth/token.service';
-import { RegisterDto } from '../dto/register.dto';
-import { RefreshTokenDto } from '../dto/refresh-token.dto';
-import { LoginDto } from '../dto/login.dto';
-import { AuthJwtPayload } from '@/common/auth/auth.types';
-import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -39,13 +42,14 @@ export class UsersService {
       m.id,
       m.email,
       m.role,
+      m.onboardingStep,
       '',
       m.phoneNumber,
       m.createdAt,
       m.updatedAt,
     );
   }
-  async register(dto: RegisterDto) {
+  async register(dto: RegisterRequest) {
     const exists = await this.prisma.user.findFirst({
       where: { OR: [{ email: dto.email }, { phoneNumber: dto.phoneNumber }] },
       select: { id: true },
@@ -59,6 +63,7 @@ export class UsersService {
         password: hashed,
         phoneNumber: dto.phoneNumber,
         role: dto.role ?? Role.STUDENT,
+        onboardingStep: OnboardingStep.REGISTERED,
       },
     });
 
@@ -86,7 +91,7 @@ export class UsersService {
       refreshExpiresIn,
     };
   }
-  async login(dto: LoginDto) {
+  async login(dto: LoginRequest) {
     const user = await this.prisma.user.findFirst({
       where: {
         OR: [{ email: dto.emailOrPhone }, { phoneNumber: dto.emailOrPhone }],
@@ -121,7 +126,7 @@ export class UsersService {
     };
   }
 
-  async refreshTokens(dto: RefreshTokenDto) {
+  async refreshTokens(dto: RefreshTokenRequest) {
     const payload = await this.tokenService
       .verifyRefresh(dto.refreshToken)
       .catch(() => {
@@ -134,6 +139,7 @@ export class UsersService {
         id: true,
         email: true,
         role: true,
+        onboardingStep: true,
         phoneNumber: true,
         password: true,
         createdAt: true,
@@ -172,7 +178,7 @@ export class UsersService {
     };
   }
 
-  async create(model: CreateUserDto): Promise<UserModel> {
+  async create(model: CreateUserRequest): Promise<UserModel> {
     const exists = await this.prisma.user.findFirst({
       where: {
         OR: [{ email: model.email }, { phoneNumber: model.phoneNumber }],
@@ -208,10 +214,10 @@ export class UsersService {
     return this.sanitizeModel(this.toModelFromPrisma(user));
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<UserModel> {
+  async update(id: string, dto: UpdateUserRequest): Promise<UserModel> {
     await this.ensureExists(id);
 
-    const data: Partial<UpdateUserDto> = { ...dto };
+    const data: Partial<UpdateUserRequest> = { ...dto };
     if (dto.password) {
       data.password = await bcrypt.hash(dto.password, 10);
     }

@@ -1,7 +1,6 @@
 import { Prisma, User as PrismaUser } from '@prisma/client';
+import { OnboardingStep, Role, UserModel } from '@yozu/shared';
 import { UserEntity } from '../entities/user.entity';
-import { UserModel } from '../models/user.model';
-import { Role } from '@/common/enums/role.enums';
 
 export const UserTransformer = {
   fromPrisma(p: PrismaUser): UserEntity {
@@ -11,6 +10,7 @@ export const UserTransformer = {
       password: p.password,
       phoneNumber: p.phoneNumber,
       role: p.role as unknown as Role,
+      onboardingStep: p.onboardingStep as unknown as OnboardingStep,
       createdAt: p.createdAt,
       updatedAt: p.updatedAt,
     };
@@ -21,6 +21,7 @@ export const UserTransformer = {
       e.id,
       e.email,
       e.role,
+      e.onboardingStep,
       e.password,
       e.phoneNumber,
       e.createdAt,
@@ -39,6 +40,7 @@ export const UserTransformer = {
       password: input.password,
       phoneNumber: input.phoneNumber,
       role: input.role ?? Role.STUDENT,
+      onboardingStep: OnboardingStep.REGISTERED,
     };
   },
 };

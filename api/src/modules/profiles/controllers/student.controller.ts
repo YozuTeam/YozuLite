@@ -6,24 +6,42 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
+  Param,
   Patch,
   Post,
-  Param,
   UseGuards,
-  Logger,
 } from '@nestjs/common';
-import { ProfilesService } from '../services/profiles.service';
 import {
-  CreateStudentProfileDto,
-  UpdateStudentProfileDto,
-} from '../dto/student-profile.dto';
+  ApiBearerAuth,
+  ApiBody,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {
+  CreateStudentProfileRequest,
+  DeleteResponse,
+  OnboardingStatusResponse,
+  Role,
+  StudentProfileResponse,
+  UpdateStudentProfileRequest,
+} from '@yozu/shared';
+import { ProfilesService } from '../services/profiles.service';
 
+import { AuthUser, Roles } from '@/common/auth/auth.decorators';
+import { AuthJwtPayload } from '@/common/auth/auth.types';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { RolesGuard } from '@/common/guards/roles.guard';
-import { Roles, AuthUser } from '@/common/auth/auth.decorators';
-import { Role } from '@/common/enums/role.enums';
-import { AuthJwtPayload } from '@/common/auth/auth.types';
 
+@ApiTags('Students')
+@ApiBearerAuth('bearerAuth')
 @Controller('profiles/students')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class StudentController {
@@ -31,16 +49,66 @@ export class StudentController {
 
   constructor(private readonly svc: ProfilesService) {}
 
+  // ========================
+  // ONBOARDING STATUS
+  // ========================
+
+  @ApiOperation({
+    summary: 'Get onboarding status',
+    description:
+      'Returns the current onboarding step of the authenticated user.\n\n**Rôle requis:** `ADMIN`, `STUDENT` ou `COMPANY`',
+  })
+  @ApiOkResponse({
+    description: 'Onboarding status retrieved successfully',
+    type: OnboardingStatusResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @Roles(Role.ADMIN, Role.STUDENT, Role.COMPANY)
+  @Get('onboarding-status')
+  async getOnboardingStatus(
+    @AuthUser() user: AuthJwtPayload,
+  ): Promise<OnboardingStatusResponse> {
+    this.logger.debug(
+      `GET /profiles/students/onboarding-status - userId=${user.sub}`,
+    );
+    return this.svc.getStudentOnboardingStatus(user.sub);
+  }
+
+  // ========================
+  // STUDENT OWN PROFILE
+  // ========================
+
+  @ApiOperation({
+    summary: 'Create my student profile',
+    description:
+      'Creates a student profile for the currently authenticated user. Each user can only have one student profile.\n\n**Rôle requis:** `STUDENT`',
+  })
+  @ApiBody({ type: CreateStudentProfileRequest })
+  @ApiCreatedResponse({
+    description: 'Student profile created successfully',
+    type: StudentProfileResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have student role',
+  })
+  @ApiConflictResponse({
+    description: 'Student profile already exists for this user',
+  })
   @Roles(Role.STUDENT)
   @Post('me')
   @HttpCode(HttpStatus.CREATED)
   async createMe(
     @AuthUser() user: AuthJwtPayload,
-    @Body() dto: CreateStudentProfileDto,
-  ) {
+    @Body() dto: CreateStudentProfileRequest,
+  ): Promise<StudentProfileResponse> {
     this.logger.debug(`POST /profiles/students/me - userId=${user.sub}`);
     this.logger.verbose(
-      `Received CreateStudentProfileDto: ${JSON.stringify(dto)}`,
+      `Received CreateStudentProfileRequest: ${JSON.stringify(dto)}`,
     );
 
     try {
@@ -58,9 +126,29 @@ export class StudentController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Get my student profile',
+    description:
+      'Returns the student profile of the currently authenticated user.\n\n**Rôle requis:** `STUDENT`',
+  })
+  @ApiOkResponse({
+    description: 'Student profile retrieved successfully',
+    type: StudentProfileResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have student role',
+  })
+  @ApiNotFoundResponse({
+    description: 'Student profile not found',
+  })
   @Roles(Role.STUDENT)
   @Get('me')
-  async getMe(@AuthUser() user: AuthJwtPayload) {
+  async getMe(
+    @AuthUser() user: AuthJwtPayload,
+  ): Promise<StudentProfileResponse> {
     this.logger.debug(`GET /profiles/students/me - userId=${user.sub}`);
     try {
       const result = await this.svc.getStudent(user.sub);
@@ -75,14 +163,33 @@ export class StudentController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Update my student profile',
+    description:
+      'Updates the student profile of the currently authenticated user. All fields are optional.\n\n**Rôle requis:** `STUDENT`',
+  })
+  @ApiBody({ type: UpdateStudentProfileRequest })
+  @ApiOkResponse({
+    description: 'Student profile updated successfully',
+    type: StudentProfileResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have student role',
+  })
+  @ApiNotFoundResponse({
+    description: 'Student profile not found',
+  })
   @Roles(Role.STUDENT)
   @Patch('me')
   async updateMe(
     @AuthUser() user: AuthJwtPayload,
-    @Body() dto: UpdateStudentProfileDto,
-  ) {
+    @Body() dto: UpdateStudentProfileRequest,
+  ): Promise<StudentProfileResponse> {
     this.logger.debug(`PATCH /profiles/students/me - userId=${user.sub}`);
-    this.logger.verbose(`UpdateStudentProfileDto: ${JSON.stringify(dto)}`);
+    this.logger.verbose(`UpdateStudentProfileRequest: ${JSON.stringify(dto)}`);
 
     try {
       const result = await this.svc.updateStudent(user.sub, dto);
@@ -97,9 +204,27 @@ export class StudentController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Delete my student profile',
+    description:
+      'Permanently deletes the student profile of the currently authenticated user.\n\n**Rôle requis:** `STUDENT`',
+  })
+  @ApiOkResponse({
+    description: 'Student profile deleted successfully',
+    type: DeleteResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have student role',
+  })
+  @ApiNotFoundResponse({
+    description: 'Student profile not found',
+  })
   @Roles(Role.STUDENT)
   @Delete('me')
-  async removeMe(@AuthUser() user: AuthJwtPayload) {
+  async removeMe(@AuthUser() user: AuthJwtPayload): Promise<DeleteResponse> {
     this.logger.debug(`DELETE /profiles/students/me - userId=${user.sub}`);
 
     try {
@@ -115,9 +240,28 @@ export class StudentController {
     }
   }
 
-  @Roles(Role.ADMIN, Role.STUDENT)
+  // ========================
+  // LIST ALL (ADMIN/STUDENT)
+  // ========================
+
+  @ApiOperation({
+    summary: 'List all student profiles',
+    description:
+      'Returns a list of all student profiles. Available to admins and companies.\n\n**Rôle requis:** `ADMIN` ou `COMPANY`',
+  })
+  @ApiOkResponse({
+    description: 'List of student profiles',
+    type: [StudentProfileResponse],
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have required role',
+  })
+  @Roles(Role.ADMIN, Role.COMPANY)
   @Get()
-  async listAll() {
+  async listAll(): Promise<StudentProfileResponse[]> {
     this.logger.debug(`GET /profiles/students (admin access)`);
     try {
       const result = await this.svc.listStudents();
@@ -132,9 +276,36 @@ export class StudentController {
     }
   }
 
+  // ========================
+  // ADMIN ENDPOINTS
+  // ========================
+
+  @ApiOperation({
+    summary: 'Get student profile by ID (Admin only)',
+    description:
+      'Returns a specific student profile by ID. Admin access required.\n\n**Rôle requis:** `ADMIN`',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Student profile ID or User ID (UUID)',
+    example: 'c8d0a5d2-2a2e-4c2b-8f46-9f3f8a3a1f20',
+  })
+  @ApiOkResponse({
+    description: 'Student profile retrieved successfully',
+    type: StudentProfileResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have admin privileges',
+  })
+  @ApiNotFoundResponse({
+    description: 'Student profile not found',
+  })
   @Roles(Role.ADMIN)
   @Get(':id')
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id') id: string): Promise<StudentProfileResponse> {
     this.logger.debug(`GET /profiles/students/${id} (admin access)`);
     try {
       const result = await this.svc.getStudent(id);
@@ -149,12 +320,36 @@ export class StudentController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Update student profile by ID (Admin only)',
+    description:
+      'Updates a specific student profile by ID. Admin access required.\n\n**Rôle requis:** `ADMIN`',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Student profile ID or User ID (UUID)',
+    example: 'c8d0a5d2-2a2e-4c2b-8f46-9f3f8a3a1f20',
+  })
+  @ApiBody({ type: UpdateStudentProfileRequest })
+  @ApiOkResponse({
+    description: 'Student profile updated successfully',
+    type: StudentProfileResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have admin privileges',
+  })
+  @ApiNotFoundResponse({
+    description: 'Student profile not found',
+  })
   @Roles(Role.ADMIN)
   @Patch(':id')
   async updateById(
     @Param('id') id: string,
-    @Body() dto: UpdateStudentProfileDto,
-  ) {
+    @Body() dto: UpdateStudentProfileRequest,
+  ): Promise<StudentProfileResponse> {
     this.logger.debug(`PATCH /profiles/students/${id} (admin access)`);
     this.logger.verbose(`UpdateStudentProfileDto: ${JSON.stringify(dto)}`);
 
@@ -171,9 +366,32 @@ export class StudentController {
     }
   }
 
+  @ApiOperation({
+    summary: 'Delete student profile by ID (Admin only)',
+    description:
+      'Permanently deletes a specific student profile by ID. Admin access required.\n\n**Rôle requis:** `ADMIN`',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Student profile ID or User ID (UUID)',
+    example: 'c8d0a5d2-2a2e-4c2b-8f46-9f3f8a3a1f20',
+  })
+  @ApiOkResponse({
+    description: 'Student profile deleted successfully',
+    type: DeleteResponse,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing or invalid access token',
+  })
+  @ApiForbiddenResponse({
+    description: 'User does not have admin privileges',
+  })
+  @ApiNotFoundResponse({
+    description: 'Student profile not found',
+  })
   @Roles(Role.ADMIN)
   @Delete(':id')
-  async removeById(@Param('id') id: string) {
+  async removeById(@Param('id') id: string): Promise<DeleteResponse> {
     this.logger.debug(`DELETE /profiles/students/${id} (admin access)`);
     try {
       const result = await this.svc.deleteStudent(id);

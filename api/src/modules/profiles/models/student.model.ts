@@ -5,7 +5,7 @@ export class StudentProfileModel {
     public firstName: string,
     public lastName: string,
     public bio: string | null,
-    public school: string | null,
+    public contractType: string[],
     public skills: string[],
   ) {}
 

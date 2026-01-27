@@ -5,6 +5,7 @@ export class CompanyProfileModel {
     public companyName: string,
     public description: string | null,
     public industry: string | null,
-    public techStack: string[],
+    public competences: string[],
+    public contractType: string[],
   ) {}
 }

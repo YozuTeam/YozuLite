@@ -1,17 +1,19 @@
 "use client";
 
+import { Text } from "@/design-system/atoms/Text";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
-import { Text } from "@/design-system/atoms/Text";
 
 import { Button } from "@/design-system/atoms/Button";
+import { EmailField } from "@/design-system/molecule/EmailField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { Selector } from "@/design-system/molecule/Selector";
 import { EmailField } from "@/design-system/molecule/EmailField";
 import { PhoneField } from "@/design-system/molecule/PhoneField";
 import Card from "@/design-system/organism/Card";
+import { Role } from "@yozu/contracts";
 import { useRouter } from "next/navigation";
 import { register } from "@/app/_providers/AuthProvider";
 
@@ -126,7 +128,7 @@ export default function RegisterPage() {
               multiple={false}
               selectedValues={selectedValues}
               setSelectedValues={setSelectedValues}
-              options={[{ value: "ADMIN" }, { value: "COMPANY" }]}
+              options={[{ value: Role.STUDENT }, { value: Role.COMPANY }]}
               colors={colors}
             />
 

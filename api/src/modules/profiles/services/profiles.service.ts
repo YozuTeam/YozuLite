@@ -1,31 +1,30 @@
-import {
-  Injectable,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
 import { PrismaService } from '@/infra/database/database.service';
 import {
-  CreateStudentProfileDto,
-  UpdateStudentProfileDto,
-} from '../dto/student-profile.dto';
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
-  CreateCompanyProfileDto,
-  UpdateCompanyProfileDto,
-} from '../dto/company-profile.dto';
+  CreateCompanyProfileRequest,
+  CreateStudentProfileRequest,
+  OnboardingStep,
+  UpdateCompanyProfileRequest,
+  UpdateStudentProfileRequest,
+} from '@yozu/shared';
 
 import {
-  StudentProfile as PrismaStudent,
   CompanyProfile as PrismaCompany,
+  StudentProfile as PrismaStudent,
 } from '@prisma/client';
 
-import { StudentProfileEntity } from '../entities/student.entity';
 import { CompanyProfileEntity } from '../entities/company.entity';
+import { StudentProfileEntity } from '../entities/student.entity';
 
-import { StudentProfileModel } from '../models/student.model';
 import { CompanyProfileModel } from '../models/company.model';
+import { StudentProfileModel } from '../models/student.model';
 
-import { StudentTransformer } from '../transformers/student.transformer';
 import { CompanyTransformer } from '../transformers/company.transformer';
+import { StudentTransformer } from '../transformers/student.transformer';
 
 @Injectable()
 export class ProfilesService {
@@ -38,7 +37,7 @@ export class ProfilesService {
       p.firstName,
       p.lastName,
       p.bio ?? null,
-      p.school ?? null,
+      Array.isArray(p.contractType) ? p.contractType : [],
       Array.isArray(p.skills) ? p.skills : [],
     );
   }
@@ -50,7 +49,8 @@ export class ProfilesService {
       p.companyName,
       p.description ?? null,
       p.industry ?? null,
-      Array.isArray(p.techStack) ? p.techStack : [],
+      Array.isArray(p.competences) ? p.competences : [],
+      Array.isArray(p.contractType) ? p.contractType : [],
     );
   }
 
@@ -63,7 +63,7 @@ export class ProfilesService {
   }
 
   async createStudent(
-    dto: CreateStudentProfileDto,
+    dto: CreateStudentProfileRequest,
     userId: string,
   ): Promise<StudentProfileModel> {
     const exists = await this.prisma.studentProfile.findUnique({
@@ -77,24 +77,31 @@ export class ProfilesService {
       firstName: dto.firstName,
       lastName: dto.lastName,
       bio: dto.bio ?? null,
-      school: dto.school ?? null,
+      contractType: dto.contractType ?? [],
       skills: dto.skills ?? [],
     });
 
     const created = await this.prisma.studentProfile.create({ data });
+
+    // Update user's onboarding step to PROFILE_COMPLETED
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { onboardingStep: OnboardingStep.PROFILE_COMPLETED },
+    });
+
     return this.toStudentModel(created);
   }
 
   async updateStudent(
     userId: string,
-    dto: UpdateStudentProfileDto,
+    dto: UpdateStudentProfileRequest,
   ): Promise<StudentProfileModel> {
     await this.ensureStudentExists(userId);
     const data = StudentTransformer.toPrismaUpdate({
       firstName: dto.firstName,
       lastName: dto.lastName,
       bio: dto.bio,
-      school: dto.school,
+      contractType: dto.contractType,
       skills: dto.skills,
     });
     const updated = await this.prisma.studentProfile.update({
@@ -134,7 +141,7 @@ export class ProfilesService {
   }
 
   async createCompany(
-    dto: CreateCompanyProfileDto,
+    dto: CreateCompanyProfileRequest,
     userId: string,
   ): Promise<CompanyProfileModel> {
     const exists = await this.prisma.companyProfile.findUnique({
@@ -148,23 +155,31 @@ export class ProfilesService {
       companyName: dto.companyName,
       description: dto.description ?? null,
       industry: dto.industry ?? null,
-      techStack: dto.techStack ?? [],
+      competences: dto.competences ?? [],
+      contractType: dto.contractType ?? [],
     });
 
     const created = await this.prisma.companyProfile.create({ data });
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { onboardingStep: OnboardingStep.PROFILE_COMPLETED },
+    });
+
     return this.toCompanyModel(created);
   }
 
   async updateCompany(
     userId: string,
-    dto: UpdateCompanyProfileDto,
+    dto: UpdateCompanyProfileRequest,
   ): Promise<CompanyProfileModel> {
     await this.ensureCompanyExists(userId);
     const data = CompanyTransformer.toPrismaUpdate({
       companyName: dto.companyName,
       description: dto.description ?? null,
       industry: dto.industry ?? null,
-      techStack: dto.techStack,
+      competences: dto.competences,
+      contractType: dto.contractType,
     });
     const updated = await this.prisma.companyProfile.update({
       where: { userId },
@@ -198,5 +213,61 @@ export class ProfilesService {
       select: { id: true },
     });
     if (!ok) throw new NotFoundException('Company profile not found');
+  }
+
+  async getStudentOnboardingStatus(userId: string): Promise<{
+    step: OnboardingStep;
+    stepNumber: number;
+    label: string;
+    isCompleted: boolean;
+  }> {
+    const profile = await this.prisma.studentProfile.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (profile) {
+      return {
+        step: OnboardingStep.PROFILE_COMPLETED,
+        stepNumber: 3,
+        label: 'Profil complété',
+        isCompleted: true,
+      };
+    }
+
+    return {
+      step: OnboardingStep.REGISTERED,
+      stepNumber: 1,
+      label: 'Inscrit - En attente de création de profil',
+      isCompleted: false,
+    };
+  }
+
+  async getCompanyOnboardingStatus(userId: string): Promise<{
+    step: OnboardingStep;
+    stepNumber: number;
+    label: string;
+    isCompleted: boolean;
+  }> {
+    const profile = await this.prisma.companyProfile.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (profile) {
+      return {
+        step: OnboardingStep.PROFILE_COMPLETED,
+        stepNumber: 3,
+        label: 'Profil complété',
+        isCompleted: true,
+      };
+    }
+
+    return {
+      step: OnboardingStep.REGISTERED,
+      stepNumber: 1,
+      label: 'Inscrit - En attente de création de profil',
+      isCompleted: false,
+    };
   }
 }
