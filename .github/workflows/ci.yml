@@ -31,7 +31,8 @@ jobs:
         run: npm run build --workspace=@yozu/shared
 
       - name: 🛠️ Generate Prisma Client
-        run: npx prisma generate --workspace=api
+        working-directory: api
+        run: npx prisma generate
 
       - name: 🏗️ Build backend
         run: npm run build --workspace=api
