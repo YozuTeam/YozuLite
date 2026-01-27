@@ -20,9 +20,9 @@ jobs:
         with:
           node-version: "20"
 
-      - name: 📥 Install dependencies
+      - name: 📥 Install dependencies (fresh install for Linux bindings)
         run: |
-          rm -rf node_modules yozu-lite/node_modules api/node_modules libs/shared/node_modules
+          rm -rf package-lock.json node_modules yozu-lite/node_modules api/node_modules libs/shared/node_modules
           npm install
 
       - name: 🏗️ Build shared library
