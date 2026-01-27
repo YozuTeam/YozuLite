@@ -1,7 +1,7 @@
-import { UserModel } from "../../models/user.model";
+import { UserResponse } from "src/dto/responses/user-response.dto";
 
 export interface IAuthResponse {
-  user: Omit<UserModel, "password">;
+  user: UserResponse;
   accessToken: string;
   refreshToken: string;
   expiresIn: number;

@@ -7,6 +7,7 @@ import {
 import {
   CreateUserRequest,
   LoginRequest,
+  OnboardingStep,
   RefreshTokenRequest,
   RegisterRequest,
   Role,
@@ -41,6 +42,7 @@ export class UsersService {
       m.id,
       m.email,
       m.role,
+      m.onboardingStep,
       '',
       m.phoneNumber,
       m.createdAt,
@@ -61,6 +63,7 @@ export class UsersService {
         password: hashed,
         phoneNumber: dto.phoneNumber,
         role: dto.role ?? Role.STUDENT,
+        onboardingStep: OnboardingStep.REGISTERED,
       },
     });
 
@@ -136,6 +139,7 @@ export class UsersService {
         id: true,
         email: true,
         role: true,
+        onboardingStep: true,
         phoneNumber: true,
         password: true,
         createdAt: true,

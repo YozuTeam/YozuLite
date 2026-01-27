@@ -7,6 +7,7 @@ import {
 import {
   CreateCompanyProfileRequest,
   CreateStudentProfileRequest,
+  OnboardingStep,
   UpdateCompanyProfileRequest,
   UpdateStudentProfileRequest,
 } from '@yozu/shared';
@@ -80,6 +81,13 @@ export class ProfilesService {
     });
 
     const created = await this.prisma.studentProfile.create({ data });
+
+    // Update user's onboarding step to PROFILE_COMPLETED
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { onboardingStep: OnboardingStep.PROFILE_COMPLETED },
+    });
+
     return this.toStudentModel(created);
   }
 
@@ -150,6 +158,12 @@ export class ProfilesService {
     });
 
     const created = await this.prisma.companyProfile.create({ data });
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { onboardingStep: OnboardingStep.PROFILE_COMPLETED },
+    });
+
     return this.toCompanyModel(created);
   }
 
@@ -196,5 +210,61 @@ export class ProfilesService {
       select: { id: true },
     });
     if (!ok) throw new NotFoundException('Company profile not found');
+  }
+
+  async getStudentOnboardingStatus(userId: string): Promise<{
+    step: OnboardingStep;
+    stepNumber: number;
+    label: string;
+    isCompleted: boolean;
+  }> {
+    const profile = await this.prisma.studentProfile.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (profile) {
+      return {
+        step: OnboardingStep.PROFILE_COMPLETED,
+        stepNumber: 3,
+        label: 'Profil complété',
+        isCompleted: true,
+      };
+    }
+
+    return {
+      step: OnboardingStep.REGISTERED,
+      stepNumber: 1,
+      label: 'Inscrit - En attente de création de profil',
+      isCompleted: false,
+    };
+  }
+
+  async getCompanyOnboardingStatus(userId: string): Promise<{
+    step: OnboardingStep;
+    stepNumber: number;
+    label: string;
+    isCompleted: boolean;
+  }> {
+    const profile = await this.prisma.companyProfile.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (profile) {
+      return {
+        step: OnboardingStep.PROFILE_COMPLETED,
+        stepNumber: 3,
+        label: 'Profil complété',
+        isCompleted: true,
+      };
+    }
+
+    return {
+      step: OnboardingStep.REGISTERED,
+      stepNumber: 1,
+      label: 'Inscrit - En attente de création de profil',
+      isCompleted: false,
+    };
   }
 }

@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id             String          @id @default(uuid())
-  email          String          @unique
-  password       String
-  phoneNumber    String          @unique
-  role           String          @default("STUDENT")
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id               String          @id @default(uuid())
+  email            String          @unique
+  password         String
+  phoneNumber      String          @unique
+  role             String          @default("STUDENT")
+  onboardingStep   String          @default("REGISTERED")
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
   refreshTokenHash String?
-  studentProfile StudentProfile?
-  companyProfile CompanyProfile?
+  studentProfile   StudentProfile?
+  companyProfile   CompanyProfile?
 
   @@index([email])
   @@index([phoneNumber])
@@ -30,7 +31,7 @@ model StudentProfile {
   lastName       String
   bio            String?
   school         String?
-  skills         String[]    
+  skills         String[]
   user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([lastName, firstName])
@@ -42,7 +43,7 @@ model CompanyProfile {
   companyName    String
   description    String?
   industry       String?
-  techStack      String[]     
+  techStack      String[]
   user           User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([companyName])

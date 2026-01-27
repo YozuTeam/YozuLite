@@ -1,3 +1,4 @@
+import { OnboardingStep } from "../enums/onboarding-step.enum";
 import { Role } from "../enums/role.enums";
 
 export class UserModel {
@@ -5,6 +6,7 @@ export class UserModel {
     public readonly id: string,
     public email: string,
     public role: Role,
+    public onboardingStep: OnboardingStep,
     public password: string,
     public phoneNumber: string,
     public readonly createdAt: Date,
