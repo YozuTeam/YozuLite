@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import RegisterPage from "@/app/register/page";
 import { Button } from "@/design-system/atoms/Button";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Role } from "@yozu/shared";
 
 // Mock useRouter
 const mockPush = jest.fn();
@@ -28,17 +29,25 @@ describe("RegisterPage UI", () => {
   });
 
   it("displays the main fields (email + password + button)", () => {
-    expect(screen.getByPlaceholderText(/email@exemple.com/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Créez un mot de passe/i)).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/email@exemple.com/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/Créez un mot de passe/i),
+    ).toBeInTheDocument();
 
     expect(
-      screen.getByRole("button", { name: /S'inscrire/i })
+      screen.getByRole("button", { name: /S'inscrire/i }),
     ).toBeInTheDocument();
   });
 
   it("displays the RoleSelector with both options", () => {
-    expect(screen.getByRole("button", { name: "student" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "company" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: Role.STUDENT }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: Role.COMPANY }),
+    ).toBeInTheDocument();
   });
 
   it("displays an error if the email is invalid", async () => {
@@ -48,7 +57,7 @@ describe("RegisterPage UI", () => {
     await user.tab();
 
     expect(
-      await screen.findByText(/Adresse email invalide/i)
+      await screen.findByText(/Adresse email invalide/i),
     ).toBeInTheDocument();
   });
 
@@ -57,12 +66,14 @@ describe("RegisterPage UI", () => {
 
     await user.type(emailInput, "test@example.com");
 
-    expect(screen.queryByText(/Adresse email invalide/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Adresse email invalide/i),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText(/Ce champ est requis/i)).not.toBeInTheDocument();
   });
 
   it("allows changing role via the RoleSelector", async () => {
-    const companyButton = screen.getByRole("button", { name: "company" });
+    const companyButton = screen.getByRole("button", { name: Role.COMPANY });
 
     await user.click(companyButton);
     expect(companyButton).toBeInTheDocument();
@@ -83,9 +94,9 @@ describe("RegisterPage UI", () => {
 
     await user.type(emailInput, "test@example.com");
     await user.type(passwordInput, "MonMotDePasse123");
-    
+
     // Select role
-    await user.click(screen.getByRole("button", { name: "student" }));
+    await user.click(screen.getByRole("button", { name: Role.STUDENT }));
 
     const button = screen.getByRole("button", { name: /S'inscrire/i });
     await user.click(button);
@@ -93,7 +104,7 @@ describe("RegisterPage UI", () => {
     expect(consoleLogSpy).toHaveBeenCalledWith({
       email: "test@example.com",
       password: "MonMotDePasse123",
-      selectedValues: ["student"],
+      selectedValues: [Role.STUDENT],
     });
 
     expect(mockPush).toHaveBeenCalledWith("/onboarding/student");
@@ -103,19 +114,23 @@ describe("RegisterPage UI", () => {
     const button = screen.getByRole("button", { name: /S'inscrire/i });
     await user.click(button);
 
-    expect(screen.getByText(/Veuillez remplir tous les champs/i)).toBeInTheDocument();
-    
+    expect(
+      screen.getByText(/Veuillez remplir tous les champs/i),
+    ).toBeInTheDocument();
+
     const emailInput = screen.getByPlaceholderText(/email@exemple.com/i);
     const passwordInput = screen.getByPlaceholderText(/Créez un mot de passe/i);
 
     await user.type(emailInput, "test@example.com");
     await user.type(passwordInput, "MonMotDePasse123");
-    
+
     // Clear error by filling
     const submitBtn = screen.getByRole("button", { name: /S'inscrire/i });
     await user.click(submitBtn);
 
-    expect(screen.queryByText(/Veuillez remplir tous les champs/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Veuillez remplir tous les champs/i),
+    ).not.toBeInTheDocument();
   });
 
   it("toggles password visibility", async () => {
@@ -129,15 +144,16 @@ describe("RegisterPage UI", () => {
     // Assuming previous logic worked:
     const buttons = screen.getAllByRole("button");
     const toggleButton = buttons.find(
-       (btn) => !btn.textContent?.match(/S'inscrire|student|company|Se connecter/i)
+      (btn) =>
+        !btn.textContent?.match(/S'inscrire|student|company|Se connecter/i),
     );
 
     if (!toggleButton) {
-        // If we can't find it, maybe the previous test logic was flaky.
-        // Let's assume it works or try to find by specific icon path if visible to screen? specific logic.
-        // For now, let's keep the existing logic but improved regex
+      // If we can't find it, maybe the previous test logic was flaky.
+      // Let's assume it works or try to find by specific icon path if visible to screen? specific logic.
+      // For now, let's keep the existing logic but improved regex
     }
-    
+
     // Actually, let's verify if PasswordField has a visibility toggle.
   });
 });
@@ -146,11 +162,15 @@ describe("Button Component Standalone", () => {
   it("renders loading state correctly", () => {
     render(
       <Button
-        colors={{ textColor: "text", backgroundColor: "background", borderColor: "border" }}
+        colors={{
+          textColor: "text",
+          backgroundColor: "background",
+          borderColor: "border",
+        }}
         isLoading={true}
       >
         CTA Button
-      </Button>
+      </Button>,
     );
     expect(screen.getByText("Chargement...")).toBeInTheDocument();
     expect(screen.getByRole("button")).toBeDisabled();
