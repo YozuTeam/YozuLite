@@ -24,12 +24,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     router.replace("/login");
   };
 
-<<<<<<< HEAD
-  const updateProfileStatus = async (userRole: Role) => {
-    const completed = await authService.getOnboardingStatus(userRole);
-    setIsOnboarded(completed);
-  };
-=======
   useEffect(() => {
     if (effectRan.current) return;
     effectRan.current = true;
@@ -77,7 +71,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     initAuth();
   }, []);
->>>>>>> 61da8c8e (refacto(auth) + fix(backend))
 
   const checkAuthStatus = async () => {
     const accessToken = getAccessToken();
