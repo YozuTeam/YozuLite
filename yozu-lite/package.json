@@ -60,5 +60,8 @@
     "*.{ts,tsx,js,jsx}": [
       "eslint --fix"
     ]
+  },
+  "optionalDependencies": {
+    "lightningcss": "^1.30.2"
   }
 }
