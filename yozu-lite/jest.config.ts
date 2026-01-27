@@ -33,9 +33,9 @@ const config: Config = {
     "!src/app/_styles/**",
     "!src/app/page.tsx",
     "!src/app/test/page.tsx",
-    "!src/auth/**",
     "!src/app/yozu-lite/layout.tsx",
     "!src/app/onboarding/layout.tsx",
+    "!src/auth/types/**",
   ],
   coverageThreshold: {
     global: {

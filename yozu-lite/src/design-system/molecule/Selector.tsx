@@ -2,38 +2,32 @@
 
 import { Button } from "@/design-system/atoms/Button";
 import { FormField } from "@/design-system/molecule/FormField";
-import { NAV_THEME, ThemeColors } from "@/theme/constant";
-import { useColorTheme } from "@/theme/useColorTheme";
+import { ThemeColors } from "@/theme/constant";
 import { Stack } from "@mui/material";
 
-export type SelectorOption = {
-  value: string;
+export type SelectorOption<T extends string> = {
+  value: T;
 };
 
-export type SelectorProps = {
+export type SelectorProps<T extends string> = {
   label: string;
   required?: boolean;
-  options: SelectorOption[];
-  selectedValues: string[];
-  setSelectedValues: (selectedValues: string[]) => void;
-  colors?: ThemeColors;
+  options: SelectorOption<T>[];
+  selectedValues: T[];
+  setSelectedValues: (selectedValues: T[]) => void;
+  colors: ThemeColors;
   multiple?: boolean;
   error?: boolean;
   errorText?: string;
   onFocus?: () => void;
 };
 
-export function Selector(props: SelectorProps) {
-  const { colorScheme } = useColorTheme();
-  const colors = NAV_THEME[colorScheme];
-
-  
-
+export function Selector<T extends string>(props: SelectorProps<T>) {
   return (
     <FormField
       label={props.label}
       required={props.required}
-      colors={colors}
+      colors={props.colors}
       error={props.error}
       errorText="Veuillez sélectionner au moins une option"
     >
@@ -49,18 +43,24 @@ export function Selector(props: SelectorProps) {
                 const isMultiple = props.multiple !== false;
                 if (isMultiple) {
                   props.setSelectedValues(
-                    selected 
-                      ? props.selectedValues.filter((v) => v !== opt.value) 
-                      : [...props.selectedValues, opt.value]
+                    selected
+                      ? props.selectedValues.filter((v) => v !== opt.value)
+                      : [...props.selectedValues, opt.value],
                   );
                 } else {
                   props.setSelectedValues(selected ? [] : [opt.value]);
                 }
               }}
               colors={{
-                textColor: selected ? colors.primaryForeground : colors.primary,
-                borderColor: selected ? colors.border : colors.primary,
-                backgroundColor: selected ? colors.primary : colors.background,
+                textColor: selected
+                  ? props.colors?.primaryForeground
+                  : props.colors?.primary,
+                borderColor: selected
+                  ? props.colors?.border
+                  : props.colors?.primary,
+                backgroundColor: selected
+                  ? props.colors?.primary
+                  : props.colors?.background,
               }}
             >
               {opt.value}
@@ -71,4 +71,3 @@ export function Selector(props: SelectorProps) {
     </FormField>
   );
 }
-

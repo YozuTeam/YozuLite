@@ -123,7 +123,7 @@ export class CompanyController {
   @Roles(Role.COMPANY)
   @Get('me')
   getMe(@AuthUser() user: AuthJwtPayload): Promise<CompanyProfileResponse> {
-    return this.svc.getCompany(user.sub);
+    return this.svc.getCompanyByUserId(user.sub);
   }
 
   @ApiOperation({
@@ -175,7 +175,7 @@ export class CompanyController {
   @Roles(Role.COMPANY)
   @Delete('me')
   removeMe(@AuthUser() user: AuthJwtPayload): Promise<DeleteResponse> {
-    return this.svc.deleteCompany(user.sub);
+    return this.svc.deleteCompanyByUserId(user.sub);
   }
 
   // ========================
@@ -233,7 +233,7 @@ export class CompanyController {
   @Roles(Role.ADMIN)
   @Get(':id')
   getById(@Param('id') id: string): Promise<CompanyProfileResponse> {
-    return this.svc.getCompany(id);
+    return this.svc.getCompanyById(id);
   }
 
   @ApiOperation({
@@ -266,7 +266,7 @@ export class CompanyController {
     @Param('id') id: string,
     @Body() dto: UpdateCompanyProfileRequest,
   ): Promise<CompanyProfileResponse> {
-    return this.svc.updateCompany(id, dto);
+    return this.svc.updateCompanyById(id, dto);
   }
 
   @ApiOperation({
@@ -295,6 +295,6 @@ export class CompanyController {
   @Roles(Role.ADMIN)
   @Delete(':id')
   removeById(@Param('id') id: string): Promise<DeleteResponse> {
-    return this.svc.deleteCompany(id);
+    return this.svc.deleteCompanyById(id);
   }
 }

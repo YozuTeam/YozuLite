@@ -1,10 +1,10 @@
 "use client";
 
-import { useColorTheme } from "@/theme/useColorTheme";
-import { NAV_THEME } from "@/theme/constant";
+import { AuthProvider } from "@/auth";
 import { Text } from "@/design-system/atoms/Text";
+import { NAV_THEME } from "@/theme/constant";
+import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container } from "@mui/material";
-import AuthProvider from "@/app/_providers/AuthProvider";
 
 export default function OnboardingLayout({
   children,

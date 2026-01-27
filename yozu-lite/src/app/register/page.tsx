@@ -6,16 +6,15 @@ import { useColorTheme } from "@/theme/useColorTheme";
 import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
 
+import { authService } from "@/auth";
 import { Button } from "@/design-system/atoms/Button";
 import { EmailField } from "@/design-system/molecule/EmailField";
 import { PasswordField } from "@/design-system/molecule/PasswordField";
-import { Selector } from "@/design-system/molecule/Selector";
-import { EmailField } from "@/design-system/molecule/EmailField";
 import { PhoneField } from "@/design-system/molecule/PhoneField";
+import { Selector } from "@/design-system/molecule/Selector";
 import Card from "@/design-system/organism/Card";
 import { Role } from "@yozu/contracts";
 import { useRouter } from "next/navigation";
-import { register } from "@/app/_providers/AuthProvider";
 
 export default function RegisterPage() {
   const { colorScheme } = useColorTheme();
@@ -24,7 +23,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedValues, setSelectedValues] = useState<Role[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,9 +40,14 @@ export default function RegisterPage() {
     console.log({ email, password, selectedValues });
     setError(null);
     try {
-      await register(email, password, phoneNumber, selectedValues[0]);
+      await authService.register(
+        email,
+        password,
+        phoneNumber,
+        selectedValues[0],
+      );
       router.replace(
-        selectedValues[0] === "ADMIN"
+        selectedValues[0] === Role.STUDENT
           ? "/onboarding/student"
           : "/onboarding/company",
       );
@@ -123,7 +127,7 @@ export default function RegisterPage() {
               colors={colors}
             />
 
-            <Selector
+            <Selector<Role>
               label="Vous êtes :"
               multiple={false}
               selectedValues={selectedValues}

@@ -1,21 +1,27 @@
+import * as themeHook from "@/theme/useColorTheme";
 import { render, screen } from "@testing-library/react";
 import OnboardingLayout from "../layout";
-import { useColorTheme } from "@/theme/useColorTheme";
 
-// Mock useColorTheme
 jest.mock("@/theme/useColorTheme", () => ({
   useColorTheme: jest.fn(),
 }));
 
-// Mock AuthProvider to just render children
-jest.mock("@/app/_providers/AuthProvider", () => ({
-  __esModule: true,
-  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+jest.mock("@/auth", () => ({
+  AuthProvider: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
 }));
 
 describe("OnboardingLayout", () => {
+  let useColorThemeMock: jest.Mock;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useColorThemeMock = themeHook.useColorTheme as jest.Mock;
+  });
+
   it("renders the header and children in light mode", () => {
-    (useColorTheme as jest.Mock).mockReturnValue({
+    useColorThemeMock.mockReturnValue({
       colorScheme: "light",
     });
 
@@ -25,20 +31,16 @@ describe("OnboardingLayout", () => {
       </OnboardingLayout>,
     );
 
-    // Check for Header content
     expect(screen.getByText("YOZU")).toBeInTheDocument();
     expect(screen.getByText("Y")).toBeInTheDocument();
-
-    // Check for Children
     expect(screen.getByTestId("child-content")).toBeInTheDocument();
 
-    // Check for light mode specific style (partial check)
-    const header = screen.getByRole("banner"); // MUI Box using component="header" should correspond to banner role
+    const header = screen.getByRole("banner");
     expect(header).toHaveStyle("background-color: rgba(255, 255, 255, 0.8)");
   });
 
   it("renders correctly in dark mode", () => {
-    (useColorTheme as jest.Mock).mockReturnValue({
+    useColorThemeMock.mockReturnValue({
       colorScheme: "dark",
     });
 
@@ -49,7 +51,6 @@ describe("OnboardingLayout", () => {
     );
 
     const header = screen.getByRole("banner");
-    // Check for dark mode specific style
     expect(header).toHaveStyle("background-color: rgba(23, 23, 23, 0.8)");
   });
 });

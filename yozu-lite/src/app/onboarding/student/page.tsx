@@ -1,11 +1,13 @@
 "use client";
 
-import { callAPI } from "@/app/_providers/AuthProvider";
-import { Method } from "@/auth/constants";
+import { callAPI, Method } from "@/auth";
 import Form from "@/design-system/template/OnboardingForm";
+import {
+  ICreateStudentProfileRequest,
+  IStudentProfileResponse,
+} from "@yozu/contracts";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { OnboardingStudentRequest } from "@/auth/dto/requests/onboarding-student.request";
 
 export default function OnboardingStudentPage() {
   const router = useRouter();
@@ -13,25 +15,29 @@ export default function OnboardingStudentPage() {
   const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
   const [skills, setSkills] = useState<string[]>([]);
-  const [contractTypes, setContractTypes] = useState<string[]>([]);
+  const [contractType, setContractType] = useState<string[]>([]);
 
   const handleSubmit = async () => {
-    if (!name || !lastName || !bio || !skills || !contractTypes) {
+    if (!name || !lastName || !bio || !skills || !contractType) {
       return;
     }
     try {
-      const response = await callAPI<OnboardingStudentRequest, void>({
+      const response = await callAPI<
+        ICreateStudentProfileRequest,
+        IStudentProfileResponse
+      >({
         route: "/profiles/students/me",
         method: Method.POST,
         data: {
           firstName: name,
           lastName,
           bio,
-          school: contractTypes[0],
+          contractType,
           skills,
         },
         isPublicRoute: false,
       });
+      console.log(response);
       if (response.ok) {
         router.replace("/yozu-lite/accueil");
       }
@@ -46,14 +52,14 @@ export default function OnboardingStudentPage() {
         inputField2: lastName,
         textAreaField: bio,
         pickerField: skills,
-        selectorField: contractTypes,
+        selectorField: contractType,
       }}
       setFormData={{
         setInputField1: setName,
         setInputField2: setLastName,
         setTextAreaField: setBio,
         setPickerField: setSkills,
-        setSelectorField: setContractTypes,
+        setSelectorField: setContractType,
       }}
       onSubmit={handleSubmit}
       pickerOptions={[

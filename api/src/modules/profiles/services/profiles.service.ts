@@ -77,13 +77,12 @@ export class ProfilesService {
       firstName: dto.firstName,
       lastName: dto.lastName,
       bio: dto.bio ?? null,
-      contractType: dto.contractType ?? [],
-      skills: dto.skills ?? [],
+      contractType: (dto.contractType as string[]) ?? [],
+      skills: (dto.skills as string[]) ?? [],
     });
 
     const created = await this.prisma.studentProfile.create({ data });
 
-    // Update user's onboarding step to PROFILE_COMPLETED
     await this.prisma.user.update({
       where: { id: userId },
       data: { onboardingStep: OnboardingStep.PROFILE_COMPLETED },
@@ -101,14 +100,22 @@ export class ProfilesService {
       firstName: dto.firstName,
       lastName: dto.lastName,
       bio: dto.bio,
-      contractType: dto.contractType,
-      skills: dto.skills,
+      contractType: dto.contractType as string[],
+      skills: dto.skills as string[],
     });
     const updated = await this.prisma.studentProfile.update({
       where: { userId },
       data,
     });
     return this.toStudentModel(updated);
+  }
+
+  async getStudentById(id: string): Promise<StudentProfileModel> {
+    const s = await this.prisma.studentProfile.findUnique({
+      where: { id },
+    });
+    if (!s) throw new NotFoundException('Student profile not found');
+    return this.toStudentModel(s);
   }
 
   async getStudent(userId: string): Promise<StudentProfileModel> {
@@ -126,9 +133,32 @@ export class ProfilesService {
     return list.map((p) => this.toStudentModel(p));
   }
 
-  async deleteStudent(userId: string): Promise<{ success: true }> {
+  async updateStudentById(
+    id: string,
+    dto: UpdateStudentProfileRequest,
+  ): Promise<StudentProfileModel> {
+    const data = StudentTransformer.toPrismaUpdate({
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      bio: dto.bio,
+      contractType: dto.contractType as string[],
+      skills: dto.skills as string[],
+    });
+    const updated = await this.prisma.studentProfile.update({
+      where: { id },
+      data,
+    });
+    return this.toStudentModel(updated);
+  }
+
+  async deleteStudentByUserId(userId: string): Promise<{ success: true }> {
     await this.ensureStudentExists(userId);
     await this.prisma.studentProfile.delete({ where: { userId } });
+    return { success: true };
+  }
+
+  async deleteStudentById(id: string): Promise<{ success: true }> {
+    await this.prisma.studentProfile.delete({ where: { id } });
     return { success: true };
   }
 
@@ -155,8 +185,8 @@ export class ProfilesService {
       companyName: dto.companyName,
       description: dto.description ?? null,
       industry: dto.industry ?? null,
-      competences: dto.competences ?? [],
-      contractType: dto.contractType ?? [],
+      competences: (dto.competences as string[]) ?? [],
+      contractType: (dto.contractType as string[]) ?? [],
     });
 
     const created = await this.prisma.companyProfile.create({ data });
@@ -178,8 +208,8 @@ export class ProfilesService {
       companyName: dto.companyName,
       description: dto.description ?? null,
       industry: dto.industry ?? null,
-      competences: dto.competences,
-      contractType: dto.contractType,
+      competences: dto.competences as string[],
+      contractType: dto.contractType as string[],
     });
     const updated = await this.prisma.companyProfile.update({
       where: { userId },
@@ -188,7 +218,15 @@ export class ProfilesService {
     return this.toCompanyModel(updated);
   }
 
-  async getCompany(id: string): Promise<CompanyProfileModel> {
+  async getCompanyByUserId(userId: string): Promise<CompanyProfileModel> {
+    const c = await this.prisma.companyProfile.findUnique({
+      where: { userId },
+    });
+    if (!c) throw new NotFoundException('Company profile not found');
+    return this.toCompanyModel(c);
+  }
+
+  async getCompanyById(id: string): Promise<CompanyProfileModel> {
     const c = await this.prisma.companyProfile.findUnique({ where: { id } });
     if (!c) throw new NotFoundException('Company profile not found');
     return this.toCompanyModel(c);
@@ -201,9 +239,32 @@ export class ProfilesService {
     return list.map((p) => this.toCompanyModel(p));
   }
 
-  async deleteCompany(userId: string): Promise<{ success: true }> {
+  async updateCompanyById(
+    id: string,
+    dto: UpdateCompanyProfileRequest,
+  ): Promise<CompanyProfileModel> {
+    const data = CompanyTransformer.toPrismaUpdate({
+      companyName: dto.companyName,
+      description: dto.description ?? null,
+      industry: dto.industry ?? null,
+      competences: dto.competences as string[],
+      contractType: dto.contractType as string[],
+    });
+    const updated = await this.prisma.companyProfile.update({
+      where: { id },
+      data,
+    });
+    return this.toCompanyModel(updated);
+  }
+
+  async deleteCompanyByUserId(userId: string): Promise<{ success: true }> {
     await this.ensureCompanyExists(userId);
     await this.prisma.companyProfile.delete({ where: { userId } });
+    return { success: true };
+  }
+
+  async deleteCompanyById(id: string): Promise<{ success: true }> {
+    await this.prisma.companyProfile.delete({ where: { id } });
     return { success: true };
   }
 

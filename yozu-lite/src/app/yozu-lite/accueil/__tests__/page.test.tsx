@@ -1,278 +1,123 @@
+import AccueilPage from "@/app/yozu-lite/accueil/page";
+import * as authModule from "@/auth";
+import { api } from "@/auth/api";
+import * as themeHook from "@/theme/useColorTheme";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import AccueilPage from "@/app/yozu-lite/accueil/page";
-import { callAPI } from "@/app/_providers/AuthProvider";
-import { useColorTheme } from "@/theme/useColorTheme";
-import { Method } from "@/auth/constants";
+import { Role } from "@yozu/contracts";
 
-// Mock des dépendances
-jest.mock("@/app/_providers/AuthProvider", () => ({
-  callAPI: jest.fn(),
+jest.mock("@/auth", () => ({
+  ...jest.requireActual("@/auth"),
+  useAuth: jest.fn(),
 }));
 
 jest.mock("@/theme/useColorTheme", () => ({
   useColorTheme: jest.fn(),
 }));
 
-const mockCallAPI = callAPI as jest.MockedFunction<typeof callAPI>;
-const mockUseColorTheme = useColorTheme as jest.MockedFunction<
-  typeof useColorTheme
->;
-
 describe("AccueilPage", () => {
   let user: ReturnType<typeof userEvent.setup>;
+  let callApiSpy: jest.SpyInstance;
+  let useAuthMock: jest.Mock;
+  let useColorThemeMock: jest.Mock;
+  let logoutMock: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     user = userEvent.setup();
 
-    // Mock du thème
-    mockUseColorTheme.mockReturnValue({
+    useAuthMock = authModule.useAuth as jest.Mock;
+    useColorThemeMock = themeHook.useColorTheme as jest.Mock;
+    logoutMock = jest.fn();
+
+    useColorThemeMock.mockReturnValue({
       colorScheme: "light",
       isDarkColorScheme: false,
-      setColorScheme: jest.fn(),
-      toggleColorScheme: jest.fn(),
     });
 
-    // Mock de localStorage
-    Storage.prototype.removeItem = jest.fn();
+    useAuthMock.mockReturnValue({
+      role: Role.STUDENT,
+      logout: logoutMock,
+    });
+
+    callApiSpy = jest.spyOn(api, "callAPI");
   });
 
-  it("renders the welcome message", () => {
-    render(<AccueilPage />);
-
-    expect(screen.getByText(/Bienvenue sur Yozu Lite/i)).toBeInTheDocument();
+  afterEach(() => {
+    callApiSpy.mockRestore();
   });
 
-  it("renders all three buttons", () => {
-    render(<AccueilPage />);
-
-    expect(
-      screen.getByRole("button", { name: /Voir mon profil/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Infos du compte/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Se déconnecter/i }),
-    ).toBeInTheDocument();
-  });
-
-  describe("getCompte function", () => {
-    it("fetches and displays compte data successfully", async () => {
-      const mockCompteData = {
-        email: "test@example.com",
-        phoneNumber: "0123456789",
-        role: "STUDENT",
-      };
-
-      mockCallAPI.mockResolvedValueOnce({
+  describe("Rendering", () => {
+    it("should render welcome message and role-specific dashboard title after loading", async () => {
+      callApiSpy.mockResolvedValue({
         ok: true,
-        data: mockCompteData,
+        data: { id: "1", firstName: "John" },
       });
-
       render(<AccueilPage />);
 
-      const compteButton = screen.getByRole("button", {
-        name: /Infos du compte/i,
-      });
-      await user.click(compteButton);
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
 
       await waitFor(() => {
-        expect(mockCallAPI).toHaveBeenCalledWith({
-          route: "/profiles/me",
-          method: Method.GET,
-        });
-      });
-
-      await waitFor(() => {
-        // Les données sont affichées dans le même élément Text, donc on vérifie leur présence
-        const elements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes(mockCompteData.email) ?? false;
-        });
-        expect(elements.length).toBeGreaterThan(0);
+        expect(screen.getByText("Bienvenue sur Yozu Lite")).toBeInTheDocument();
+        expect(
+          screen.getByText(/Tableau de bord Étudiant/i),
+        ).toBeInTheDocument();
       });
     });
 
-    it("displays error message when getCompte fails", async () => {
-      const errorMessage = "Erreur lors de la récupération du compte";
-
-      mockCallAPI.mockResolvedValueOnce({
-        ok: false,
-        errorMessage,
-      });
-
+    it("should show a loader while fetching data", async () => {
+      callApiSpy.mockReturnValue(new Promise(() => {}));
       render(<AccueilPage />);
-
-      const compteButton = screen.getByRole("button", {
-        name: /Infos du compte/i,
-      });
-      await user.click(compteButton);
-
-      await waitFor(() => {
-        expect(screen.getByText(errorMessage)).toBeInTheDocument();
-      });
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
     });
   });
 
-  describe("getProfile function", () => {
-    it("fetches student profile successfully when compte role is STUDENT", async () => {
-      const mockCompteData = {
-        email: "student@example.com",
-        phoneNumber: "0123456789",
-        role: "STUDENT",
-      };
-
-      const mockProfileData = {
-        id: "1",
-        name: "John Doe",
-        email: "student@example.com",
-      };
-
-      // Premier appel pour getCompte
-      mockCallAPI.mockResolvedValueOnce({
-        ok: true,
-        data: mockCompteData,
-      });
+  describe("Data Fetching", () => {
+    it("should fetch and display student profile data on mount", async () => {
+      const studentData = { id: "s1", firstName: "John", lastName: "Doe" };
+      callApiSpy.mockResolvedValue({ ok: true, data: studentData });
 
       render(<AccueilPage />);
 
-      // Cliquer sur le bouton "Infos du compte" pour définir le compte
-      const compteButton = screen.getByRole("button", {
-        name: /Infos du compte/i,
-      });
-      await user.click(compteButton);
-
       await waitFor(() => {
-        const elements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes(mockCompteData.email) ?? false;
-        });
-        expect(elements.length).toBeGreaterThan(0);
-      });
-
-      // Deuxième appel pour getProfile
-      mockCallAPI.mockResolvedValueOnce({
-        ok: true,
-        data: mockProfileData,
-      });
-
-      const profileButton = screen.getByRole("button", {
-        name: /Voir mon profil/i,
-      });
-      await user.click(profileButton);
-
-      await waitFor(() => {
-        expect(mockCallAPI).toHaveBeenCalledWith({
+        expect(callApiSpy).toHaveBeenCalledWith({
           route: "/profiles/students/me",
-          method: Method.GET,
+          method: authModule.Method.GET,
         });
-      });
-
-      await waitFor(() => {
+        expect(screen.getByText(/Profil Étudiant/i)).toBeInTheDocument();
         expect(
-          screen.getByText(JSON.stringify(mockProfileData)),
+          screen.getByText(new RegExp(studentData.firstName)),
         ).toBeInTheDocument();
       });
     });
 
-    it("fetches company profile successfully when compte role is not STUDENT", async () => {
-      const mockCompteData = {
-        email: "company@example.com",
-        phoneNumber: "0123456789",
-        role: "COMPANY",
-      };
-
-      const mockProfileData = {
-        id: "2",
-        name: "Acme Corp",
-        email: "company@example.com",
-      };
-
-      // Premier appel pour getCompte
-      mockCallAPI.mockResolvedValueOnce({
-        ok: true,
-        data: mockCompteData,
+    it("should fetch and display company profile data on mount", async () => {
+      const companyData = { id: "c1", companyName: "Acme Corp" };
+      useAuthMock.mockReturnValue({
+        role: Role.COMPANY,
+        logout: logoutMock,
       });
+      callApiSpy.mockResolvedValue({ ok: true, data: companyData });
 
       render(<AccueilPage />);
 
-      const compteButton = screen.getByRole("button", {
-        name: /Infos du compte/i,
-      });
-      await user.click(compteButton);
-
       await waitFor(() => {
-        const elements = screen.getAllByText((content, element) => {
-          return element?.textContent?.includes(mockCompteData.email) ?? false;
-        });
-        expect(elements.length).toBeGreaterThan(0);
-      });
-
-      // Deuxième appel pour getProfile
-      mockCallAPI.mockResolvedValueOnce({
-        ok: true,
-        data: mockProfileData,
-      });
-
-      const profileButton = screen.getByRole("button", {
-        name: /Voir mon profil/i,
-      });
-      await user.click(profileButton);
-
-      await waitFor(() => {
-        expect(mockCallAPI).toHaveBeenCalledWith({
+        expect(callApiSpy).toHaveBeenCalledWith({
           route: "/profiles/companies/me",
-          method: Method.GET,
+          method: authModule.Method.GET,
         });
-      });
-
-      await waitFor(() => {
+        expect(screen.getByText(/Profil Entreprise/i)).toBeInTheDocument();
         expect(
-          screen.getByText(JSON.stringify(mockProfileData)),
+          screen.getByText(new RegExp(companyData.companyName)),
         ).toBeInTheDocument();
       });
     });
 
-    it("uses company route when compte is null", async () => {
-      const mockProfileData = {
-        id: "3",
-        name: "Default Profile",
-      };
-
-      mockCallAPI.mockResolvedValueOnce({
-        ok: true,
-        data: mockProfileData,
-      });
+    it("should display error message if API fails", async () => {
+      const errorMessage = "Erreur serveur";
+      callApiSpy.mockResolvedValue({ ok: false, errorMessage });
 
       render(<AccueilPage />);
-
-      const profileButton = screen.getByRole("button", {
-        name: /Voir mon profil/i,
-      });
-      await user.click(profileButton);
-
-      await waitFor(() => {
-        expect(mockCallAPI).toHaveBeenCalledWith({
-          route: "/profiles/companies/me",
-          method: Method.GET,
-        });
-      });
-    });
-
-    it("displays error message when getProfile fails", async () => {
-      const errorMessage = "Erreur lors de la récupération du profil";
-
-      mockCallAPI.mockResolvedValueOnce({
-        ok: false,
-        errorMessage,
-      });
-
-      render(<AccueilPage />);
-
-      const profileButton = screen.getByRole("button", {
-        name: /Voir mon profil/i,
-      });
-      await user.click(profileButton);
 
       await waitFor(() => {
         expect(screen.getByText(errorMessage)).toBeInTheDocument();
@@ -280,56 +125,21 @@ describe("AccueilPage", () => {
     });
   });
 
-  describe("logout functionality", () => {
-    it("removes tokens from localStorage when clicking logout button", async () => {
+  describe("Actions", () => {
+    it("should call logout when clicking the logout button", async () => {
+      callApiSpy.mockResolvedValue({ ok: true, data: {} });
       render(<AccueilPage />);
 
-      const logoutButton = screen.getByRole("button", {
+      await waitFor(() => {
+        expect(screen.getByText("Bienvenue sur Yozu Lite")).toBeInTheDocument();
+      });
+
+      const logoutBtn = screen.getByRole("button", {
         name: /Se déconnecter/i,
       });
-      await user.click(logoutButton);
+      await user.click(logoutBtn);
 
-      expect(localStorage.removeItem).toHaveBeenCalledWith("accessToken");
-      expect(localStorage.removeItem).toHaveBeenCalledWith("refreshToken");
-    });
-  });
-
-  describe("conditional rendering", () => {
-    it("does not display profile data when profile is null", () => {
-      render(<AccueilPage />);
-
-      // Le profil ne devrait pas être affiché initialement
-      expect(screen.queryByText(/John Doe/i)).not.toBeInTheDocument();
-    });
-
-    it("does not display compte data when compte is null", () => {
-      render(<AccueilPage />);
-
-      // Le compte ne devrait pas être affiché initialement
-      expect(screen.queryByText(/test@example.com/i)).not.toBeInTheDocument();
-    });
-
-    it("does not display error message when error is null", () => {
-      render(<AccueilPage />);
-
-      // Aucun message d'erreur ne devrait être affiché initialement
-      const errorTexts = screen.queryAllByText(/erreur/i);
-      expect(errorTexts).toHaveLength(0);
-    });
-  });
-
-  describe("theme integration", () => {
-    it("uses dark theme colors when colorScheme is dark", () => {
-      mockUseColorTheme.mockReturnValue({
-        colorScheme: "dark",
-        isDarkColorScheme: true,
-        setColorScheme: jest.fn(),
-        toggleColorScheme: jest.fn(),
-      });
-
-      render(<AccueilPage />);
-
-      expect(screen.getByText(/Bienvenue sur Yozu Lite/i)).toBeInTheDocument();
+      expect(logoutMock).toHaveBeenCalled();
     });
   });
 });

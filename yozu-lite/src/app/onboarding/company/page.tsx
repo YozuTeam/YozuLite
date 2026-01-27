@@ -1,36 +1,43 @@
 "use client";
 
-import { callAPI } from "@/app/_providers/AuthProvider";
-import { Method } from "@/auth/constants";
+import { callAPI, Method } from "@/auth";
 import Form from "@/design-system/template/OnboardingForm";
+import {
+  ICompanyProfileResponse,
+  ICreateCompanyProfileRequest,
+} from "@yozu/contracts";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { OnboardingCompanyRequest } from "@/auth/dto/requests/onboarding-company.request";
 
 export default function OnboardingCompanyPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
-  const [skills, setSkills] = useState<string[]>([]);
-  const [contractTypes, setContractTypes] = useState<string[]>([]);
+  const [competences, setCompetences] = useState<string[]>([]);
+  const [contractType, setContractType] = useState<string[]>([]);
 
   const handleSubmit = async () => {
-    if (!name || !lastName || !bio || !skills || !contractTypes) {
+    if (!name || !lastName || !bio || !competences || !contractType) {
       return;
     }
     try {
-      const response = await callAPI<OnboardingCompanyRequest, void>({
+      const response = await callAPI<
+        ICreateCompanyProfileRequest,
+        ICompanyProfileResponse
+      >({
         route: "/profiles/companies/me",
         method: Method.POST,
         data: {
           companyName: name,
           description: bio,
           industry: lastName,
-          techStack: skills,
+          competences,
+          contractType,
         },
         isPublicRoute: false,
       });
+      console.log(response);
       if (response.ok) {
         router.replace("/yozu-lite/accueil");
       }
@@ -44,15 +51,15 @@ export default function OnboardingCompanyPage() {
         inputField1: name,
         inputField2: lastName,
         textAreaField: bio,
-        pickerField: skills,
-        selectorField: contractTypes,
+        pickerField: competences,
+        selectorField: contractType,
       }}
       setFormData={{
         setInputField1: setName,
         setInputField2: setLastName,
         setTextAreaField: setBio,
-        setPickerField: setSkills,
-        setSelectorField: setContractTypes,
+        setPickerField: setCompetences,
+        setSelectorField: setContractType,
       }}
       onSubmit={handleSubmit}
       pickerOptions={[

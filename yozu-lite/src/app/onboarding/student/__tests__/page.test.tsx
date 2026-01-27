@@ -1,24 +1,19 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import OnboardingStudentPage from "../page";
-import { callAPI } from "@/app/_providers/AuthProvider";
+import OnboardingStudentPage from "@/app/onboarding/student/page";
+import { api } from "@/auth/api";
+import { Method } from "@/auth/constants";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import * as navigation from "next/navigation";
 
-// Mock callAPI
-jest.mock("@/app/_providers/AuthProvider", () => ({
-  callAPI: jest.fn(),
-}));
-
-// Mock useRouter
 const mockReplace = jest.fn();
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({
-    replace: mockReplace,
-  }),
+  useRouter: jest.fn(),
 }));
 
-// Mock the Form component to simplify testing the page logic
 jest.mock("@/design-system/template/OnboardingForm", () => {
-  return jest.fn((props) => (
+  return jest.fn((props: any) => (
     <div data-testid="mock-form">
+      <h1 data-testid="form-title">{props.labels.labelTitle}</h1>
       <button
         onClick={() => {
           props.setFormData.setInputField1("John");
@@ -28,62 +23,92 @@ jest.mock("@/design-system/template/OnboardingForm", () => {
           props.setFormData.setSelectorField(["Oui"]);
         }}
         data-testid="btn-fill-form"
-      />
-      <button onClick={props.onSubmit} data-testid="btn-submit" />
+      >
+        Fill
+      </button>
+      <button onClick={props.onSubmit} data-testid="btn-submit">
+        Submit
+      </button>
     </div>
   ));
 });
 
 describe("OnboardingStudentPage", () => {
+  let user: ReturnType<typeof userEvent.setup>;
+  let callApiSpy: jest.SpyInstance;
+  let useRouterMock: jest.Mock;
+
   beforeEach(() => {
     jest.clearAllMocks();
-  });
+    user = userEvent.setup();
 
-  it("renders the form", () => {
-    render(<OnboardingStudentPage />);
-    expect(screen.getByTestId("mock-form")).toBeInTheDocument();
-  });
-
-  it("does not call API if fields are missing", async () => {
-    render(<OnboardingStudentPage />);
-    fireEvent.click(screen.getByTestId("btn-submit"));
-    expect(callAPI).not.toHaveBeenCalled();
-  });
-
-  it("calls callAPI and redirects on successful submit", async () => {
-    render(<OnboardingStudentPage />);
-
-    // Fill the form
-    fireEvent.click(screen.getByTestId("btn-fill-form"));
-
-    // Submit
-    fireEvent.click(screen.getByTestId("btn-submit"));
-
-    expect(callAPI).toHaveBeenCalledWith({
-      route: "/profiles/students/me",
-      method: expect.any(String),
-      data: expect.objectContaining({
-        firstName: "John",
-        lastName: "Doe",
-        bio: "Bio test",
-      }),
-      isPublicRoute: false,
+    useRouterMock = navigation.useRouter as jest.Mock;
+    useRouterMock.mockReturnValue({
+      replace: mockReplace,
     });
 
-    expect(mockReplace).toHaveBeenCalledWith("/yozu-lite/accueil");
+    callApiSpy = jest.spyOn(api, "callAPI");
   });
 
-  it("handles API error gracefully", async () => {
-    const consoleSpy = jest.spyOn(console, "log").mockImplementation();
-    (callAPI as jest.Mock).mockImplementationOnce(() => {
-      throw new Error("API Error");
+  afterEach(() => {
+    callApiSpy.mockRestore();
+  });
+
+  describe("Rendering", () => {
+    it("should render the onboarding form with the correct title", () => {
+      render(<OnboardingStudentPage />);
+      expect(screen.getByTestId("mock-form")).toBeInTheDocument();
+      expect(screen.getByTestId("form-title")).toHaveTextContent(
+        "Onboarding étudiant",
+      );
+    });
+  });
+
+  describe("Form Submission Logic", () => {
+    it("should not call API if fields are empty", async () => {
+      render(<OnboardingStudentPage />);
+      const submitBtn = screen.getByTestId("btn-submit");
+      await user.click(submitBtn);
+
+      expect(callApiSpy).not.toHaveBeenCalled();
     });
 
-    render(<OnboardingStudentPage />);
-    fireEvent.click(screen.getByTestId("btn-fill-form"));
-    fireEvent.click(screen.getByTestId("btn-submit"));
+    it("should call callAPI with student data and redirect on success", async () => {
+      callApiSpy.mockResolvedValue({ ok: true, data: { id: "1" } });
+      render(<OnboardingStudentPage />);
 
-    expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
-    consoleSpy.mockRestore();
+      await user.click(screen.getByTestId("btn-fill-form"));
+      await user.click(screen.getByTestId("btn-submit"));
+
+      await waitFor(() => {
+        expect(callApiSpy).toHaveBeenCalledWith({
+          route: "/profiles/students/me",
+          method: Method.POST,
+          data: {
+            firstName: "John",
+            lastName: "Doe",
+            bio: "Bio test",
+            skills: ["Skill1"],
+            contractType: ["Oui"],
+          },
+          isPublicRoute: false,
+        });
+        expect(mockReplace).toHaveBeenCalledWith("/yozu-lite/accueil");
+      });
+    });
+
+    it("should log error if API call fails", async () => {
+      const consoleSpy = jest.spyOn(console, "log").mockImplementation();
+      callApiSpy.mockRejectedValue(new Error("API Failure"));
+
+      render(<OnboardingStudentPage />);
+      await user.click(screen.getByTestId("btn-fill-form"));
+      await user.click(screen.getByTestId("btn-submit"));
+
+      await waitFor(() => {
+        expect(consoleSpy).toHaveBeenCalledWith(expect.any(Error));
+      });
+      consoleSpy.mockRestore();
+    });
   });
 });

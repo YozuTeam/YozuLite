@@ -1,57 +1,95 @@
 "use client";
 
-import Card from "@/design-system/organism/Card";
-import { Text } from "@/design-system/atoms/Text";
-import { useColorTheme } from "@/theme/useColorTheme";
-import { NAV_THEME } from "@/theme/constant";
-import { Box, Stack } from "@mui/material";
+import { callAPI, Method, useAuth } from "@/auth";
 import { Button } from "@/design-system/atoms/Button";
-import { callAPI } from "@/app/_providers/AuthProvider";
-import { Method } from "@/auth/constants";
-import { UserAuthResponse } from "@/auth/dto/responses/user-auth.response";
-import { useState } from "react";
+import { Text } from "@/design-system/atoms/Text";
+import Card from "@/design-system/organism/Card";
+import { NAV_THEME } from "@/theme/constant";
+import { useColorTheme } from "@/theme/useColorTheme";
+import { Box, CircularProgress, Stack } from "@mui/material";
+import {
+  ICompanyProfileResponse,
+  IStudentProfileResponse,
+  Role,
+} from "@yozu/contracts";
+import { useEffect, useState } from "react";
 
 export default function AccueilPage() {
   const { colorScheme } = useColorTheme();
   const colors = NAV_THEME[colorScheme];
-  const [compte, setCompte] = useState<UserAuthResponse | null>(null);
-  const [profile, setProfile] = useState<UserAuthResponse | null>(null);
+  const { role, logout } = useAuth();
+
+  const [studentProfile, setStudentProfile] =
+    useState<IStudentProfileResponse | null>(null);
+  const [companyProfile, setCompanyProfile] =
+    useState<ICompanyProfileResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const getProfile = async () => {
-    const response = await callAPI<void, UserAuthResponse>({
-      route:
-        compte?.role === "STUDENT"
-          ? `/profiles/students/me`
-          : `/profiles/companies/me`,
-      method: Method.GET,
-    });
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!role) return;
 
-    if (response.ok && response.data) {
-      setProfile(response.data);
-    } else {
-      setError(response.errorMessage || "Une erreur est survenue");
+      setIsLoading(true);
+      setError(null);
+
+      const profileResponse = await callAPI<
+        void,
+        IStudentProfileResponse | ICompanyProfileResponse
+      >({
+        route:
+          role === Role.STUDENT
+            ? `/profiles/students/me`
+            : `/profiles/companies/me`,
+        method: Method.GET,
+      });
+      console.log(profileResponse);
+
+      if (profileResponse.ok && profileResponse.data) {
+        if (role === Role.STUDENT) {
+          setStudentProfile(profileResponse.data as IStudentProfileResponse);
+        } else {
+          setCompanyProfile(profileResponse.data as ICompanyProfileResponse);
+        }
+      } else {
+        setError(
+          profileResponse.errorMessage || "Impossible de récupérer le profil",
+        );
+      }
+
+      setIsLoading(false);
+    };
+
+    if (role) {
+      fetchData();
     }
-  };
-  const getCompte = async () => {
-    const response = await callAPI<void, UserAuthResponse>({
-      route: `/profiles/me`,
-      method: Method.GET,
-    });
+  }, [role]);
 
-    if (response.ok && response.data) {
-      setCompte(response.data);
-    } else {
-      setError(response.errorMessage || "Une erreur est survenue");
-    }
-  };
+  if (isLoading && role) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          backgroundColor: colors.secondaryBackground,
+        }}
+      >
+        <CircularProgress sx={{ color: colors.primary }} />
+      </Box>
+    );
+  }
+
   return (
     <Box
       sx={{
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+        minHeight: "100vh",
+        backgroundColor: colors.secondaryBackground,
+        p: 2,
       }}
     >
       <Card colors={{ background: colors.background, border: colors.border }}>
@@ -59,66 +97,93 @@ export default function AccueilPage() {
           <Text variant="h4" colors={{ text: colors.primary }}>
             Bienvenue sur Yozu Lite
           </Text>
-          {profile && (
-            <Text variant="body1" colors={{ text: colors.primary }}>
-              {JSON.stringify(profile)}
+
+          {role && (
+            <Stack spacing={1} alignItems="center">
+              <Text variant="h4" colors={{ text: colors.primary }}>
+                Tableau de bord{" "}
+                {role === Role.STUDENT ? "Étudiant" : "Entreprise"}
+              </Text>
+              <Text variant="body2" colors={{ text: colors.mutedForeground }}>
+                Rôle : {role}
+              </Text>
+            </Stack>
+          )}
+
+          {studentProfile && (
+            <Box
+              sx={{
+                width: "100%",
+                p: 2,
+                borderRadius: 2,
+                bgcolor: colors.secondaryBackground,
+              }}
+            >
+              <Text
+                variant="subtitle1"
+                colors={{ text: colors.primary }}
+                sx={{ mb: 1 }}
+              >
+                Profil Étudiant
+              </Text>
+              <pre
+                style={{
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-all",
+                  color: colors.primary,
+                }}
+              >
+                {JSON.stringify(studentProfile, null, 2)}
+              </pre>
+            </Box>
+          )}
+
+          {companyProfile && (
+            <Box
+              sx={{
+                width: "100%",
+                p: 2,
+                borderRadius: 2,
+                bgcolor: colors.secondaryBackground,
+              }}
+            >
+              <Text
+                variant="subtitle1"
+                colors={{ text: colors.primary }}
+                sx={{ mb: 1 }}
+              >
+                Profil Entreprise
+              </Text>
+              <pre
+                style={{
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-all",
+                  color: colors.primary,
+                }}
+              >
+                {JSON.stringify(companyProfile, null, 2)}
+              </pre>
+            </Box>
+          )}
+
+          {error && (
+            <Text variant="body2" colors={{ text: colors.notification }}>
+              {error}
             </Text>
           )}
-          {compte && (
-            <Text variant="body1" colors={{ text: colors.primary }}>
-              {compte.email}
-              {compte.phoneNumber}
-              {compte.role}
-            </Text>
-          )}
-        </Stack>
-        <Stack spacing={"16px"} direction={"row"}>
-          <Button
-            onClick={getProfile}
-            colors={{
-              textColor: colors.primaryForeground,
-              borderColor: colors.border,
-              backgroundColor: colors.primary,
-            }}
-            size="large"
-            type="submit"
-          >
-            Voir mon profil
-          </Button>
 
           <Button
-            onClick={getCompte}
+            onClick={logout}
             colors={{
               textColor: colors.primaryForeground,
               borderColor: colors.border,
               backgroundColor: colors.primary,
             }}
             size="large"
-            type="submit"
-          >
-            Infos du compte
-          </Button>
-          <Button
-            onClick={() => {
-              localStorage.removeItem("accessToken");
-              localStorage.removeItem("refreshToken");
-            }}
-            colors={{
-              textColor: colors.primaryForeground,
-              borderColor: colors.border,
-              backgroundColor: colors.primary,
-            }}
-            size="large"
-            type="submit"
           >
             Se déconnecter
           </Button>
         </Stack>
-        {error && (
-          <Text variant="body2" colors={{ text: colors.notification }}>
-            {error}
-          </Text>
-        )}
       </Card>
     </Box>
   );

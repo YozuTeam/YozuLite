@@ -1,6 +1,13 @@
+"use client";
+
+import { AuthGuard } from "@/auth";
+import { AuthProvider } from "@/auth/providers/AuthProvider";
 import { ReactNode } from "react";
-import AuthProvider from "@/app/_providers/AuthProvider";
 
 export default function YozuLiteLayout({ children }: { children: ReactNode }) {
-  return <AuthProvider>{children}</AuthProvider>;
+  return (
+    <AuthProvider>
+      <AuthGuard>{children}</AuthGuard>
+    </AuthProvider>
+  );
 }

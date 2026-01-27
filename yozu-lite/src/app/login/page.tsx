@@ -1,17 +1,17 @@
 "use client";
 
+import { Text } from "@/design-system/atoms/Text";
 import { NAV_THEME } from "@/theme/constant";
 import { useColorTheme } from "@/theme/useColorTheme";
-import { Container, Box, Stack } from "@mui/material";
+import { Box, Container, Stack } from "@mui/material";
 import { useState } from "react";
-import { Text } from "@/design-system/atoms/Text";
 
+import { authService } from "@/auth";
 import { Button } from "@/design-system/atoms/Button";
-import { PasswordField } from "@/design-system/molecule/PasswordField";
 import { EmailField } from "@/design-system/molecule/EmailField";
+import { PasswordField } from "@/design-system/molecule/PasswordField";
 import Card from "@/design-system/organism/Card";
 import { useRouter } from "next/navigation";
-import { login } from "@/app/_providers/AuthProvider";
 
 export default function LoginPage() {
   const { colorScheme } = useColorTheme();
@@ -30,7 +30,7 @@ export default function LoginPage() {
     console.log({ email, password });
     setError(null);
     try {
-      await login(email, password);
+      await authService.login(email, password);
       router.replace("/yozu-lite/accueil");
     } catch (error: unknown) {
       console.error("Login Error:", error);

@@ -1,3 +1,5 @@
+import { IAuthResponse } from "@yozu/contracts";
+
 export function getAccessToken() {
   return localStorage.getItem("accessToken");
 }
@@ -13,3 +15,8 @@ export function setAccessToken(token: string) {
 export function setRefreshToken(token: string) {
   localStorage.setItem("refreshToken", token);
 }
+
+export const saveTokens = (data: IAuthResponse) => {
+  if (data.accessToken) setAccessToken(data.accessToken);
+  if (data.refreshToken) setRefreshToken(data.refreshToken);
+};
